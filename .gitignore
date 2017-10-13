@@ -1,0 +1,9 @@
+#-------------------------------------------------------------------------------
+# Node Files
+#-------------------------------------------------------------------------------
+#
+# This section ignores the files that NPM and NodeJS install as part of
+# routine use.
+#
+node_modules/*
+package-lock.json
