@@ -1,0 +1,22 @@
+{
+  "name": "regent",
+  "version": "1.0.0",
+  "description": "A free, open-source framework for the development of web applications following the model-view-controller (MVC) architectural pattern.",
+  "main": "bootstrap/app.js",
+  "scripts": {
+    "test": "tests/test.js"
+  },
+  "author": "Steven Jimenez <steven@stevethedev.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/stevethedev/regent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stevethedev/regent/issues"
+  },
+  "homepage": "https://github.com/stevethedev/regent#readme",
+  "dependencies": {
+    "dateformat": "^3.0.2"
+  }
+}
