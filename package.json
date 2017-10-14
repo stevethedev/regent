@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/stevethedev/regent#readme",
   "dependencies": {
+    "chai": "^4.1.2",
     "dateformat": "^3.0.2",
     "ps-node": "^0.1.6"
   }
