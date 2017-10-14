@@ -29,6 +29,7 @@ module.exports.Directories = {
     app: './app',
     etc: './etc',
     lib: './lib',
+    log: './log',
 };
 
 module.exports.AppConfig = {
