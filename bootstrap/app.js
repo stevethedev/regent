@@ -36,7 +36,7 @@ const Regent          = requireLib('core/regent');
  | low-level routing and function of Regent's HTTP and Console kernels.
  | 
  */
-const app = new Regent(SystemConfig, AppConfig);
+const app = new Regent(rootDir, SystemConfig, AppConfig);
 
 /*
  |------------------------------------------------------------------------------
