@@ -21,5 +21,8 @@
     "dateformat": "^3.0.2",
     "deepmerge": "^2.0.0",
     "ps-node": "^0.1.6"
+  },
+  "devDependencies": {
+    "mocha": "^4.0.1"
   }
 }
