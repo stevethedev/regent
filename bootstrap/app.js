@@ -13,19 +13,11 @@
  | and prepare all the various components which comprise the software.
  |
  */
-const path            = require('path');
-const deepmerge       = require('deepmerge');
 
-const GlobalFunctions = require('./global-functions');
-const DefaultConfig   = require('../etc/default');
-const LocalConfig     = require('../etc/local');
-const SystemConfig    = deepmerge.all([{}, DefaultConfig, LocalConfig]);
+const { rootDir, SystemConfig } = require('./system-config');
 
-const rootDir = path.resolve(path.join(__dirname, '../'));
-GlobalFunctions.configure(rootDir, SystemConfig.Directories);
-
-const AppConfig       = requireApp(SystemConfig.AppConfig.file);
-const Regent          = requireLib('core/regent');
+const AppConfig = requireApp(SystemConfig.AppConfig.file);
+const Regent    = requireLib('core/regent');
 
 /*
  |------------------------------------------------------------------------------
