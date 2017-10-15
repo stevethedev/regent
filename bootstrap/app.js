@@ -13,12 +13,13 @@
  | and prepare all the various components which comprise the software.
  |
  */
-const GlobalFunctions = require('./global-functions');
 const path            = require('path');
+const deepmerge       = require('deepmerge');
 
+const GlobalFunctions = require('./global-functions');
 const DefaultConfig   = require('../etc/default');
 const LocalConfig     = require('../etc/local');
-const SystemConfig    = Object.assign({}, DefaultConfig, LocalConfig);
+const SystemConfig    = deepmerge.all([{}, DefaultConfig, LocalConfig]);
 
 const rootDir = path.resolve(path.join(__dirname, '../'));
 GlobalFunctions.configure(rootDir, SystemConfig.Directories);
