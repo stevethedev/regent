@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const HttpKernel = requireApp('http/kernel');
+const HttpKernel      = requireApp('http/kernel');
 
 /*
  |------------------------------------------------------------------------------
@@ -16,7 +16,37 @@ const HttpKernel = requireApp('http/kernel');
  |
  */
 module.exports = {
+    /*
+     |--------------------------------------------------------------------------
+     | Regent Bindings
+     |--------------------------------------------------------------------------
+     |
+     | Bindings are used to override some objects within the Regent system with
+     | local or custom variants. For example, this custom {@link HttpKernel}
+     | is inserted by our app so we can insert our own middleware array.
+     |
+     */
     bindings: {
+        // Override the HTTP Kernel
         HttpKernel: HttpKernel,
+    },
+
+    /*
+     |--------------------------------------------------------------------------
+     | Application Router Configuration
+     |--------------------------------------------------------------------------
+     |
+     | Application Router Config tells the Regent Core where to find the set
+     | of directories that are required for proper traffic routing, but
+     | cannot be included in the core without binding the user to a
+     | very particular or opinionated structure. This will help
+     | ensure that developers maintain maximum flexibility.
+     |
+     */
+    routes: {
+        http: {
+            // Routes designed for web-facing content
+            web: 'routes/web.js',
+        }
     },
 };

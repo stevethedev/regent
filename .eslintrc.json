@@ -29,6 +29,10 @@
     "globals": {
         "requireApp": true,
         "requireEtc": true,
-        "requireLib": true
+        "requireLib": true,
+        "reload": true,
+        "reloadApp": true,
+        "reloadEtc": true,
+        "reloadLib": true
     }
 }

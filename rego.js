@@ -73,10 +73,10 @@ class System
     {
         const node = 'node';
         const args = [bootstrap, ...options];
-        const settings = { detached: true };
+        const settings = { detached: true, stdio: 'ignore' };
         const proc = spawn(node, args, settings);
+        rego.write(`(pid:${proc.pid}) REGENT STARTED\n`);
         proc.unref();
-        rego.write(`(pid:${proc.pid}) STARTED\n`);
     }
 
     status()
@@ -93,7 +93,7 @@ class System
             }
             procs.forEach(proc => {
                 if (proc) { 
-                    rego.write(`(pid:${proc.pid}) RUNNING\n`);
+                    rego.write(`(pid:${proc.pid}) REGENT RUNNING\n`);
                 }
             });
         };
@@ -119,7 +119,7 @@ class System
                             return rego.reportError(err);
                         }
 
-                        rego.write(`(pid:${proc.pid}) HALTED\n`);
+                        rego.write(`(pid:${proc.pid}) REGENT HALTED\n`);
                     });
                 }
             });
