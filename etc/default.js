@@ -49,6 +49,10 @@ module.exports.AppConfig = {
 module.exports.HttpConfig = {
     host: 'localhost',
     port: 8080,
+    // TRUE to use clustering, or FALSE to turn it off
+    cluster: true,
+    // Number of clusters to use, if clustering is enabled
+    processes: require('os').cpus().length,
 };
 
 /*
