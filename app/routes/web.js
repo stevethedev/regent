@@ -9,7 +9,7 @@ module.exports = function loadWebRoutes(router)
         response.setBody('hello, world').send();
     });
 
-    router.get('/test/{id}', function(request, response, { id }) {
-        response.setBody('Test: ' + id).send();
+    router.get('/test/{id}', function(request, response, variableMap) {
+        response.setBody('Test: ' + variableMap.get('id')).send();
     });
 };
