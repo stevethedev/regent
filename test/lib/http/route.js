@@ -16,16 +16,31 @@ const HTTP_URI     = 'a/b/c';
 const HTTP_GET     = 'GET';
 
 describe(`The ${CLASS_NAME} class`, () => {
-    it('should let me instantiate a new class', () => {
-        const route = new HttpRoute(regent, HTTP_GET, HTTP_URI, () => {});
-        assert.instanceOf(route, HttpRoute);
+    describe('constructor', () => {
+        it('should let me instantiate a new class', () => {
+            const route = new HttpRoute(regent, HTTP_GET, HTTP_URI, () => {});
+            assert.instanceOf(route, HttpRoute);
+        });
+        it('should define required parameters with the {segment} pattern');
+        it('should define optional parameters with the {segment?} pattern');
     });
-    it(`should have a ${CLASS_NAME}::run`, () => {
-        const route = new HttpRoute(regent, HTTP_GET, HTTP_URI, () => {});
-        assert.property(route, 'run');
-        assert.isFunction(route.run);
+    describe('where() method', () => {
+        it('should create a constraint on the associated parameter');
     });
-    describe(`${CLASS_NAME}::run method`, () => {
+    describe('static pattern() method', () => {
+        it('should create a global constraint on the associated parameter');
+    });
+    describe('route() method', () => {
+        it('should create a named route');
+    });
+    describe('named() method', () => {
+        it('should return TRUE if the parameter matches the current route\'s name');
+        it('should return FALSE if the parameter does not match the current route\'s name');
+    });
+    describe('static prefix() method', () => {
+        it('should prefix all of the routes contained within the closure');
+    });
+    describe('run() method', () => {
         const data = {};
         before(() => {        
             const route = new HttpRoute(
