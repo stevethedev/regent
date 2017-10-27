@@ -24,6 +24,9 @@
         "semi": [
             "error",
             "always"
+        ],
+        "no-underscore-dangle": [
+            "error"
         ]
     },
     "globals": {
