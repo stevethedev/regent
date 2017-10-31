@@ -23,6 +23,7 @@ class Rego
     {
         this.__commands = {
             system: new System(),
+            tests: new Tests(),
         };
     }
 
@@ -125,6 +126,14 @@ class System
             });
         };
         processes.lookup(lookup, callback);
+    }
+}
+
+class Tests
+{
+    run(options)
+    {
+        spawn('node', ['./test/test', ...options], { stdio: 'inherit' });
     }
 }
 

@@ -25,43 +25,40 @@ describe(`The ${CLASS_NAME} class`, () => {
         it('should define optional parameters with the {segment?} pattern');
     });
     describe('where() method', () => {
-        it('should create a constraint on the associated parameter');
+        it('should create a constraint on the associated parameter', () => {
+            const route = new HttpRoute(regent, HTTP_GET, HTTP_URI, () => {});
+            const PARAM_NAME    = 'foo';
+            const PARAM_PATTERN = 'bar';
+            route.where(PARAM_NAME, PARAM_PATTERN);
+            assert.equal(route.getPattern(PARAM_NAME), PARAM_PATTERN);
+        });
     });
     describe('static pattern() method', () => {
         it('should create a global constraint on the associated parameter');
     });
     describe('route() method', () => {
-        it('should create a named route');
+        it('should create a named route', () => {
+            const route = new HttpRoute(regent, HTTP_GET, HTTP_URI, () => {});
+            const ROUTE_NAME = 'foo';
+            route.route(ROUTE_NAME);
+            assert.equal(route.getName(), ROUTE_NAME);
+        });
     });
     describe('named() method', () => {
-        it('should return TRUE if the parameter matches the current route\'s name');
-        it('should return FALSE if the parameter does not match the current route\'s name');
+        it('should return TRUE if the parameter matches the current route\'s name', () => {
+            const route = new HttpRoute(regent, HTTP_GET, HTTP_URI, () => {});
+            const ROUTE_NAME = 'foo';
+            route.route(ROUTE_NAME);
+            assert.isTrue(route.named(ROUTE_NAME));
+        });
+        it('should return FALSE if the parameter does not match the current route\'s name', () => {
+            const route = new HttpRoute(regent, HTTP_GET, HTTP_URI, () => {});
+            const ROUTE_NAME = 'foo';
+            route.route(ROUTE_NAME);
+            assert.isFalse(route.named(`${ROUTE_NAME}foo`));
+        });
     });
     describe('static prefix() method', () => {
         it('should prefix all of the routes contained within the closure');
-    });
-    describe('run() method', () => {
-        const data = {};
-        before(() => {        
-            const route = new HttpRoute(
-                regent, 
-                HTTP_GET, 
-                HTTP_URI, 
-                (request, response) => {
-                    data.request = request;
-                    data.response = response;
-                }
-            );
-            route.run(
-                new HttpRequest(regent.getKernel('http')),
-                new HttpResponse(regent.getKernel('http'))
-            );
-        });
-        it(`should pass a ${HttpRequest.name} parameter`, () => {
-            assert.instanceOf(data.request, HttpRequest);
-        });
-        it(`should pass a ${HttpResponse.name} parameter`, () => {
-            assert.instanceOf(data.response, HttpResponse);
-        });
     });
 });
