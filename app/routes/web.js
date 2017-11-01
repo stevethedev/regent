@@ -9,7 +9,10 @@ module.exports = function loadWebRoutes(router)
         response.setBody('hello, world').send();
     });
 
-    router.get('/test/{id}', function(request, response, { variables }) {
-        response.setBody('Test: ' + variables.get('id')).send();
+    router.get('/variable/{variable}/{optional?}', function(request, response, { variables }) {
+        response.setBody(
+`Variable: ${variables.get('variable')}
+Optional: ${variables.get('optional')}`
+        ).send();
     });
 };
