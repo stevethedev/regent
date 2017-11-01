@@ -14,5 +14,5 @@ module.exports = function loadWebRoutes(router)
 `Variable: ${variables.get('variable')}
 Optional: ${variables.get('optional')}`
         ).send();
-    });
+    }).where('optional', '[a-f0-9]+');
 };
