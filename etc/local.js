@@ -16,4 +16,5 @@
 module.exports.HttpConfig = {
     host: 'localhost',
     port: 8080,
+    cluster: false,
 };
