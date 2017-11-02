@@ -5,8 +5,12 @@
 
 module.exports = function loadWebRoutes(router)
 {
-    router.get('/', function(request, response) {
-        response.setBody('hello, world').send();
+    // router.get('/', function(request, response) {
+    //     response.setBody('hello, world').send();
+    // });
+
+    router.resource('/', requireApp('http/controllers/index'), {
+        only: ['index']
     });
 
     router.get('/variable/{variable}/{optional?}', function(request, response, { variables }) {
