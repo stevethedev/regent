@@ -3,11 +3,9 @@
  */
 'use strict';
 
-module.exports = function loadWebRoutes(router)
+function loadWebRoutes(router)
 {
-    // router.get('/', function(request, response) {
-    //     response.setBody('hello, world').send();
-    // });
+    // Your routes are defined in here
 
     router.resource('/', requireApp('http/controllers/index'), {
         only: ['index']
@@ -20,3 +18,5 @@ Optional: ${variables.get('optional')}`
         ).send();
     }).where('optional', '[a-f0-9]+');
 };
+
+module.exports = loadWebRoutes;
