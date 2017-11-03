@@ -6,6 +6,8 @@ a simple yet full-featured platform for application development. Regent takes
 care of the tedium of configuration, routing, caching, and all the other
 low-level tasks so you can focus on the fun parts: creating great applications.
 
+1. [License](#license)
+
 ## License
 
 The Regent framework is an open-source software licensed under the 
