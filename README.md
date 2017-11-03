@@ -143,7 +143,6 @@ function loadWebRoutes(router)
 }
 ```
 
-<p style="text-align: center">
 | Verb   | URI              | Action  | Route Name  |
 |--------|------------------|---------|-------------|
 | GET    | `/uri`           | index   | uri.index   |
@@ -154,4 +153,3 @@ function loadWebRoutes(router)
 | PATCH  | `/uri/{id}`      | update  | uri.update  |
 | PUT    | `/uri/{id}`      | replace | uri.replace |
 | DELETE | `/uri/{id}`      | destroy | uri.destroy |
-</p>
