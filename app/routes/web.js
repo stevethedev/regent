@@ -1,14 +1,22 @@
-/**
- * @author Steven Jimenez <steven@stevethedev.com>
- */
 'use strict';
+
+/*
+ |------------------------------------------------------------------------------
+ | HTTP Web Routes
+ |------------------------------------------------------------------------------
+ |
+ | The application's HTTP Web Routes are defined in this file, and this file is
+ | automatically loaded when Regent starts. Once the routes are ingested and
+ | initialized, they are compiled in the HTTP Router for improved speed.
+ |
+ */
 
 function loadWebRoutes(router)
 {
     // Your routes are defined in here
 
     router.resource('/', requireApp('http/controllers/index'), {
-        // only: ['index']
+        only: ['index']
     });
 
     const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
