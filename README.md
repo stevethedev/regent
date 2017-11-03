@@ -99,7 +99,7 @@ function callback(request, response)
 
 function loadWebRoutes(router)
 {
-    router.options(uri, callback);
+    router.get(uri, callback);
     router.post(uri, callback);
     router.put(uri, callback);
     router.patch(uri, callback);
