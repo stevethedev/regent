@@ -8,7 +8,7 @@ function loadWebRoutes(router)
     // Your routes are defined in here
 
     router.resource('/', requireApp('http/controllers/index'), {
-        only: ['index']
+        // only: ['index']
     });
 
     const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
