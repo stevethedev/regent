@@ -9,9 +9,9 @@ class IndexHttpController extends HttpController
         //
     }
 
-    index(request, response)
+    index()
     {
-        response.setBody('hello, world').send();
+        return 'Hello, world!';
     }
 }
 

@@ -11,6 +11,11 @@ function loadWebRoutes(router)
         only: ['index']
     });
 
+    const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+    router.get('user/{id?}', (request, response, { variables }) => {
+        return `User ID: ${variables.get('id')}`;
+    }).where({ id: uuid });
+
     router.get('/variable/{variable}/{optional?}', function(request, response, { variables }) {
         response.setBody(
 `Variable: ${variables.get('variable')}

@@ -68,6 +68,10 @@ references, any new references will be reloaded.
 ## Web Routing
 [Web Routing]: #web-routing
 
+Regent uses Web Routes to define how to respond to HTTP Requests.
+
+### Registering Routes
+
 Regent's Web Routes are defined in the ```/app/routes/web.js``` file. When 
 Regent launches, it will load and execute the route definitions in this file. 
 Once all of the routes are loaded, Regent will compile the routes and load them 
@@ -80,7 +84,7 @@ function loadWebRoutes(router)
 }
 ```
 
-### Basic Routing
+#### Basic Routing
 
 [HTTP Verbs]: https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
 
@@ -108,7 +112,7 @@ function loadWebRoutes(router)
 }
 ```
 
-### Wildcard Routing
+#### Wildcard Routing
 
 Regent's HTTP Router provides two wildcard routing methods, which allow a 
 callback to be bound to many HTTP Verbs at a time.
@@ -124,7 +128,7 @@ function loadWebRoutes(router)
 }
 ```
 
-### Controller Routing
+#### Controller Routing
 
 Regent's HTTP Router provides a ```resource()``` method to allow routing to an
 HTTP Controller. This is a convenience function that sets some sensible default 
@@ -153,3 +157,62 @@ function loadWebRoutes(router)
 | PATCH  | `/uri/{id}`      | update  | uri.update  |
 | PUT    | `/uri/{id}`      | replace | uri.replace |
 | DELETE | `/uri/{id}`      | destroy | uri.destroy |
+
+### Route Parameters
+
+It is a common practice in web-based systems to pass variables through a URI.
+Regent uses some syntactical sugar in registered URI to identify and include
+those parameters as variables in the callback function. When a route associated
+with a given URI is executed, the variables are loaded into a [Map] instance
+and passed as the third parameter to the callback function.
+
+#### Required Parameters
+
+Usually, you will want a route parameter to be explicitly defined in the HTTP
+Request. These variables are identified by placing `{brackets}` around a URI
+segment.
+
+```javascript
+router.get('user/{id}', (request, response, { variables }) => {
+    return `User ID: ${variables.get('id')}`;
+});
+```
+
+#### Optional Parameters
+
+It is also possible that you want to match on a URI segment if one is provided,
+but you do not necessarily require a variable to be passed for the URI to be
+valid. Optional Parameters are identified by suffixing a Route Parameter's name
+with a question-mark: `{optional?}`.
+
+```javascript
+router.get('user/{userId}/{friendId?}', (request, response, { variables }) => {
+    let content = `User ID: ${variables.get('userId')}`;
+    if (variables.has('friendId')) {
+        content += `\nFriend ID: ${variables.get('friendId')}`;
+    }
+    return content;
+});
+```
+
+#### Parameter Constraints
+
+Your application may require some constraints to be placed on URI parameters
+which would either limit the range of acceptable responses, or differentiate
+between otherwise identical routes. Regent supports this through use of the
+```route.where()``` function.
+
+```javascript
+const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+router.get('user/{id?}', (request, response, { variables }) => {
+    if (!variables.has('id')) {
+        return 'Show all User IDs';
+    }
+    return `Show User ID: ${variables.get('id')}`;
+}).where({ id: uuid });
+```
+
+In the above example, the `id` parameter matches if (and only if) it is either
+blank or a UUID.
+
+[Map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
