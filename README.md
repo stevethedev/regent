@@ -41,6 +41,14 @@ any other process: Ctrl + C.
 In general, Regent avoids polluting the global namespace. However, there are a
 few exceptions to this rule.
 
+### Resolve
+
+Regent creates a handful of ```resolve()``` functions to determine the path to
+other files in the system without loading those files as modules.
+
+1. ```resolve()```, which reads from the / folder (Project root)
+2. ```resolvePub()```, which reads from the /storage/pub folder (Public)
+
 ### Require
 
 Regent creates three variants of the ```require()``` function and binds them to
