@@ -9,6 +9,19 @@ class GlobalFunctions
 {
     static configure(rootPath, config)
     {
+        const resolve = global.resolve = (src = '') => {
+            return path.resolve(path.join(rootPath, src));
+        };
+
+        /**
+         * Resolve a path to the base Pub folder
+         *
+         * @param  {String} src
+         *
+         * @return {String}
+         */
+        global.resolvePub = (src = '') => resolve(path.join(config.pub, src));
+
         /**
          * This function is used to load application-specific files
          *

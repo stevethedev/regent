@@ -36,6 +36,8 @@
         "reloadLib": true,
         "requireApp": true,
         "requireEtc": true,
-        "requireLib": true
+        "requireLib": true,
+        "resolve": true,
+        "resolvePub": true
     }
 }

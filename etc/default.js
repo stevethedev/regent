@@ -26,10 +26,20 @@
  |
  */
 module.exports.Directories = {
+    // Your application files are stored here
     app: './app',
+    
+    // Configuration Files
     etc: './etc',
+    
+    // Core Regent Files
     lib: './lib',
-    log: './log',
+    
+    // Log files
+    log: './storage/log',
+
+    // Public storage files
+    pub: './storage/pub',
 };
 
 module.exports.AppConfig = {
