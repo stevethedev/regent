@@ -10,7 +10,7 @@ class GlobalFunctions
     static configure(rootPath, config)
     {
         const resolve = global.resolve = (src = '') => {
-            return path.resolve(path.join(rootPath, src));
+            return path.resolve(path.resolve(rootPath, src));
         };
 
         /**
