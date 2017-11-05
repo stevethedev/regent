@@ -20,9 +20,9 @@ class GlobalFunctions
          *
          * @return {String}
          */
-        global.resolvePub = (src = '') => resolve(path.join(config.pub, src));
+        global.resolvePub = (src = '') => resolve(path.resolve(config.pub, src));
 
-        global.resolveEtc = (src = '') => resolve(path.join(config.etc, src));
+        global.resolveEtc = (src = '') => resolve(path.resolve(config.etc, src));
 
         /**
          * This function is used to load application-specific files
@@ -31,7 +31,7 @@ class GlobalFunctions
          * @return {mixed}
          */
         global.requireApp = (src) => {
-            return require(path.join(rootPath, config.app, src));
+            return require(path.resolve(rootPath, config.app, src));
         };
 
         /**
@@ -41,7 +41,7 @@ class GlobalFunctions
          * @return {mixed}
          */
         global.requireEtc = (src) => {
-            return require(path.join(rootPath, config.etc, src));
+            return require(path.resolve(rootPath, config.etc, src));
         };
 
         /**
@@ -51,7 +51,7 @@ class GlobalFunctions
          * @return {mixed}
          */
         global.requireLib = (src) => {
-            return require(path.join(rootPath, config.lib, src));
+            return require(path.resolve(rootPath, config.lib, src));
         };
 
         /**
@@ -72,7 +72,7 @@ class GlobalFunctions
          * @return {mixed}
          */
         global.reloadApp  = (src) => {
-            const filePath = path.join(rootPath, config.app, src);
+            const filePath = path.resolve(rootPath, config.app, src);
             delete require.cache[require.resolve(filePath)];
             return requireApp(src);
         };
@@ -84,7 +84,7 @@ class GlobalFunctions
          * @return {mixed}
          */
         global.reloadEtc  = (src) => {
-            const filePath = path.join(rootPath, config.etc, src);
+            const filePath = path.resolve(rootPath, config.etc, src);
             delete require.cache[require.resolve(filePath)];
             return requireEtc(src);
         };
@@ -96,7 +96,7 @@ class GlobalFunctions
          * @return {mixed}
          */
         global.reloadLib  = (src) => {
-            const filePath = path.join(rootPath, config.lib, src);
+            const filePath = path.resolve(rootPath, config.lib, src);
             delete require.cache[require.resolve(filePath)];
             return requireLib(src);
         };
