@@ -31,11 +31,8 @@ There are a few requirements that a server must meet in order to run Regent:
 ### Installing Regent
 
 Currently, Regent is under active development, and is not available as a normal
-NPM package.
-
-#### NPM Installation
-
-You can install Regent with NPM by pointing at the repository:
+NPM package. In the mean time, you are able to install with NPM by pointing it
+at the repository:
 
 ```bash
 $ npm install https://github.com/stevethedev/regent.git
@@ -43,8 +40,11 @@ $ npm install https://github.com/stevethedev/regent.git
 
 #### Clone the Git Repository
 
-You can install Regent by cloning the Git repository to the directory of your
-choice. Once installed, you should open the directory and run NPM Install.
+If you are an advanced user, you can install Regent by cloning the Git 
+repository to the directory of your choice. Once installed, you should open the 
+directory and run NPM Install. Note that this is akin to forking the project.
+You should not use this method unless you intend to contribute back to Regent,
+or else if you intend to intend to closely couple your project with Regent.
 
 ```bash
 $ git clone https://github.com/stevethedev/regent.git
@@ -54,9 +54,20 @@ $ npm install
 
 ### Configuration
 
-There are two configuration files that a user needs to be aware of. The first
-is the Regent configuration file, at ```/etc/local.js```. The second is the
-application configuration file, at ```/app/app.js```.
+There are two configuration objects that need to be passed into Regent. If you
+are consuming this project as a dependency (this is the normal use-case) then
+one of these objects is passed into the "start" function:
+
+```javascript
+const Regent = require('regent');
+Regent.start(__dirname, { /* ... * / });
+```
+
+The other object is identified as a path to a file within your project, based
+on the value in the Regent configuration options. This decouples application
+configuration from system configuration, and helps to avoid conflicts between
+development environments. It also allows Regent to use some sensible default
+values, and to interact with your code more effectively.
 
 #### Regent System Configuration
 
@@ -66,25 +77,162 @@ of an application. HTTP Server configuration, for example, is an important part
 of any web-based application. However, whether an HTTP Server is listening on
 port `8080` or `8081` is not important to the actual *behavior* of the system.
 
-After running ```npm install``` from the base directory, Regent will create the
-file ```/etc/local.js```. Any settings not in ```local.js``` will be loaded
-from ```default.js``` in the same folder. It is recommended that any necessary
-configuration options are stored in ```local.js```, since this will avoid 
-conflicts if the default configuration options are updated in the future.
+*If you are consuming Regent as a dependency*, this is the object passed into
+`Regent.start()`.
+
+*If you are an advanced user*, this is an object that exists in the project's
+/etc directory. After running ```npm install``` from the base directory, Regent
+will create the file ```/etc/local.js```. Any settings not in ```local.js```
+will be loaded from ```default.js``` in the same folder. It is recommended that
+any necessary configuration options are stored in ```local.js```, since this
+will avoid  conflicts if the default configuration options are updated in the
+future.
 
 It is also recommended that you do not commit ```local.js``` to any version
 control software. This will help to avoid conflicts between development and
 production systems, as well as avoid accidentally exposing sensitive system
 information to the world.
 
+```javascript
+/*
+ |------------------------------------------------------------------------------
+ | Directory Configuration
+ |------------------------------------------------------------------------------
+ |
+ | All of these files are relative to the Regent directory. It is recommended
+ | that you leave all of these values a
+ |
+ */
+module.exports.Directories = {
+    // Your application files are stored here. This configuration tells the
+    // system that the app resides in the ./app folder, relative to the file
+    // where the configuration object is defined.
+    app: `${__dirname}/app`,
+    
+    // This is the directory where log-files should be output. This object 
+    // tells the system to store log-files into the ./storage/log folder, 
+    // relative to the file where the configuration object is defined.
+    log: `$(__dirname}/storage/log`,
+
+    // This is the directory where your public files are stored. If a file
+    // exists within this folder, it will be returned to the client before
+    // any routes are executed.
+    pub: `${__dirname}/storage/pub`,
+};
+
+ /*
+  |-----------------------------------------------------------------------------
+  | Application Configuration
+  |-----------------------------------------------------------------------------
+  |
+  | This object is used to identify configuration information for your app.
+  |
+  */
+module.exports.AppConfig = {
+    // This is the file, relative to "app" directory, where the configuration
+    // object resides.
+    file: 'app.js'
+};
+
+/*
+ |------------------------------------------------------------------------------
+ | HTTP Server Configuration
+ |------------------------------------------------------------------------------
+ |
+ | This section defines the HTTP Configuration Options that are imported by the 
+ | kernel and used to configure the HTTP server. NOTE: If the server is using 
+ | NGINX or Apache, a reverse proxy may need to route traffic into Regent.
+ |
+ */
+module.exports.HttpConfig = {
+    // This is the host where the HTTP Server should listen.
+    host: 'localhost',
+
+    // This is the port where the HTTP Server should listen.
+    port: 8080,
+
+    // TRUE to use clustering, or FALSE to turn it off
+    cluster: true,
+
+    // Number of clusters to use, if clustering is enabled
+    processes: require('os').cpus().length,
+};
+
+/*
+ |------------------------------------------------------------------------------
+ | Logger Configuration
+ |------------------------------------------------------------------------------
+ |
+ | This section defines the configuration options that govern how Regent's
+ | default logger behaves. When setting logging levels, a higher level
+ | corresponds to a more detailed log. Level 1 enables error logs,
+ | Level 2 enables warning logs, Level 3 enables information
+ | logs, and Level 4 enables verbose debug logging.
+ |
+ */
+module.exports.LoggerConfig = {
+    logLevel: 5,
+};
+```
+
 ### Application Configuration
 
 Regent Applications will likely have some custom configuration that affects the
 business logic of the Regent core system. For example, if an application uses a
-custom HTTP Kernel, that kernel can be overridden in the ```/app/app.js```.
-Since the application configuration is application-bound and not system-bound,
-it is recommended that this file be stored inside of your version-control
-repository (assuming you do not store sensitive information in it).
+custom HTTP Kernel, that kernel can be overridden in the ```/app/app.js```. *If
+you are using Regent as a dependency*, this can be configured in the system
+configuration object. Since the application configuration is application-bound 
+and not system-bound, it is recommended that this file be stored inside of your 
+version-control repository (assuming you do not store sensitive information 
+in it).
+
+```javascript
+/*
+ |------------------------------------------------------------------------------
+ | Application Configuration
+ |------------------------------------------------------------------------------
+ |
+ | Regent requires an object to be exported from a file named "app.js" in the
+ | main application directory. By default, this is in ./app/app.js, but it
+ | can be changed in ./etc/local.js to move this file to any directory.
+ |
+ */
+module.exports = {
+    /*
+     |--------------------------------------------------------------------------
+     | Regent Bindings
+     |--------------------------------------------------------------------------
+     |
+     | Bindings are used to override some objects within the Regent system with
+     | local or custom variants. For example, this custom {@link HttpKernel}
+     | is inserted by our app so we can insert our own middleware array.
+     |
+     */
+    bindings: {
+        // Override the HTTP Kernel
+        HttpKernel: HttpKernel,
+    },
+
+    /*
+     |--------------------------------------------------------------------------
+     | Application Router Configuration
+     |--------------------------------------------------------------------------
+     |
+     | Application Router Config tells the Regent Core where to find the set
+     | of directories that are required for proper traffic routing, but
+     | cannot be included in the core without binding the user to a
+     | very particular or opinionated structure. This will help
+     | ensure that developers maintain maximum flexibility.
+     |
+     */
+    routes: {
+        http: {
+            // Routes designed for web-facing content
+            web: 'routes/web.js',
+        }
+    },
+};
+```
 
 ## Starting Regent
 [Starting Regent]: #starting-regent

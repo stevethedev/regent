@@ -6,8 +6,19 @@ const GlobalFunctions = require('./bootstrap/global-functions');
 const DefaultConfig   = require('./etc/default');
 const rootDir         = __dirname;
 
-function create(LocalConfig = {}) {
-    const SystemConfig = deepmerge.all([{}, DefaultConfig, LocalConfig]);
+function create(appDir = __dirname, LocalConfig = {}) {
+    const interimConfig = {
+        Directories: {
+            app: `${appDir}/app`,
+            log: `${appDir}/storage/log`,
+        },
+    };
+    const SystemConfig = deepmerge.all([
+        {}, 
+        DefaultConfig, 
+        interimConfig, 
+        LocalConfig,
+    ]);
 
     GlobalFunctions.configure(rootDir, SystemConfig.Directories);
 
@@ -16,8 +27,8 @@ function create(LocalConfig = {}) {
     return new Regent(rootDir, SystemConfig, AppConfig);
 }
 
-function start(LocalConfig = {}) {
-    return create(LocalConfig).start();
+function start(appDir = __dirname, LocalConfig = {}) {
+    return create(appDir = __dirname, LocalConfig).start();
 }
 
 module.exports = {
