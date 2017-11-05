@@ -19,7 +19,7 @@ The Regent framework is an open-source software licensed under the
 [MIT License](http://opensource.org/licenses/MIT)
 
 ## Installation
-[Installation]: #installation-and-configuration
+[Installation]: #installation
 
 ### Server Requirements
 
