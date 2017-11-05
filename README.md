@@ -280,7 +280,10 @@ between otherwise identical routes. Regent supports this through use of the
 ```route.where()``` function.
 
 ```javascript
+// Define a pattern for UUID strings
 const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
+
+// Only match "id" when it's a valid lower-case UUID
 router.get('user/{id?}', (request, response, { variables }) => {
     if (!variables.has('id')) {
         return 'Show all User IDs';
