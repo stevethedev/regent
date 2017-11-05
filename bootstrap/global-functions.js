@@ -22,6 +22,13 @@ class GlobalFunctions
          */
         global.resolvePub = (src = '') => resolve(path.resolve(config.pub, src));
 
+        /**
+         * Resolve a path to the base config folder
+         *
+         * @param  {String} src
+         *
+         * @return {String}
+         */
         global.resolveEtc = (src = '') => resolve(path.resolve(config.etc, src));
 
         /**
