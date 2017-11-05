@@ -22,6 +22,7 @@ class Rego
     constructor()
     {
         this.__commands = {
+            config: new Config(),
             system: new System(),
             tests: new Tests(),
         };
@@ -134,6 +135,31 @@ class Tests
     run(options)
     {
         spawn('node', ['./test/test', ...options], { stdio: 'inherit' });
+    }
+}
+
+class Config
+{
+    install()
+    {
+        const fs   = require('fs');
+        const path = require('path');
+
+        const configTemplate = path.resolve(__dirname, './etc/local.js.template');
+        const configPath     = path.resolve(__dirname, './etc/local.js');
+
+        if (fs.existsSync(configPath)) {
+            return rego.write(`ABORT: ${configPath} already exists.\n`);
+        }
+
+        const writeStream = fs.createWriteStream(configPath);
+        const readStream  = fs.createReadStream(configTemplate);
+
+        writeStream.on('error', rego.reportError.bind(rego));
+        readStream.on('error', rego.reportError.bind(rego));
+
+        rego.write(`Writing config file to ${configPath}\n`);
+        readStream.pipe(writeStream);
     }
 }
 

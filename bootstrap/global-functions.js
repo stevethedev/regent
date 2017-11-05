@@ -22,6 +22,8 @@ class GlobalFunctions
          */
         global.resolvePub = (src = '') => resolve(path.join(config.pub, src));
 
+        global.resolveEtc = (src = '') => resolve(path.join(config.etc, src));
+
         /**
          * This function is used to load application-specific files
          *

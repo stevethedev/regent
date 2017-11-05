@@ -4,6 +4,7 @@
   "description": "A free, open-source framework for the development of web applications following the model-view-controller (MVC) architectural pattern.",
   "main": "bootstrap/app.js",
   "scripts": {
+    "install": "node rego config install",
     "test": "tests/test.js"
   },
   "author": "Steven Jimenez <steven@stevethedev.com>",

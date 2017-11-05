@@ -6,6 +6,7 @@ a simple yet full-featured platform for application development. Regent takes
 care of the tedium of configuration, routing, caching, and all the other
 low-level tasks so you can focus on the fun parts: creating great applications.
 
+1. [Installation]
 1. [License]
 1. [Starting Regent]
 1. [Global Functions]
@@ -16,6 +17,74 @@ low-level tasks so you can focus on the fun parts: creating great applications.
 
 The Regent framework is an open-source software licensed under the 
 [MIT License](http://opensource.org/licenses/MIT)
+
+## Installation
+[Installation]: #installation-and-configuration
+
+### Server Requirements
+
+There are a few requirements that a server must meet in order to run Regent:
+
+* Node.js v8.9.0 or greater
+* The current version of NPM
+
+### Installing Regent
+
+Currently, Regent is under active development, and is not available as a normal
+NPM package.
+
+#### NPM Installation
+
+You can install Regent with NPM by pointing at the repository:
+
+```bash
+$ npm install https://github.com/stevethedev/regent.git
+```
+
+#### Clone the Git Repository
+
+You can install Regent by cloning the Git repository to the directory of your
+choice. Once installed, you should open the directory and run NPM Install.
+
+```bash
+$ git clone https://github.com/stevethedev/regent.git
+$ cd regent
+$ npm install
+```
+
+### Configuration
+
+There are two configuration files that a user needs to be aware of. The first
+is the Regent configuration file, at ```/etc/local.js```. The second is the
+application configuration file, at ```/app/app.js```.
+
+#### Regent System Configuration
+
+The basic Regent System Configuration file is used to set configuration options
+that affect the Regent system, but do not necessarily affect the business-logic
+of an application. HTTP Server configuration, for example, is an important part
+of any web-based application. However, whether an HTTP Server is listening on
+port `8080` or `8081` is not important to the actual *behavior* of the system.
+
+After running ```npm install``` from the base directory, Regent will create the
+file ```/etc/local.js```. Any settings not in ```local.js``` will be loaded
+from ```default.js``` in the same folder. It is recommended that any necessary
+configuration options are stored in ```local.js```, since this will avoid 
+conflicts if the default configuration options are updated in the future.
+
+It is also recommended that you do not commit ```local.js``` to any version
+control software. This will help to avoid conflicts between development and
+production systems, as well as avoid accidentally exposing sensitive system
+information to the world.
+
+### Application Configuration
+
+Regent Applications will likely have some custom configuration that affects the
+business logic of the Regent core system. For example, if an application uses a
+custom HTTP Kernel, that kernel can be overridden in the ```/app/app.js```.
+Since the application configuration is application-bound and not system-bound,
+it is recommended that this file be stored inside of your version-control
+repository (assuming you do not store sensitive information in it).
 
 ## Starting Regent
 [Starting Regent]: #starting-regent
