@@ -21,6 +21,7 @@
     "dateformat": "^3.0.2",
     "deepmerge": "^2.0.1",
     "mime": "^2.0.3",
+    "nunjucks": "^3.0.1",
     "ps-node": "^0.1.6"
   },
   "devDependencies": {

@@ -40,6 +40,9 @@ module.exports.Directories = {
 
     // Public storage files
     pub: './storage/pub',
+
+    // View files
+    view: './storage/views',
 };
 
 module.exports.AppConfig = {

@@ -11,6 +11,8 @@ low-level tasks so you can focus on the fun parts: creating great applications.
 1. [Starting Regent]
 1. [Global Functions]
 1. [Web Routing]
+1. [HTTP Controllers]
+1. [Templates]
 
 ## License
 [License]: #license
@@ -118,6 +120,11 @@ module.exports.Directories = {
     // exists within this folder, it will be returned to the client before
     // any routes are executed.
     pub: `${__dirname}/storage/pub`,
+
+    // This is the directory where your template files are stored. If a file
+    // exists within this folder, then it is available to the templating
+    // engine that renders views.
+    view: `${__dirname}/storage/views`,
 };
 
  /*
@@ -210,7 +217,40 @@ module.exports = {
      */
     bindings: {
         // Override the HTTP Kernel
-        HttpKernel: HttpKernel,
+        HttpKernel: require('./my-http-kernel'),
+
+        // Override the HTTP Router
+        HttpRouter: require('./my-http-router'),
+
+        // Override the Templating Engine
+        TemplateManager: require('./my-template-manager'),
+    },
+
+    /*
+     |--------------------------------------------------------------------------
+     | Template Options
+     |--------------------------------------------------------------------------
+     |
+     | By default, Regent uses Nunjucks as the templating language. Nunjucks
+     | has several configuration options available, and this is where you
+     | can override the Regent defaults. Uses the standard NJK options.
+     |
+     */
+    templateOptions: {
+        autoescape: true,
+        thrownOnUndefined: false,
+        trimBlocks: false,
+        lstripBlocks: false,
+        watch: false,
+        noCache: false,
+        tags: {
+            blockStart   : '{%',
+            blockEnd     : '%}',
+            variableStart: '{{',
+            variableEnd  : '}}',
+            commentStart : '{#',
+            commentEnd   : '#}',
+        },
     },
 
     /*
@@ -264,7 +304,10 @@ Regent creates a handful of ```resolve()``` functions to determine the path to
 other files in the system without loading those files as modules.
 
 1. ```resolve()```, which reads from the / folder (Project root)
-2. ```resolvePub()```, which reads from the /storage/pub folder (Public)
+2. ```resolveLib()```, which reads from the /lib folder (Regent files)
+3. ```resolveEtc()```, which reads from the /etc folder (Config)
+4. ```resolvePub()```, which reads from the /storage/pub folder (Public)
+5. ```resolveView()```, which reads from the /storage/view folder (Templates)
 
 ### Require
 
@@ -391,6 +434,8 @@ those parameters as variables in the callback function. When a route associated
 with a given URI is executed, the variables are loaded into a [Map] instance
 and passed as the third parameter to the callback function.
 
+[Map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+
 #### Required Parameters
 
 Usually, you will want a route parameter to be explicitly defined in the HTTP
@@ -443,4 +488,62 @@ router.get('user/{id?}', (request, response, { variables }) => {
 In the above example, the `id` parameter matches if (and only if) it is either
 blank or a UUID.
 
-[Map]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map
+## Templates
+[Templates]: #templates
+
+Regent's default configuration is to use [Nunjucks] to render templates, though
+you can override this yourself in the [application configuration](#configuration).
+When Regent boots, templates become available through both the HTTP Response
+class and the Controller class.
+
+Both methods take two parameters. The first parameter is the name of a file to
+load from the "views" directory. The second parameter is a dictionary object;
+the keys of which will be made available within the template as top-level 
+variables. Both methods are identical
+
+### HTTP Response Templates
+
+To run a template in the HTTP Response class, invoke the `render()` method.
+Since the HTTP Response object is also available on the HTTP Controller class
+(`this.getRequest()`), this method would work in handler functions *and* HTTP
+Controllers; but it would take more typing to do so in the latter.
+
+```javascript
+router.get('hello-world', (request, response) => {
+    // define my template
+    const templateFile  = 'my-template.njk';
+
+    // define my context object
+    const contextObject = { hello: 'hello', world: 'world' };
+
+    // send the value off to the user
+    return response.render(templateFile, contextObject);
+});
+```
+
+### Controller Templates
+
+The Regent Controller class includes a shorthand for sending templates back to
+the user. Within any Controller class that derives from the Regent Controllers,
+you may use the `view()` method to accomplish the same thing:
+
+```javascript
+const RegentController = requireLib('http/controllers/abstract');
+
+class MyController extends RegentController
+{
+    index()
+    {
+        // define my template
+        const templateFile = 'my-template.njk';
+
+        // define my context object
+        const contextObject = { hello: 'hello', world: 'world' };
+
+        // send the value off to the user
+        return this.view(templateFile, contextObject);
+    }
+}
+```
+
+[Nunjucks]: https://mozilla.github.io/nunjucks/
