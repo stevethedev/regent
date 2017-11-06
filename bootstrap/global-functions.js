@@ -32,6 +32,24 @@ class GlobalFunctions
         global.resolveEtc = (src = '') => resolve(path.resolve(config.etc, src));
 
         /**
+         * Resolve a path to the base lib folder
+         *
+         * @param  {String} src
+         *
+         * @return {String}
+         */
+        global.resolveLib = (src = '') => resolve(path.resolve(config.lib, src));
+
+        /**
+         * Resolve a path to the base view folder
+         *
+         * @param  {String} src
+         *
+         * @return {String}
+         */
+        global.resolveView = (src = '') => resolve(path.resolve(config.view, src));
+
+        /**
          * This function is used to load application-specific files
          *
          * @param {String} src - The file path to load from the app folder.

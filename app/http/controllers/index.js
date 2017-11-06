@@ -11,7 +11,7 @@ class IndexHttpController extends HttpController
 
     index()
     {
-        return 'Hello, world!';
+        return this.view('index.njk');
     }
 }
 
