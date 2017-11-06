@@ -14,7 +14,7 @@ const DefaultConfig   = require('./etc/default');
 const rootDir         = __dirname;
 
 // Configure (but do not start) a Regent instance
-function create(appDir = __dirname, LocalConfig = {}) {
+function create(appDir = rootDir, LocalConfig = {}) {
     const interimConfig = {
         Directories: {
             app: `${appDir}/app`,
@@ -29,6 +29,7 @@ function create(appDir = __dirname, LocalConfig = {}) {
     ]);
 
     GlobalFunctions.configure(rootDir, SystemConfig.Directories);
+    console.log(appDir)
 
     const AppConfig    = requireApp(SystemConfig.AppConfig.file);
     const Regent       = requireLib('core/regent');
@@ -36,8 +37,8 @@ function create(appDir = __dirname, LocalConfig = {}) {
 }
 
 // Configure and start Regent as a dependency
-function start(appDir = __dirname, LocalConfig = {}) {
-    return create(appDir = __dirname, LocalConfig).start();
+function start(appDir = rootDir, LocalConfig = {}) {
+    return create(appDir, LocalConfig).start();
 }
 
 module.exports = {

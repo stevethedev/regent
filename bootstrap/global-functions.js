@@ -20,7 +20,7 @@ class GlobalFunctions
          *
          * @return {String}
          */
-        global.resolvePub = (src = '') => resolve(path.resolve(config.pub, src));
+        global.resolvePub = (src = '') => resolve(path.join(config.pub, src));
 
         /**
          * Resolve a path to the base config folder
@@ -29,7 +29,7 @@ class GlobalFunctions
          *
          * @return {String}
          */
-        global.resolveEtc = (src = '') => resolve(path.resolve(config.etc, src));
+        global.resolveEtc = (src = '') => resolve(path.join(config.etc, src));
 
         /**
          * Resolve a path to the base lib folder
@@ -38,7 +38,7 @@ class GlobalFunctions
          *
          * @return {String}
          */
-        global.resolveLib = (src = '') => resolve(path.resolve(config.lib, src));
+        global.resolveLib = (src = '') => resolve(path.join(config.lib, src));
 
         /**
          * Resolve a path to the base view folder
@@ -47,7 +47,7 @@ class GlobalFunctions
          *
          * @return {String}
          */
-        global.resolveView = (src = '') => resolve(path.resolve(config.view, src));
+        global.resolveView = (src = '') => resolve(path.join(config.view, src));
 
         /**
          * This function is used to load application-specific files
