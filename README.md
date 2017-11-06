@@ -11,7 +11,6 @@ low-level tasks so you can focus on the fun parts: creating great applications.
 1. [Starting Regent]
 1. [Global Functions]
 1. [Web Routing]
-1. [HTTP Controllers]
 1. [Templates]
 
 ## License
