@@ -4,7 +4,7 @@
   "description": "A free, open-source framework for the development of web applications following the model-view-controller (MVC) architectural pattern.",
   "main": "index.js",
   "scripts": {
-    "test": "tests/test.js"
+    "test": "test/test.js"
   },
   "author": "Steven Jimenez <steven@stevethedev.com>",
   "license": "MIT",
