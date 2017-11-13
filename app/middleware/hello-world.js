@@ -7,7 +7,7 @@ const BaseMiddleware = requireLib('core/middleware');
 
 class MiddlewareHelloWorld extends BaseMiddleware
 {
-    run(request, response, next)
+    async run(request, response, next)
     {
         response.setBody('Hello, World');
         next();
