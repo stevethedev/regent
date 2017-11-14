@@ -12,6 +12,11 @@ class MiddlewareHelloWorld extends BaseMiddleware
         response.setBody('Hello, World');
         next();
     }
+
+    async terminate(request, response, next)
+    {
+        next();
+    }
 }
 
 module.exports = MiddlewareHelloWorld;

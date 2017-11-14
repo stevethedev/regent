@@ -25,6 +25,8 @@
     "ps-node": "^0.1.6"
   },
   "devDependencies": {
+    "babel-eslint": "^8.0.2",
+    "eslint": "^4.11.0",
     "mocha": "^4.0.1"
   }
 }
