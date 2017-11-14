@@ -11,6 +11,7 @@ low-level tasks so you can focus on the fun parts: creating great applications.
 1. [Starting Regent]
 1. [Global Functions]
 1. [Web Routing]
+1. [Middleware and Terminators]
 1. [Templates]
 
 ## License
@@ -486,6 +487,62 @@ router.get('user/{id?}', (request, response, { variables }) => {
 
 In the above example, the `id` parameter matches if (and only if) it is either
 blank or a UUID.
+
+## Middleware and Terminators
+[Middleware and Terminators]: #middleware-and-terminators
+
+Middleware and Terminators are mechanisms for interacting with HTTP requests in
+ways that are not directly applicable to any individual endpoint. Middleware
+intercepts an HTTP request and injected after the HTTP request is recognized,
+but before the system processes the middleware. Terminators, by contrast, are
+used to execute code after the response has been returned to the client. Both
+middleware and terminators are designed to be modular.
+
+```javascript
+'use strict';
+
+const BaseMiddleware = requireLib('core/middleware');
+
+class MiddlewareHelloWorld extends BaseMiddleware
+{
+    // this MIDDLEWARE prints "Hello, world!" to the console, then delays the
+    // response by 1 second.
+    async run(request, response, next)
+    {
+        this.getRegent().getLogger().log('Hello, world!');
+        setTimeout(next, 1000);
+    }
+
+    // this TERMINATOR prints "Goodbye, world!" to the console after the HTTP
+    // response has already been sent to the client.
+    async terminate(request, response, next)
+    {
+        this.getRegent().getLogger().log('Goodbye, world!', this.i);
+        next();
+    }
+}
+
+module.exports = MiddlewareHelloWorld;
+
+```
+
+### Middleware
+
+Middleware specifically focuses on executing code before Regent executes the
+business logic associated with an HTTP route. One example would be to intercept
+a request, determine whether the use is authorized to access the resource, and
+take appropriate steps depending on their authentication information. The
+middleware package could be associated with any authenticated route to prevent
+unauthorized access without needing to directly embed the code in every 
+individual endpoint.
+
+### Terminator
+
+Terminators specifically focus on executing code after Regent returns an HTTP
+response to the client. One example would be to write session data to storage
+after an HTTP response has been sent, in order to provide a double-benefit of
+lower latency (faster response time) and to avoid a potential server error if
+the I/O process fails to write content to the storage media.
 
 ## Templates
 [Templates]: #templates
