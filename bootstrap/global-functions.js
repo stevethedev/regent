@@ -41,6 +41,15 @@ class GlobalFunctions
         global.resolveLib = (src = '') => resolve(path.join(config.lib, src));
 
         /**
+         * Resolve a path to the session folder
+         *
+         * @param  {String} src
+         *
+         * @return {String}
+         */
+        global.resolveSession = (src = '') => resolve(path.join(config.session, src));
+
+        /**
          * Resolve a path to the base view folder
          *
          * @param  {String} src

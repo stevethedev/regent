@@ -41,6 +41,9 @@ module.exports.Directories = {
     // Public storage files
     pub: './storage/pub',
 
+    // Session files
+    session: './storage/session',
+
     // View files
     view: './storage/views',
 };
