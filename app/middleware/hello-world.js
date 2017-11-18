@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const BaseMiddleware = requireLib('core/middleware');
+const BaseMiddleware = requireLib('core/middleware/middleware');
 
 class MiddlewareHelloWorld extends BaseMiddleware
 {

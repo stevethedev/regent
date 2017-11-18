@@ -6,6 +6,7 @@ const BaseHttpKernel = requireLib('http/kernel');
 
 // Middleware
 const HelloWorldMiddleware = requireApp('middleware/hello-world');
+const SessionMiddleware    = requireLib('http/middleware/sessions');
 
 class HttpKernel extends BaseHttpKernel
 {
@@ -27,6 +28,20 @@ class HttpKernel extends BaseHttpKernel
             HelloWorldMiddleware,
 
         ];
+    }
+
+    getMiddlewareGroup(groupName)
+    {
+        if ('web' === groupName) {
+            return [
+                // Enable sessions on web-routes but not api-routes
+                SessionMiddleware,
+            ];
+        }
+        if ('api' === groupName) {
+            return [];
+        }
+        return [];
     }
 }
 
