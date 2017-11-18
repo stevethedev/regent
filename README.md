@@ -501,7 +501,7 @@ middleware and terminators are designed to be modular.
 ```javascript
 'use strict';
 
-const BaseMiddleware = requireLib('core/middleware');
+const BaseMiddleware = requireLib('core/middleware/middleware');
 
 class MiddlewareHelloWorld extends BaseMiddleware
 {
