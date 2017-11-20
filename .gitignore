@@ -15,3 +15,11 @@ node_modules/*
 #
 log/*
 
+#-------------------------------------------------------------------------------
+# JSDoc Files
+#-------------------------------------------------------------------------------
+#
+# This section ignores the files associated with generated documentation
+#
+
+doc/*

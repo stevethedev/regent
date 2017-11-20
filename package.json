@@ -4,6 +4,7 @@
   "description": "A free, open-source framework for the development of web applications following the model-view-controller (MVC) architectural pattern.",
   "main": "index.js",
   "scripts": {
+    "gen:doc": "node_modules/.bin/jsdoc -c ./jsdoc/jsdoc.json",
     "test": "test/test.js"
   },
   "author": "Steven Jimenez <steven@stevethedev.com>",
@@ -26,7 +27,9 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.0.2",
+    "docdash": "^0.4.0",
     "eslint": "^4.11.0",
+    "jsdoc": "^3.5.5",
     "mocha": "^4.0.1"
   }
 }
