@@ -85,4 +85,5 @@ module.exports.HttpConfig = {
  */
 module.exports.LoggerConfig = {
     logLevel: 5,
+    catchErrors: true,
 };
