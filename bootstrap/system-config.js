@@ -8,7 +8,13 @@ const deepmerge       = require('deepmerge');
 
 const GlobalFunctions = require('./global-functions');
 const DefaultConfig   = require('../etc/default');
-const LocalConfig     = require('../etc/local');
+const LocalConfig     = (() => {
+    try {
+        return require('../etc/local');
+    } catch (error) {
+        return {};
+    }
+})();
 const SystemConfig    = deepmerge.all([{}, DefaultConfig, LocalConfig]);
 
 const rootDir = path.resolve(path.join(__dirname, '../'));
