@@ -7,10 +7,9 @@
  */
 'use strict';
 
-const path            = require('path');
-const deepmerge       = require('deepmerge');
 const GlobalFunctions = require('./bootstrap/global-functions');
 const DefaultConfig   = require('./etc/default');
+const deepmerge       = require('deepmerge');
 const rootDir         = __dirname;
 
 // Configure (but do not start) a Regent instance
@@ -22,14 +21,13 @@ function create(appDir = rootDir, LocalConfig = {}) {
         },
     };
     const SystemConfig = deepmerge.all([
-        {}, 
+        {},
         DefaultConfig, 
         interimConfig, 
         LocalConfig,
     ]);
 
     GlobalFunctions.configure(rootDir, SystemConfig.Directories);
-    console.log(appDir)
 
     const AppConfig    = requireApp(SystemConfig.AppConfig.file);
     const Regent       = requireLib('core/regent');
