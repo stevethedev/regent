@@ -66,7 +66,7 @@ describe(`The ${CLASS_NAME} class`, () => {
         it('should not remove the non-given keys from the collection', () => {
             const collection = getCollection([1, 2, 3]);
             collection.delete(0);
-            assert.isFalse(collection.has(1));
+            assert.isTrue(collection.has(1));
         });
     });
     describe('filter method', () => {
@@ -83,7 +83,7 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         it('should return a new collection object', () => {
             const collection = getCollection();
-            assert.isNotEqual(collection.filter(), collection);
+            assert.notEqual(collection.filter(), collection);
             assert.instanceOf(collection.filter(), Collection);
         });
         it('should not remove entries from the current collection', () => {
@@ -157,7 +157,7 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         it('should return a new collection', () => {
             const collection = getCollection();
-            assert.isNotEqual(collection.map(), collection);
+            assert.notEqual(collection.map(), collection);
         });
         it('should return a collection containing the values returned from the callback', () => {
             const collection = getCollection([1, 2, 3, 4, 5]);
@@ -196,22 +196,6 @@ describe(`The ${CLASS_NAME} class`, () => {
         it('should return the collection', () => {
             const collection = getCollection();
             assert.equal(collection.push(), collection);
-        });
-    });
-    describe('values method', () => {
-        it('should return a new collection', () => {
-            const array = [1, 2, 3];
-            const collection = getCollection(array);
-            const values = collection.values();
-            assert.instanceOf(values, Collection);
-            assert.isNotEqual(values, collection);
-        });
-        it('should reset each key in the returned collection to consecutive integers', () => {
-            const object = { 'foo': 'foo', 'bar': 'bar' };
-            const collection = getCollection(object);
-            const values = collection.values();
-            let integer = 0;
-            values.forEach((value, index) => assert.isEqual(index, integer++));
         });
     });
     describe('reduce method', () => {
@@ -275,12 +259,11 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('unshift method', () => {
         it('should insert a value at the front of the collection', () => {
-            const array = [1, 2, 3];
+            const array = { 'foo': 'foo' };
             const collection = getCollection(array);
-            array.unshift(0);
             collection.unshift(0);
-            assert.equal(collection.size(), array.length);
-            assert.equal(collection.get(0), array[0]);
+            assert.equal(collection.size(), 2);
+            assert.equal(collection.get(0), 0);
         });
         it('should take any number of arguments', () => {
             const array = [1, 2, 3];
@@ -292,6 +275,22 @@ describe(`The ${CLASS_NAME} class`, () => {
             const array = [1, 2, 3];
             const collection = getCollection(array);
             assert.equal(collection.unshift(0), collection);
+        });
+    });
+    describe('values method', () => {
+        it('should return a new collection', () => {
+            const array = [1, 2, 3];
+            const collection = getCollection(array);
+            const values = collection.values();
+            assert.instanceOf(values, Collection);
+            assert.notEqual(values, collection);
+        });
+        it('should reset each key in the returned collection to consecutive integers', () => {
+            const object = { 'foo': 'foo', 'bar': 'bar' };
+            const collection = getCollection(object);
+            const values = collection.values();
+            let integer = 0;
+            values.forEach((value, index) => assert.equal(index, integer++));
         });
     });
 });
