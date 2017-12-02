@@ -328,7 +328,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should set the FROM clause to "<table> AS <alias>"', () => {
                     const query = getQueryBuilder();
                     query.from('table', 'alias');
-                    assert.match(query.compile().query, /FROM table AS alias/);
+                    assert.match(query.compile().query, /FROM table AS "alias"/);
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
