@@ -217,23 +217,75 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('INSERT INTO <table-name> (<fields>) VALUES (<values>) clause', () => {
         describe('insert method', () => {
             describe('({ <field>: <value>, ... }) signature', () => {
-                it('should add "(<...field>) VALUES (<...value>) to the INSERT clause');
-                it('should add every <value> to the bound arguments');
-                it('should return the Query Builder');
-            });
-        });
-        describe('insertGetId method', () => {
-            describe('({ <field>: <value>, ... }) signature', () => {
-                it('should add "(<...field>) VALUES (<...value>) to the INSERT clause');
-                it('should add every <value> to the bound arguments');
-                it('should return the Query Builder');
+                it('should send the request', () => {
+                    let sent = false;
+                    const connection = {
+                        send() {
+                            sent = true;
+                        }
+                    };
+                    getQueryBuilder(connection).insert({});
+                    assert.isTrue(sent);
+                });
+                it('should add "(<...field>) VALUES (<...value>) to the INSERT clause', () => {
+                    const fields = { 'foo': 'my-foo', 'bar': 'my-bar' };
+                    const connection = {
+                        send(query) {
+                            assert.match(query, /\(foo, bar\) VALUES \(\?, \?\)/);
+                        }
+                    };
+                    getQueryBuilder(connection).insert(fields);
+                });
+                it('should add every <value> to the bound arguments', () => {
+                    const fields = { 'foo': 'my-foo', 'bar': 'my-bar' };
+                    const connection = {
+                        send(query, bind) {
+                            assert.equal(bind.length, 2);
+                        }
+                    };
+                    getQueryBuilder(connection).insert(fields);
+                });
             });
         });
         describe('insertRaw method', () => {
             describe('(<fields>, <values[]>) signature', () => {
-                it('should add "(<fields>) VALUES (<values>) to the INSERT clause');
-                it('should add <...values> to the bound arguments');
-                it('should return the Query builder');
+                it('should send the request', () => {
+                    let sent = false;
+                    const connection = {
+                        send() {
+                            sent = true;
+                        }
+                    };
+                    getQueryBuilder(connection).insertRaw(
+                        ['foo', 'bar'], 
+                        ['my-foo', 'my-bar']
+                    );
+                    assert.isTrue(sent);
+                });
+                it('should add "(<...field>) VALUES (<...value>), ... to the INSERT clause', () => {
+                    const connection = {
+                        send(query) {
+                            assert.match(query, /\(foo, bar\) VALUES \(\?, \?\), \(\?, \?\)/);
+                        }
+                    };
+                    getQueryBuilder(connection).insertRaw(
+                        ['foo', 'bar'], 
+                        ['my-foo', 'my-bar'], 
+                        ['muh-foo', 'muh-bar']
+                    );
+                });
+                it('should add every <value> to the bound arguments', () => {
+                    const connection = {
+                        send(query, bind) {
+                            assert.equal(bind.length, 4);
+                        }
+                    };
+                    getQueryBuilder(connection).insertRaw(
+                        ['foo', 'bar'],
+                        ['my-foo', 'my-bar'],
+                        ['muh-foo', 'muh-bar']
+                    );
+                });
             });
         });
     });
