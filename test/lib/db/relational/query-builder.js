@@ -65,12 +65,12 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "<field> AS <alias>" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.select({ 'FOO': 'foo', 'BAR': 'bar'});
-                    assert.match(query.compile().query, /SELECT foo as "FOO", bar as "BAR"/);
+                    assert.match(query.compile().query, /SELECT foo AS "FOO", bar AS "BAR"/);
                 });
                 it('should accept any number of parameters', () => {
                     const query = getQueryBuilder();
                     query.select({ 'FOO': 'foo', 'BAR': 'bar'}, { 'BAZ': 'baz' });
-                    assert.match(query.compile().query, /SELECT foo as "FOO", bar as "BAR", baz as "BAZ"/);
+                    assert.match(query.compile().query, /SELECT foo AS "FOO", bar AS "BAR", baz AS "BAZ"/);
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
