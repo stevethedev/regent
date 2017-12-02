@@ -21,26 +21,74 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('SELECT clause', () => {
         describe('distinct method', () => {
             describe('(<enable = true>) signature', () => {
-                it('should add the DISTINCT keyword to the SELECT clause');
-                it('should remove the DISTINCT keyword if <enable> is false');
+                it('should add the DISTINCT keyword to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.distinct();
+                    assert.match(query.compile().query, /SELECT DISTINCT/);
+                });
+                it('should remove the DISTINCT keyword if <enable> is false', () => {
+                    const query = getQueryBuilder();
+                    query.distinct();
+                    query.distinct(false);
+                    assert.notMatch(query.compile().query, /SELECT DISTINCT/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.distinct(), query);
+                });
             });
         });
         describe('select method', () => {
+            describe('omission', () => {
+                it('should add * to the SELECT clause', () =>  {
+                    const query = getQueryBuilder();
+                    assert.match(query.compile().query, /SELECT \*/);
+                });
+            });
             describe('(<field>, ...) signature', () => {
-                it('should add <field> to the SELECT clause');
-                it('should accept any number of parameters');
-                it('should return the Query Builder');
+                it('should add <field> to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.select('foo');
+                    assert.match(query.compile().query, /SELECT foo/);
+                });
+                it('should accept any number of parameters', () => {
+                    const query = getQueryBuilder();
+                    query.select('foo', 'bar', 'baz');
+                    assert.match(query.compile().query, /SELECT foo, bar, baz/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.select('foo'), query);
+                });
             });
             describe('({ <alias>: <field> }, ...) signature', () => {
-                it('should add "<field> as <alias>" to the SELECT clause');
-                it('should accept any number of parameters');
-                it('should return the Query Builder');
+                it('should add "<field> AS <alias>" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.select({ 'FOO': 'foo', 'BAR': 'bar'});
+                    assert.match(query.compile().query, /SELECT foo as "FOO", bar as "BAR"/);
+                });
+                it('should accept any number of parameters', () => {
+                    const query = getQueryBuilder();
+                    query.select({ 'FOO': 'foo', 'BAR': 'bar'}, { 'BAZ': 'baz' });
+                    assert.match(query.compile().query, /SELECT foo as "FOO", bar as "BAR", baz as "BAZ"/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.select({}), query);
+                });
             });
         });
         describe('selectRaw method', () => {
             describe('(<string>) signature', () => {
-                it('should add <string> to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add <string> to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.selectRaw('foo, bar, baz');
+                    assert.match(query.compile().query, /SELECT foo, bar, baz/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.selectRaw('*'), query);
+                });
             });
         });
     });
