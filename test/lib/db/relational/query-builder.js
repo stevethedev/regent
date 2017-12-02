@@ -11,7 +11,7 @@ const CLASS_NAME   = QueryBuilder.name;
 describe(`The ${CLASS_NAME} class`, () => {
     describe('constructor', () => {
         describe('(<connection>) signature', () => {
-            it('should create a new instance');
+            it('should return a new instance');
         });
     });
     describe('SELECT clause', () => {
