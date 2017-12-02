@@ -95,12 +95,26 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('Aggregate Functions', () => {
         describe('avg method', () => {
             describe('(<field>) signature', () => {
-                it('should add "avg(<field>)" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "avg(<field>)" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.avg('foo');
+                    assert.match(query.compile().query, /SELECT AVG\(foo\)/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.avg('foo'), query);
+                });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "avg(<field>) as <alias>" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "avg(<field>) as <alias>" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.avg('foo', 'bar');
+                    assert.match(query.compile().query, /SELECT AVG\(foo\) AS "bar"/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.avg('foo', 'bar'), query);
+                });
             });
         });
         describe('count method', () => {
@@ -821,7 +835,14 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('compile method', () => {
             describe('() signature', () => {
-                it('should return a string of the SQL query');
+                it('should return a string of the SQL query at compile().query', () => {
+                    const query = getQueryBuilder();
+                    assert.isString(query.compile().query);
+                });
+                it('should return an array of the bound parameters at compile().bound', () => {
+                    const query = getQueryBuilder();
+                    assert.isArray(query.compile().bound);
+                });
             });
         });
         describe('when method', () => {
