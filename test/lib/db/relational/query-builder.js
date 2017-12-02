@@ -3,15 +3,19 @@
  */
 'use strict';
 
-//const assert       = requireLib('util/assert');
+const assert       = requireLib('util/assert');
 const QueryBuilder = requireLib('db/relational/query-builder');
 
 const CLASS_NAME   = QueryBuilder.name;
+const CONNECTION   = {};
+const getQueryBuilder = (connection = CONNECTION) => new QueryBuilder(connection);
 
 describe(`The ${CLASS_NAME} class`, () => {
     describe('constructor', () => {
-        describe('(<connection>) signature', () => {
-            it('should return a new instance');
+        describe('(<connection>, <settings>) signature', () => {
+            it('should return a new instance', () => {
+                assert.instanceOf(getQueryBuilder(), QueryBuilder);
+            });
         });
     });
     describe('SELECT clause', () => {
@@ -171,7 +175,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
     });
-    describe('DELETE FROM <table-name> clause', () => {
+    describe('DELETE clause', () => {
         describe('delete method', () => {
             describe('() signature', () => {
                 it('should send the request');
@@ -180,7 +184,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
     });
-    describe('TRUNCATE <table-name> clause', () => {
+    describe('TRUNCATE clause', () => {
         describe('truncate method', () => {
             describe('() signature', () => {
                 it('should send the request');
@@ -192,22 +196,39 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('FROM clause', () => {
         describe('from method', () => {
             describe('(<table>) signature', () => {
-                it('should set the FROM clause to "<table>"');
-                it('should return the Query Builder');
-            });
-            describe('({ <alias>: <table> } signature', () => {
-                it('should set the FROM clause to "<table> AS <alias>"');
-                it('should return the Query Builder');
+                it('should set the FROM clause to "<table>"', () => {
+                    const query = getQueryBuilder();
+                    query.from('table');
+                    assert.match(query.compile().query, /FROM table/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.from('table'), query);
+                });
             });
             describe('(<table>, <alias>) signature', () => {
-                it('should set the FROM clause to "<table> AS <alias>"');
-                it('should return the Query Builder');
+                it('should set the FROM clause to "<table> AS <alias>"', () => {
+                    const query = getQueryBuilder();
+                    query.from('table', 'alias');
+                    assert.match(query.compile().query, /FROM table AS alias/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.from('table', 'alias'), query);
+                });
             });
         });
         describe('fromRaw method', () => {
             describe('(<signature>) signature', () => {
-                it('should set the FROM clause to "<signature>"');
-                it('should return the Query Builder');
+                it('should set the FROM clause to "<signature>"', () => {
+                    const query = getQueryBuilder();
+                    query.fromRaw('"table" AS "alias"');
+                    assert.match(query.compile().query, /FROM "table" AS "alias"/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.fromRaw('"table" AS "alias"'), query);
+                });
             });
         });
     });
