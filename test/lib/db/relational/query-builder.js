@@ -119,42 +119,98 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('count method', () => {
             describe('(<field>) signature', () => {
-                it('should add "count(<field>)" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "count(<field>)" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.count('foo');
+                    assert.match(query.compile().query, /SELECT COUNT\(foo\)/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.count('foo'), query);
+                });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "count(<field>) as <alias>" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "count(<field>) as <alias>" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.count('foo', 'bar');
+                    assert.match(query.compile().query, /SELECT COUNT\(foo\) AS "bar"/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.count('foo', 'bar'), query);
+                });
             });
         });
         describe('max method', () => {
             describe('(<field>) signature', () => {
-                it('should add "max(<field>)" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "max(<field>)" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.max('foo');
+                    assert.match(query.compile().query, /SELECT MAX\(foo\)/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.max('foo'), query);
+                });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "max(<field>) as <alias>" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "max(<field>) as <alias>" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.max('foo', 'bar');
+                    assert.match(query.compile().query, /SELECT MAX\(foo\) AS "bar"/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.max('foo', 'bar'), query);
+                });
             });
         });
         describe('min method', () => {
             describe('(<field>) signature', () => {
-                it('should add "min(<field>)" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "min(<field>)" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.min('foo');
+                    assert.match(query.compile().query, /SELECT MIN\(foo\)/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.min('foo'), query);
+                });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "min(<field>) as <alias>" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "min(<field>) as <alias>" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.min('foo', 'bar');
+                    assert.match(query.compile().query, /SELECT MIN\(foo\) AS "bar"/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.min('foo', 'bar'), query);
+                });
             });
         });
         describe('sum method', () => {
             describe('(<field>) signature', () => {
-                it('should add "sum(<field>)" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "sum(<field>)" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.sum('foo');
+                    assert.match(query.compile().query, /SELECT SUM\(foo\)/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.sum('foo'), query);
+                });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "sum(<field>) as <alias>" to the SELECT clause');
-                it('should return the Query Builder');
+                it('should add "sum(<field>) as <alias>" to the SELECT clause', () => {
+                    const query = getQueryBuilder();
+                    query.sum('foo', 'bar');
+                    assert.match(query.compile().query, /SELECT SUM\(foo\) AS "bar"/);
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.sum('foo', 'bar'), query);
+                });
             });
         });
     });
