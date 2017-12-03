@@ -160,7 +160,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             assert.notEqual(collection.map(), collection);
         });
         it('should return a collection containing the values returned from the callback', () => {
-            const collection = getMap([1, 2, 3, 4, 5]);
+            const collection = getMap({ 'a': 'a', 'b': 'b', 'c': 'c' });
             const mapped = collection.map(() => true);
             mapped.forEach((value) => assert.equal(value, true));
         });
@@ -209,10 +209,10 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         it('should accept a default first-value in the second parameter', () => {
             const compare = {};
-            getMap([0]).reduce((a) => assert.equal(a, compare), compare);
+            getMap({ foo: 'foo' }).reduce((a) => assert.equal(a, compare), compare);
         });
         it('should use NULL as the first value on the first parameter if no default is provided', () => {
-            getMap([0]).reduce((a) => assert.isNull(a));
+            getMap({ foo: 'foo' }).reduce((a) => assert.isNull(a));
         });
     });
     describe('set method', () => {
@@ -263,11 +263,11 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
     });
     describe('values method', () => {
-        it('should return a new collection', () => {
+        it('should return an array', () => {
             const array = { foo: 'foo', bar: 'bar' };
             const collection = getMap(array);
             const values = collection.values();
-            assert.instanceOf(values, RegentMap);
+            assert.isArray(values);
             assert.notEqual(values, collection);
         });
         it('should reset each key in the returned collection to consecutive integers', () => {
