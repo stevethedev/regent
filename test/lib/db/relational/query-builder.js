@@ -303,57 +303,225 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('UPDATE <table-name> SET clause', () => {
         describe('decrement method', () => {
-            describe('(<incr-field>, <incr-value = 1>, { <field>: <value>, ... } = {}) signature', () => {
-                it('should set the SET clause to include "<incr-field> = <incr-field> + <incr-value>"');
-                it('should set the SET clause to include "<field> = <value>" for each key/value pair');
-                it('should add all of the <value> and <incr-value> values to the bound arguments');
-                it('should send the request');
-                it('should return a Promise');
-                it('should resolve to the Query Builder');
+            describe('(<decr-field>, <decr-value = 1>, { <field>: <value>, ... } = {}) signature', () => {
+                it('should send the request', () => {
+                    let sent = false;
+                    const connection = {
+                        send() { sent = true; }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.decrement('decr', 1, { 'field': 'my-foo' });
+                    assert.isTrue(sent);
+                });
+                it('should set the SET clause to include "<decr-field> = <decr-field> - <decr-value>"', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table SET decr = decr - $1');
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.decrement('decr');
+                });
+                it('should set the SET clause to include "<field> = <value>" for each key/value pair', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table SET decr = decr - $1, field = $2');
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.decrement('decr', 1, { 'field': 'my-foo' });
+                });
+                it('should add all of the <value> and <incr-value> values to the bound arguments', () => {
+                    const connection = {
+                        send(query, bind) {
+                            assert.equal(bind.length, 2);
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.decrement('decr', 1, { 'field': 'my-foo' });
+                });
             });
             describe('({ <incr-field>: <incr-value>, ... }, { <field>: <value>, ... } = {}) signature', () => {
-                it('should set the SET clause to include "<incr-field> = <incr-field> + <incr-value>" for each key/value pair');
-                it('should set the SET clause to include "<field> = <value>" for each key/value pair');
-                it('should add all of the <value> and <incr-value> values to the bound arguments');
-                it('should send the request');
-                it('should return a Promise');
-                it('should resolve to the Query Builder');
+                it('should send the request', () => {
+                    let sent = false;
+                    const connection = {
+                        send() { sent = true; }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.decrement({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                    assert.isTrue(sent);
+                });
+                it('should set the SET clause to include "<incr-field> = <incr-field> + <incr-value>" for each key/value pair', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table SET foo = foo - $1, bar = bar - $2');
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.decrement({ 'foo': 1, 'bar': 2 });
+                });
+                it('should set the SET clause to include "<field> = <value>" for each key/value pair', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table SET foo = foo - $1, bar = bar - $2, field = $3');
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.decrement({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                });
+                it('should add all of the <value> and <incr-value> values to the bound arguments', () => {
+                    const connection = {
+                        send(query, bind) {
+                            assert.equal(bind.length, 3);
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.decrement({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                });
             });
         });
         describe('increment method', () => {
-            describe('(<decr-field>, <decr-value = 1>, { <field>: <value>, ...} = {}) signature', () => {
-                it('should set the SET clause to include "<decr-field> = <decr-field> - <decr-value>"');
-                it('should set the SET clause to include "<field> = <value>" for each key/value pair');
-                it('should add all of the <value> and <decr-value> values to the bound arguments');
-                it('should send the request');
-                it('should return a Promise');
-                it('should resolve to the Query Builder');
+            describe('(<incr-field>, <incr-value = 1>, { <field>: <value>, ...} = {}) signature', () => {
+                it('should send the request', () => {
+                    let sent = false;
+                    const connection = {
+                        send() { sent = true; }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.increment('incr');
+                    assert.isTrue(sent);
+                });
+                it('should set the SET clause to include "<incr-field> = <incr-field> + <incr-value>"', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table SET incr = incr + $1');
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.increment('incr');
+                });
+                it('should set the SET clause to include "<field> = <value>" for each key/value pair', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table SET incr = incr + $1, foo = $2');
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.increment('incr', 1, { 'foo': 'foo' });
+                });
+                it('should add all of the <value> and <incr-value> values to the bound arguments', () => {
+                    const connection = {
+                        send(query, bind) {
+                            assert.equal(bind.length, 2);
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.increment('incr', 1, { 'foo': 'foo' });
+                });
             });
-            describe('({ <decr-field>: <decr-value>, ... }, { <field>: <value>, ... } = {}) signature', () => {
-                it('should set the SET clause to include "<decr-field> = <decr-field> - <decr-value>" for each key/value pair');
-                it('should set the SET clause to include "<field> = <value>" for each key/value pair');
-                it('should add all of the <value> and <decr-value> values to the bound arguments');
-                it('should send the request');
-                it('should return a Promise');
-                it('should resolve to the Query Builder');
+            describe('({ <incr-field>: <incr-value>, ... }, { <field>: <value>, ... } = {}) signature', () => {
+                it('should send the request', () => {
+                    let sent = false;
+                    const connection = {
+                        send() { sent = true; }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.increment({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                    assert.isTrue(sent);
+                });
+                it('should set the SET clause to include "<incr-field> = <incr-field> + <incr-value>" for each key/value pair', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table SET foo = foo + $1, bar = bar + $2');
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.increment({ 'foo': 1, 'bar': 2 });
+                });
+                it('should set the SET clause to include "<field> = <value>" for each key/value pair', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE <table> SET foo = foo + $1, bar = bar + $2, field = $3');
+                        }
+                    };
+                    const query = getQueryBuilder(connection, '<table>');
+                    query.increment({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                });
+                it('should add all of the <value> and <incr-value> values to the bound arguments', () => {
+                    const connection = {
+                        send(query, bind) {
+                            assert.equal(bind.length, 3);
+                        }
+                    };
+                    const query = getQueryBuilder(connection, '<table>');
+                    query.decrement({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                });
             });
         });
         describe('update method', () => {
             describe('({ <field>: <value>, ... }) signature', () => {
-                it('should set the SET clause to "<field> = <value>" for each key/value pair');
-                it('should add each <value> to the bound arguments');
-                it('should send the request');
-                it('should return a Promise');
-                it('should resolve to the Query Builder');
+                it('should send the request', () => {
+                    let wasSent = false;
+                    const connection = {
+                        send() {
+                            wasSent = true;
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.update({ foo: true });
+                    assert.isTrue(wasSent);
+                });
+                it('should set the SET clause to "<field> = <value>" for each key/value pair', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table SET foo = $1');
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.update({ foo: true });
+                });
+                it('should add each <value> to the bound arguments', () => {
+                    const connection = {
+                        send(query, bind) {
+                            assert.equal(bind.length, 1);
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.update({ foo: true });
+                });
             });
         });
         describe('updateRaw method', () => {
             describe('(<signature>, <values[]>) signature', () => {
-                it('should set the SET clause to "<signature>"');
-                it('should add each <...values> to the bound arguments');
-                it('should send the request');
-                it('should return a Promise');
-                it('should resolve to the Query Builder');
+                it('should send the request', () => {
+                    let wasSent = false;
+                    const connection = {
+                        send() {
+                            wasSent = true;
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.updateRaw('foo = $1', ['my-foo']);
+                    assert.isTrue(wasSent);
+                });
+                it('should set the SET clause to "<signature>"', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table SET foo = $1, bar = $2');
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.updateRaw('foo = $1, bar = $2', ['my-foo', 'my-bar']);
+                });
+                it('should add each <...values> to the bound arguments', () => {
+                    const connection = {
+                        send(query, bind) {
+                            assert.equal(bind.length, 2);
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.updateRaw('foo = $1, bar = $2', ['my-foo', 'my-bar']);
+                });
             });
         });
     });
@@ -361,8 +529,6 @@ describe(`The ${CLASS_NAME} class`, () => {
         describe('delete method', () => {
             describe('() signature', () => {
                 it('should send the request');
-                it('should return a Promise');
-                it('should resolve to the Query Builder');
             });
         });
     });
@@ -370,8 +536,6 @@ describe(`The ${CLASS_NAME} class`, () => {
         describe('truncate method', () => {
             describe('() signature', () => {
                 it('should send the request');
-                it('should return a Promise');
-                it('should resolve to the Query Builder');
             });
         });
     });
