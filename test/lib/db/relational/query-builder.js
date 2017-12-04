@@ -8,7 +8,9 @@ const QueryBuilder = requireLib('db/relational/query-builder');
 
 const CLASS_NAME   = QueryBuilder.name;
 const CONNECTION   = {};
-const getQueryBuilder = (connection = CONNECTION) => new QueryBuilder(connection);
+const getQueryBuilder = (connection = CONNECTION, table = 'table') => {
+    return new QueryBuilder(connection, table);
+};
 
 describe(`The ${CLASS_NAME} class`, () => {
     describe('constructor', () => {
@@ -24,13 +26,13 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add the DISTINCT keyword to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.distinct();
-                    assert.match(query.compile().query, /SELECT DISTINCT/);
+                    assert.equal(query.compile().query, 'SELECT DISTINCT * FROM table');
                 });
                 it('should remove the DISTINCT keyword if <enable> is false', () => {
                     const query = getQueryBuilder();
                     query.distinct();
                     query.distinct(false);
-                    assert.notMatch(query.compile().query, /SELECT DISTINCT/);
+                    assert.equal(query.compile().query, 'SELECT * FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -42,19 +44,19 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('omission', () => {
                 it('should add * to the SELECT clause', () =>  {
                     const query = getQueryBuilder();
-                    assert.match(query.compile().query, /SELECT \*/);
+                    assert.equal(query.compile().query, 'SELECT * FROM table');
                 });
             });
             describe('(<field>, ...) signature', () => {
                 it('should add <field> to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.select('foo');
-                    assert.match(query.compile().query, /SELECT foo/);
+                    assert.equal(query.compile().query, 'SELECT foo FROM table');
                 });
                 it('should accept any number of parameters', () => {
                     const query = getQueryBuilder();
                     query.select('foo', 'bar', 'baz');
-                    assert.match(query.compile().query, /SELECT foo, bar, baz/);
+                    assert.equal(query.compile().query, 'SELECT foo, bar, baz FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -65,12 +67,12 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "<field> AS <alias>" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.select({ 'FOO': 'foo', 'BAR': 'bar'});
-                    assert.match(query.compile().query, /SELECT foo AS "FOO", bar AS "BAR"/);
+                    assert.equal(query.compile().query, 'SELECT foo AS "FOO", bar AS "BAR" FROM table');
                 });
                 it('should accept any number of parameters', () => {
                     const query = getQueryBuilder();
                     query.select({ 'FOO': 'foo', 'BAR': 'bar'}, { 'BAZ': 'baz' });
-                    assert.match(query.compile().query, /SELECT foo AS "FOO", bar AS "BAR", baz AS "BAZ"/);
+                    assert.equal(query.compile().query, 'SELECT foo AS "FOO", bar AS "BAR", baz AS "BAZ" FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -83,7 +85,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add <string> to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.selectRaw('foo, bar, baz');
-                    assert.match(query.compile().query, /SELECT foo, bar, baz/);
+                    assert.equal(query.compile().query, 'SELECT foo, bar, baz FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -98,7 +100,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "avg(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.avg('foo');
-                    assert.match(query.compile().query, /SELECT AVG\(foo\)/);
+                    assert.equal(query.compile().query, 'SELECT AVG(foo) FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -109,7 +111,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "avg(<field>) as <alias>" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.avg('foo', 'bar');
-                    assert.match(query.compile().query, /SELECT AVG\(foo\) AS "bar"/);
+                    assert.equal(query.compile().query, 'SELECT AVG(foo) AS "bar" FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -122,7 +124,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "count(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.count('foo');
-                    assert.match(query.compile().query, /SELECT COUNT\(foo\)/);
+                    assert.equal(query.compile().query, 'SELECT COUNT(foo) FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -133,7 +135,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "count(<field>) as <alias>" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.count('foo', 'bar');
-                    assert.match(query.compile().query, /SELECT COUNT\(foo\) AS "bar"/);
+                    assert.equal(query.compile().query, 'SELECT COUNT(foo) AS "bar" FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -146,7 +148,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "max(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.max('foo');
-                    assert.match(query.compile().query, /SELECT MAX\(foo\)/);
+                    assert.equal(query.compile().query, 'SELECT MAX(foo) FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -157,7 +159,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "max(<field>) as <alias>" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.max('foo', 'bar');
-                    assert.match(query.compile().query, /SELECT MAX\(foo\) AS "bar"/);
+                    assert.equal(query.compile().query, 'SELECT MAX(foo) AS "bar" FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -170,7 +172,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "min(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.min('foo');
-                    assert.match(query.compile().query, /SELECT MIN\(foo\)/);
+                    assert.equal(query.compile().query, 'SELECT MIN(foo) FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -181,7 +183,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "min(<field>) as <alias>" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.min('foo', 'bar');
-                    assert.match(query.compile().query, /SELECT MIN\(foo\) AS "bar"/);
+                    assert.equal(query.compile().query, 'SELECT MIN(foo) AS "bar" FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -194,7 +196,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "sum(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.sum('foo');
-                    assert.match(query.compile().query, /SELECT SUM\(foo\)/);
+                    assert.equal(query.compile().query, 'SELECT SUM(foo) FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -205,7 +207,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "sum(<field>) as <alias>" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.sum('foo', 'bar');
-                    assert.match(query.compile().query, /SELECT SUM\(foo\) AS "bar"/);
+                    assert.equal(query.compile().query, 'SELECT SUM(foo) AS "bar" FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -231,10 +233,22 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const fields = { 'foo': 'my-foo', 'bar': 'my-bar' };
                     const connection = {
                         send(query) {
-                            assert.match(query, /\(foo, bar\) VALUES \(\?, \?\)/);
+                            assert.equal(query, 'INSERT INTO table (foo, bar) VALUES ($1, $2)');
                         }
                     };
                     getQueryBuilder(connection).insert(fields);
+                });
+                it('should accept any number of arguments', () => {
+                    const fields = [
+                        { 'foo': 'my-foo',  'bar': 'my-bar'  },
+                        { 'foo': 'muh-foo', 'bar': 'muh-bar' },
+                    ];
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'INSERT INTO table (foo, bar) VALUES ($1, $2), ($3, $4)');
+                        }
+                    };
+                    getQueryBuilder(connection).insert(...fields);
                 });
                 it('should add every <value> to the bound arguments', () => {
                     const fields = { 'foo': 'my-foo', 'bar': 'my-bar' };
@@ -248,7 +262,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
         describe('insertRaw method', () => {
-            describe('(<fields>, <values[]>) signature', () => {
+            describe('(<signature>, <bound[]>) signature', () => {
                 it('should send the request', () => {
                     let sent = false;
                     const connection = {
@@ -256,22 +270,21 @@ describe(`The ${CLASS_NAME} class`, () => {
                             sent = true;
                         }
                     };
-                    getQueryBuilder(connection).insertRaw(
-                        ['foo', 'bar'], 
-                        ['my-foo', 'my-bar']
+                    getQueryBuilder(connection, '<table>').insertRaw(
+                        '(foo, bar) VALUES ($1, $2), ($3, $4)',
+                        ['foo', 'bar', 'my-foo', 'my-bar']
                     );
                     assert.isTrue(sent);
                 });
                 it('should add "(<...field>) VALUES (<...value>), ... to the INSERT clause', () => {
                     const connection = {
                         send(query) {
-                            assert.match(query, /\(foo, bar\) VALUES \(\?, \?\), \(\?, \?\)/);
+                            assert.equal(query, 'INSERT INTO <table> (foo, bar) VALUES ($1, $2), ($3, $4)');
                         }
                     };
-                    getQueryBuilder(connection).insertRaw(
-                        ['foo', 'bar'], 
-                        ['my-foo', 'my-bar'], 
-                        ['muh-foo', 'muh-bar']
+                    getQueryBuilder(connection, '<table>').insertRaw(
+                        '(foo, bar) VALUES ($1, $2), ($3, $4)',
+                        ['my-foo', 'my-bar', 'muh-foo', 'muh-bar']
                     );
                 });
                 it('should add every <value> to the bound arguments', () => {
@@ -280,10 +293,9 @@ describe(`The ${CLASS_NAME} class`, () => {
                             assert.equal(bind.length, 4);
                         }
                     };
-                    getQueryBuilder(connection).insertRaw(
-                        ['foo', 'bar'],
-                        ['my-foo', 'my-bar'],
-                        ['muh-foo', 'muh-bar']
+                    getQueryBuilder(connection, '<table>').insertRaw(
+                        '(foo, bar) VALUES ($1, $2), ($3, $4)',
+                        ['my-foo', 'my-bar', 'muh-foo', 'muh-bar']
                     );
                 });
             });
@@ -369,7 +381,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should set the FROM clause to "<table>"', () => {
                     const query = getQueryBuilder();
                     query.from('table');
-                    assert.match(query.compile().query, /FROM table/);
+                    assert.equal(query.compile().query, 'SELECT * FROM table');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -380,7 +392,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should set the FROM clause to "<table> AS <alias>"', () => {
                     const query = getQueryBuilder();
                     query.from('table', 'alias');
-                    assert.match(query.compile().query, /FROM table AS "alias"/);
+                    assert.equal(query.compile().query, 'SELECT * FROM table AS "alias"');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -393,7 +405,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should set the FROM clause to "<signature>"', () => {
                     const query = getQueryBuilder();
                     query.fromRaw('"table" AS "alias"');
-                    assert.match(query.compile().query, /FROM "table" AS "alias"/);
+                    assert.equal(query.compile().query, 'SELECT * FROM "table" AS "alias"');
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
