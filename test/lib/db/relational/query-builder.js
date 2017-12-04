@@ -878,14 +878,69 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereRaw method', () => {
             describe('(<conditional>, <bind = []>) signature', () => {
-                it('should set WHERE ... <conditional> on SELECT queries');
-                it('should set WHERE ... <conditional> on UPDATE queries');
-                it('should set WHERE ... <conditional> on DELETE queries');
-                it('should add <...bind> to the bound arguments on SELECT queries');
-                it('should add <...bind> to the bound arguments on UPDATE queries');
-                it('should add <...bind> to the bound arguments on DELETE queries');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+                it('should set WHERE ... <conditional> on SELECT queries', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereRaw('foo is null').compile().query,
+                        'SELECT * FROM table WHERE foo is null'
+                    );
+                });
+                it('should set WHERE ... <conditional> on UPDATE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'UPDATE table WHERE foo is null');
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .whereRaw('foo is null')
+                        .update();
+                });
+                it('should set WHERE ... <conditional> on DELETE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(query, 'DELETE FROM table WHERE foo is null');
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .whereRaw('foo is null')
+                        .delete();
+                });
+                it('should add <...bind> to the bound arguments on SELECT queries', () => {
+                    assert.equal(
+                        getQueryBuilder().whereRaw('foo = $1', [1]).compile().bound.length,
+                        1
+                    );
+                });
+                it('should add <...bind> to the bound arguments on UPDATE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 1);
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .whereRaw('foo = $1', [1])
+                        .update();
+                });
+                it('should add <...bind> to the bound arguments on DELETE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 1);
+                        }
+                    };
+                    getQueryBuilder(connection).whereRaw('foo = $1', [1]).delete();
+                });
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.whereRaw('foo is null').whereRaw('bar is null');
+                    assert.equal(
+                        query.compile().query, 
+                        'SELECT * FROM table WHERE foo is null AND bar is null'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.whereRaw('foo is null'), query);
+                });
             });
         });
         describe('whereYear method', () => {
