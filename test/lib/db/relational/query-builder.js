@@ -698,36 +698,56 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('WHERE clause', () => {
         describe('orWhere method', () => {
             describe('(<field>, <value>) signature', () => {
-                it('should set WHERE ... <field> = <value> on the query');
-                it('should add <value> to the bound arguments');
+                it('should set WHERE <field> = <value> on SELECT queries');
+                it('should set WHERE <field> = <value> on UPDATE queries');
+                it('should set WHERE <field> = <value> on DELETE queries');
+                it('should add <value> to the bound arguments on SELECT queries');
+                it('should add <value> to the bound arguments on UPDATE queries');
+                it('should add <value> to the bound arguments on DELETE queries');
                 it('should join conditionals with ... OR ...');
                 it('should return the Query Builder');
             });
             describe('(<field>, <operator>, <value>) signature', () => {
-                it('should set WHERE ... <field> <operator> <value> on the query');
-                it('should add <value> to the bound arguments');
+                it('should set WHERE ... <field> <operator> <value> on SELECT queries');
+                it('should set WHERE ... <field> <operator> <value> on UPDATE queries');
+                it('should set WHERE ... <field> <operator> <value> on DELETE queries');
+                it('should add <value> to the bound arguments on SELECT queries');
+                it('should add <value> to the bound arguments on UPDATE queries');
+                it('should add <value> to the bound arguments on DELETE queries');
                 it('should join conditionals with ... OR ...');
                 it('should return the Query Builder');
             });
         });
         describe('orWhereRaw method', () => {
             describe('(<conditional>, <bind = []>) signature', () => {
-                it('should set WHERE ... <conditional> on the query');
-                it('should add <...bind> to the bound arguments');
+                it('should set WHERE ... <conditional> on SELECT queries');
+                it('should set WHERE ... <conditional> on UPDATE queries');
+                it('should set WHERE ... <conditional> on DELETE queries');
+                it('should add <...bind> to the bound arguments on SELECT queries');
+                it('should add <...bind> to the bound arguments on UPDATE queries');
+                it('should add <...bind> to the bound arguments on DELETE queries');
                 it('should join conditionals with ... OR ...');
                 it('should return the Query Builder');
             });
         });
         describe('where method', () => {
             describe('(<field>, <value>) signature', () => {
-                it('should set WHERE ... <field> = <value> on the query');
-                it('should add <value> to the bound arguments');
+                it('should set WHERE ... <field> = <value> on SELECT queries');
+                it('should set WHERE ... <field> = <value> on UPDATE queries');
+                it('should set WHERE ... <field> = <value> on DELETE queries');
+                it('should add <value> to the bound arguments on SELECT queries');
+                it('should add <value> to the bound arguments on UPDATE queries');
+                it('should add <value> to the bound arguments on DELETE queries');
                 it('should join conditionals with ... AND ...');
                 it('should return the Query Builder');
             });
             describe('(<field>, <operator>, <value>) signature', () => {
-                it('should set WHERE ... <field> <operator> <value> on the query');
-                it('should add <value> to the bound arguments');
+                it('should set WHERE ... <field> <operator> <value> on SELECT queries');
+                it('should set WHERE ... <field> <operator> <value> on UPDATE queries');
+                it('should set WHERE ... <field> <operator> <value> on DELETE queries');
+                it('should add <value> to the bound arguments on SELECT queries');
+                it('should add <value> to the bound arguments on UPDATE queries');
+                it('should add <value> to the bound arguments on DELETE queries');
                 it('should join conditionals with ... AND ...');
                 it('should return the Query Builder');
             });
@@ -858,8 +878,12 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereRaw method', () => {
             describe('(<conditional>, <bind = []>) signature', () => {
-                it('should set WHERE ... <conditional> on the query');
-                it('should add <...bind> to the bound arguments');
+                it('should set WHERE ... <conditional> on SELECT queries');
+                it('should set WHERE ... <conditional> on UPDATE queries');
+                it('should set WHERE ... <conditional> on DELETE queries');
+                it('should add <...bind> to the bound arguments on SELECT queries');
+                it('should add <...bind> to the bound arguments on UPDATE queries');
+                it('should add <...bind> to the bound arguments on DELETE queries');
                 it('should join conditionals with ... AND ...');
                 it('should return the Query Builder');
             });
