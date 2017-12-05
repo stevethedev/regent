@@ -735,7 +735,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should set WHERE ... <field> = <value> on SELECT queries', () => {
                     assert.equal(
                         getQueryBuilder().where('foo', 'bar').compile().query,
-                        'SELECT * FROM table WHERE foo = $2'
+                        'SELECT * FROM table WHERE foo = $1'
                     );
                 });
                 it('should set WHERE ... <field> = <value> on UPDATE queries', () => {
