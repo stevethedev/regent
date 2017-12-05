@@ -528,7 +528,27 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('DELETE clause', () => {
         describe('delete method', () => {
             describe('() signature', () => {
-                it('should send the request');
+                it('should send the request', () => {
+                    let isSent = false;
+                    const connection = {
+                        send() {
+                            isSent = true;
+                        }
+                    };
+                    getQueryBuilder(connection).delete();
+                    assert.isTrue(isSent);
+                });
+                it('should send DELETE FROM <table>', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'DELETE FROM table'
+                            );
+                        }
+                    };
+                    getQueryBuilder(connection).delete();
+                });
             });
         });
     });
