@@ -732,24 +732,143 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('where method', () => {
             describe('(<field>, <value>) signature', () => {
-                it('should set WHERE ... <field> = <value> on SELECT queries');
-                it('should set WHERE ... <field> = <value> on UPDATE queries');
-                it('should set WHERE ... <field> = <value> on DELETE queries');
-                it('should add <value> to the bound arguments on SELECT queries');
-                it('should add <value> to the bound arguments on UPDATE queries');
-                it('should add <value> to the bound arguments on DELETE queries');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+                it('should set WHERE ... <field> = <value> on SELECT queries', () => {
+                    assert.equal(
+                        getQueryBuilder().where('foo', 'bar').compile().query,
+                        'SELECT * FROM table WHERE foo = $2'
+                    );
+                });
+                it('should set WHERE ... <field> = <value> on UPDATE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'UPDATE table WHERE foo = $1'
+                            );
+                        }
+                    };
+                    getQueryBuilder(connection).where('foo', 'bar').update();
+                });
+                it('should set WHERE ... <field> = <value> on DELETE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'DELETE FROM table WHERE foo = $1'
+                            );
+                        }
+                    };
+                    getQueryBuilder(connection).where('foo', 'bar').delete();
+                });
+                it('should add <value> to the bound arguments on SELECT queries', () => {
+                    assert.equal(
+                        getQueryBuilder().where('foo', 'bar').compile().bound.length,
+                        1
+                    );
+                });
+                it('should add <value> to the bound arguments on UPDATE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 1);
+                        }
+                    };
+                    getQueryBuilder(connection).where('foo', 'bar').update();
+                });
+                it('should add <value> to the bound arguments on DELETE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 1);
+                        }
+                    };
+                    getQueryBuilder(connection).where('foo', 'bar').delete();
+                });
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'my-foo');
+                    query.where('bar', 'my-bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 AND bar = $2'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.where('foo', 'bar'), query);
+                });
             });
             describe('(<field>, <operator>, <value>) signature', () => {
-                it('should set WHERE ... <field> <operator> <value> on SELECT queries');
-                it('should set WHERE ... <field> <operator> <value> on UPDATE queries');
-                it('should set WHERE ... <field> <operator> <value> on DELETE queries');
-                it('should add <value> to the bound arguments on SELECT queries');
-                it('should add <value> to the bound arguments on UPDATE queries');
-                it('should add <value> to the bound arguments on DELETE queries');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+                it('should set WHERE ... <field> <operator> <value> on SELECT queries', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', '<=', 'bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo <= $1'
+                    );
+                });
+                it('should set WHERE ... <field> <operator> <value> on UPDATE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'UPDATE table WHERE foo <= $1'
+                            );
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.where('foo', '<=', 'bar');
+                    query.update();
+                });
+                it('should set WHERE ... <field> <operator> <value> on DELETE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'DELETE FROM table WHERE foo <= $1'
+                            );
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.where('foo', '<=', 'bar');
+                    query.delete();
+                });
+                it('should add <value> to the bound arguments on SELECT queries', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', '<=', 'bar');
+                    assert.equal(query.compile().bound.length, 1);
+                });
+                it('should add <value> to the bound arguments on UPDATE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 1);
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.where('foo', '<=', 'bar');
+                    query.update();
+                });
+                it('should add <value> to the bound arguments on DELETE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 1);
+                        }
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.where('foo', '<=', 'bar');
+                    query.delete();
+                });
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', '<=', 'my-foo');
+                    query.where('bar', '<=', 'my-bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo <= $1 AND bar <= $2'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.where('foo', '<=', 'bar'), query);
+                });
             });
         });
         describe('whereBetween method', () => {
