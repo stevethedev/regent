@@ -845,7 +845,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     query.where('foo', 'bar').orWhere('foo', '!=', 'bar');
                     assert.equal(
                         query.compile().query,
-                        'SELECT * FROM table WHERE foo = $1 OR foo = $2'
+                        'SELECT * FROM table WHERE foo = $1 OR foo != $2'
                     );
                 });
                 it('should return the Query Builder', () => {
