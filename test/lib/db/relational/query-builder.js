@@ -720,14 +720,83 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('orWhereRaw method', () => {
             describe('(<conditional>, <bind = []>) signature', () => {
-                it('should set WHERE ... <conditional> on SELECT queries');
-                it('should set WHERE ... <conditional> on UPDATE queries');
-                it('should set WHERE ... <conditional> on DELETE queries');
-                it('should add <...bind> to the bound arguments on SELECT queries');
-                it('should add <...bind> to the bound arguments on UPDATE queries');
-                it('should add <...bind> to the bound arguments on DELETE queries');
-                it('should join conditionals with ... OR ...');
-                it('should return the Query Builder');
+                it('should set WHERE ... <conditional> on SELECT queries', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar');
+                    query.orWhereRaw('foo = $2', ['baz']);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 OR foo = $2'
+                    );
+                });
+                it('should set WHERE ... <conditional> on UPDATE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'UPDATE table WHERE foo = $1 OR foo = $2'
+                            );
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhereRaw('foo = $2', ['baz'])
+                        .update();
+                });
+                it('should set WHERE ... <conditional> on DELETE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'DELETE FROM table WHERE foo = $1 OR foo = $2'
+                            );
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhereRaw('foo = $2', ['baz'])
+                        .delete();
+                });
+                it('should add <...bind> to the bound arguments on SELECT queries', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar');
+                    query.orWhereRaw('foo = $2', ['baz']);
+                    assert.equal(query.compile().bound.length, 2);
+                });
+                it('should add <...bind> to the bound arguments on UPDATE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 2);
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhereRaw('foo = $2', ['baz'])
+                        .update();
+                });
+                it('should add <...bind> to the bound arguments on DELETE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 2);
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhereRaw('foo = $2', ['baz'])
+                        .delete();
+                });
+                it('should join conditionals with ... OR ...', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar').orWhereRaw('foo = $2', ['baz']);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 OR foo = $2'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.orWhereRaw('foo = $1', ['foo']), query);
+                });
             });
         });
         describe('where method', () => {
