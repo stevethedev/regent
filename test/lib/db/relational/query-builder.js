@@ -698,24 +698,160 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('WHERE clause', () => {
         describe('orWhere method', () => {
             describe('(<field>, <value>) signature', () => {
-                it('should set WHERE <field> = <value> on SELECT queries');
-                it('should set WHERE <field> = <value> on UPDATE queries');
-                it('should set WHERE <field> = <value> on DELETE queries');
-                it('should add <value> to the bound arguments on SELECT queries');
-                it('should add <value> to the bound arguments on UPDATE queries');
-                it('should add <value> to the bound arguments on DELETE queries');
-                it('should join conditionals with ... OR ...');
-                it('should return the Query Builder');
+                it('should set WHERE <field> = <value> on SELECT queries', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar').orWhere('bar', 'baz');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 OR bar = $2'
+                    );
+                });
+                it('should set WHERE <field> = <value> on UPDATE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'UPDATE table WHERE foo = $1 OR bar = $2'
+                            );
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhere('bar', 'baz')
+                        .update();
+                });
+                it('should set WHERE <field> = <value> on DELETE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'DELETE FROM table WHERE foo = $1 OR bar = $2'
+                            );
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhere('bar', 'baz')
+                        .delete();
+                });
+                it('should add <value> to the bound arguments on SELECT queries', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar');
+                    query.orWhere('bar', 'baz');
+                    assert.equal(query.compile().bound.length, 2);
+                });
+                it('should add <value> to the bound arguments on UPDATE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 2);
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhere('bar', 'baz')
+                        .update();
+                });
+                it('should add <value> to the bound arguments on DELETE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 2);
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhere('bar', 'baz')
+                        .delete();
+                });
+                it('should join conditionals with ... OR ...', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar').orWhere('bar', 'baz');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 OR bar = $2'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar');
+                    assert.equal(query.orWhere('foo', 'baz'), query);
+                });
             });
             describe('(<field>, <operator>, <value>) signature', () => {
-                it('should set WHERE ... <field> <operator> <value> on SELECT queries');
-                it('should set WHERE ... <field> <operator> <value> on UPDATE queries');
-                it('should set WHERE ... <field> <operator> <value> on DELETE queries');
-                it('should add <value> to the bound arguments on SELECT queries');
-                it('should add <value> to the bound arguments on UPDATE queries');
-                it('should add <value> to the bound arguments on DELETE queries');
-                it('should join conditionals with ... OR ...');
-                it('should return the Query Builder');
+                it('should set WHERE ... <field> <operator> <value> on SELECT queries', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar').orWhere('foo', '!=', 'baz');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 OR foo != $2'
+                    );
+                });
+                it('should set WHERE ... <field> <operator> <value> on UPDATE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'UPDATE table WHERE foo = $1 OR foo != $2'
+                            );
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhere('foo', '!=', 'baz')
+                        .update();
+                });
+                it('should set WHERE ... <field> <operator> <value> on DELETE queries', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'DELETE FROM table WHERE foo = $1 OR foo != $2'
+                            );
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhere('foo', '!=', 'baz')
+                        .delete();
+                });
+                it('should add <value> to the bound arguments on SELECT queries', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar').orWhere('foo', '!=', 'baz');
+                    assert.equal(query.compile().bound.length, 2);
+                });
+                it('should add <value> to the bound arguments on UPDATE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 2);
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhere('foo', '!=', 'baz')
+                        .update();
+                });
+                it('should add <value> to the bound arguments on DELETE queries', () => {
+                    const connection = {
+                        send(query, bound) {
+                            assert.equal(bound.length, 2);
+                        }
+                    };
+                    getQueryBuilder(connection)
+                        .where('foo', 'bar')
+                        .orWhere('foo', '!=', 'baz')
+                        .delete();
+                });
+                it('should join conditionals with ... OR ...', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'bar').orWhere('foo', '!=', 'bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 OR foo = $2'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.orWhere('foo', '!=', 'bar'), query);
+                });
             });
         });
         describe('orWhereRaw method', () => {
