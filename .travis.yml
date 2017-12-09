@@ -1,0 +1,50 @@
+# Notification Options
+notifications:
+  email: false
+
+# Regent supports Node.js v8
+language: node_js
+node_js:
+  - '8'
+
+# Operating Systems
+os:
+  - linux
+
+# Branches that can trigger Travis-CI
+branches:
+  only:
+    - master        # Master
+    - /^regent-.*$/ # Issues
+
+# declare your environment variables
+env:
+  # global will stay the same across all matrix possibilities
+  global:
+    # - SECRET_TOKEN=k399dkkgklsk
+  # matrix variables will create a new build for each specified variable
+  matrix:
+    - NODE_ENV=production
+    - NODE_ENV=staging
+
+# Services
+services:
+  - mongodb     # will start mongodb
+  - rabbitmq # will start rabbitmq-server
+
+## begin build steps
+####################
+
+before_install:
+  - echo "BEFORE INSTALL"
+  - sudo apt-get -qq update
+
+before_script:
+  - echo "BEFORE SCRIPT"
+  - npm install
+
+after_success:
+  - echo "SUCCESS"
+
+after_faiulre:
+  - echo "FAILURE"
