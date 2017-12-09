@@ -238,13 +238,15 @@ describe(`The ${CLASS_NAME} class`, () => {
                 /* uri           */ 'foo', 
                 /* caseSensitive */ false
             );
-            let threw = false;
+            let threw  = false;
+            let result = null;
             try {
-                await route.run(null);
+                result = await route.run(null);
             } catch (e) {
                 threw = true;
             }
             assert.isTrue(threw, 'Expected an error to be thrown');
+            assert.isNull(result, 'Expected route to fail');
         });
         it(`should throw an error if the second parameter is not a ${HttpResponse.name} object`, async () => {
             const route = new SimpleCompiledHttpRoute(
@@ -258,13 +260,16 @@ describe(`The ${CLASS_NAME} class`, () => {
             const req = new http.IncomingMessage();
             req.url = 'foo';
             const request = new HttpRequest(regent.getKernel('http'), req);
-            let threw = false;
+
+            let threw  = false;
+            let result = null;
             try {
-                await route.run(request, null);
+                result = await route.run(request, null);
             } catch (e) {
                 threw = true;
             }
             assert.isTrue(threw, 'Expected an error to be thrown');
+            assert.isNull(result, 'Expected route to fail');
         });
         it('should succeed if all parameters pass checks', () => {
             const route = new SimpleCompiledHttpRoute(
