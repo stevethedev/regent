@@ -1,5 +1,7 @@
 'use strict';
 
+const { stripIndent } = require('common-tags');
+
 /*
  |------------------------------------------------------------------------------
  | HTTP Web Routes
@@ -25,11 +27,11 @@ function loadWebRoutes(router)
     }).where({ id: uuid });
 
     router.get('/variable/{variable}/{optional?}', function(request, response, { variables }) {
-        response.setBody(
-`Variable: ${variables.get('variable')}
-Optional: ${variables.get('optional')}`
-        ).send();
+        response.setBody(stripIndent`
+            Variable: ${variables.get('variable')}
+            Optional: ${variables.get('optional')}
+        `).send();
     }).where('optional', '[a-f0-9]+');
-};
+}
 
 module.exports = loadWebRoutes;

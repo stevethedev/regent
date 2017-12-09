@@ -66,6 +66,7 @@
         "requireLib": true,
         "resolve": true,
         "resolvePub": true,
-        "resolveSession": true
+        "resolveSession": true,
+        "resolveView": true
     }
 }

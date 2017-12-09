@@ -20,6 +20,7 @@
   "homepage": "https://github.com/stevethedev/regent#readme",
   "dependencies": {
     "chai": "^4.1.2",
+    "common-tags": "^1.5.1",
     "dateformat": "^3.0.2",
     "deepmerge": "^2.0.1",
     "mime": "^2.0.3",

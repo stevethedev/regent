@@ -4,8 +4,6 @@
 'use strict';
 
 const assert       = requireLib('util/assert');
-const HttpRequest  = requireLib('http/request');
-const HttpResponse = requireLib('http/response');
 const HttpRoute    = requireLib('http/routing/route');
 const newRegent    = global.newRegent;
 

@@ -6,6 +6,7 @@ const { spawn } = require('child_process');
 const processes = require('ps-node');
 
 const bootstrap = `${__dirname}/bootstrap/app`;
+const _ = new WeakMap();
 
 /*
  |------------------------------------------------------------------------------
@@ -21,7 +22,7 @@ class Rego
 {
     constructor()
     {
-        this.__commands = {
+        _(this).commands = {
             config: new Config(),
             system: new System(),
             tests: new Tests(),
@@ -30,14 +31,14 @@ class Rego
 
     process(command, subCommand, options)
     {
-        if (!command || !this.__commands[command]) {
+        if (!command || !_(this).commands[command]) {
             return process.stdout.write(
                 'Available commands include:\n' + 
-                Object.keys(this.__commands).map(d => '  - ' + d).sort().join('\n') + '\n'
+                Object.keys(_(this).commands).map(d => '  - ' + d).sort().join('\n') + '\n'
             );
         }
 
-        const cmd = this.__commands[command];
+        const cmd = _(this).commands[command];
         if (!subCommand || !cmd[subCommand]) {
             const commands = Object.getOwnPropertyNames(
                 Object.getPrototypeOf(cmd)
