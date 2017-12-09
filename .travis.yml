@@ -24,8 +24,8 @@ env:
     # - SECRET_TOKEN=k399dkkgklsk
   # matrix variables will create a new build for each specified variable
   matrix:
-    - NODE_ENV=production
     - NODE_ENV=staging
+    - NODE_ENV=development
 
 # Services
 services:
