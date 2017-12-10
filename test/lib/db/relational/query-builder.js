@@ -23,17 +23,26 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('SELECT clause', () => {
         describe('distinct method', () => {
             describe('(<enable = true>) signature', () => {
-                it('should add the DISTINCT keyword to the SELECT clause', () => {
+                it('should add the DISTINCT keyword', () => {
                     const query = getQueryBuilder();
                     query.distinct();
-                    assert.equal(query.compile().query, 'SELECT DISTINCT * FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT DISTINCT * FROM table'
+                    );
                 });
-                it('should remove the DISTINCT keyword if <enable> is false', () => {
-                    const query = getQueryBuilder();
-                    query.distinct();
-                    query.distinct(false);
-                    assert.equal(query.compile().query, 'SELECT * FROM table');
-                });
+                it(
+                    'should remove the DISTINCT keyword if <enable> is false',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.distinct();
+                        query.distinct(false);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table'
+                        );
+                    }
+                );
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
                     assert.equal(query.distinct(), query);
@@ -51,12 +60,18 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add <field> to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.select('foo');
-                    assert.equal(query.compile().query, 'SELECT foo FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT foo FROM table'
+                    );
                 });
                 it('should accept any number of parameters', () => {
                     const query = getQueryBuilder();
                     query.select('foo', 'bar', 'baz');
-                    assert.equal(query.compile().query, 'SELECT foo, bar, baz FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT foo, bar, baz FROM table'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -64,15 +79,34 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
             });
             describe('({ <alias>: <field> }, ...) signature', () => {
-                it('should add "<field> AS <alias>" to the SELECT clause', () => {
-                    const query = getQueryBuilder();
-                    query.select({ 'FOO': 'foo', 'BAR': 'bar'});
-                    assert.equal(query.compile().query, 'SELECT foo AS "FOO", bar AS "BAR" FROM table');
-                });
+                it(
+                    'should add "<field> AS <alias>" to the SELECT clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.select({
+                            'BAR': 'bar',
+                            'FOO': 'foo',
+                        });
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT bar AS "BAR", foo AS "FOO" FROM table'
+                        );
+                    }
+                );
                 it('should accept any number of parameters', () => {
                     const query = getQueryBuilder();
-                    query.select({ 'FOO': 'foo', 'BAR': 'bar'}, { 'BAZ': 'baz' });
-                    assert.equal(query.compile().query, 'SELECT foo AS "FOO", bar AS "BAR", baz AS "BAZ" FROM table');
+                    query.select({
+                        'BAR': 'bar',
+                        'FOO': 'foo',
+                    }, { 'BAZ': 'baz' });
+                    assert.equal(
+                        query.compile().query,
+                        `SELECT ${[
+                            'foo AS "FOO"',
+                            'bar AS "BAR"',
+                            'baz AS "BAZ"',
+                        ].join(', ')} FROM table`
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -85,7 +119,10 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add <string> to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.selectRaw('foo, bar, baz');
-                    assert.equal(query.compile().query, 'SELECT foo, bar, baz FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT foo, bar, baz FROM table'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -100,7 +137,10 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "avg(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.avg('foo');
-                    assert.equal(query.compile().query, 'SELECT AVG(foo) FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT AVG(foo) FROM table'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -108,11 +148,17 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "avg(<field>) as <alias>" to the SELECT clause', () => {
-                    const query = getQueryBuilder();
-                    query.avg('foo', 'bar');
-                    assert.equal(query.compile().query, 'SELECT AVG(foo) AS "bar" FROM table');
-                });
+                it(
+                    'should add "avg(<field>) as <alias>" to the SELECT clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.avg('foo', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT AVG(foo) AS "bar" FROM table'
+                        );
+                    }
+                );
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
                     assert.equal(query.avg('foo', 'bar'), query);
@@ -124,7 +170,10 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "count(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.count('foo');
-                    assert.equal(query.compile().query, 'SELECT COUNT(foo) FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT COUNT(foo) FROM table'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -132,10 +181,13 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "count(<field>) as <alias>" to the SELECT clause', () => {
+                it('should add "[SELECT] count(<field>) as <alias>"', () => {
                     const query = getQueryBuilder();
                     query.count('foo', 'bar');
-                    assert.equal(query.compile().query, 'SELECT COUNT(foo) AS "bar" FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT COUNT(foo) AS "bar" FROM table'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -148,7 +200,10 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "max(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.max('foo');
-                    assert.equal(query.compile().query, 'SELECT MAX(foo) FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT MAX(foo) FROM table'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -156,11 +211,17 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "max(<field>) as <alias>" to the SELECT clause', () => {
-                    const query = getQueryBuilder();
-                    query.max('foo', 'bar');
-                    assert.equal(query.compile().query, 'SELECT MAX(foo) AS "bar" FROM table');
-                });
+                it(
+                    'should add "max(<field>) as <alias>" to the SELECT clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.max('foo', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT MAX(foo) AS "bar" FROM table'
+                        );
+                    }
+                );
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
                     assert.equal(query.max('foo', 'bar'), query);
@@ -172,7 +233,10 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "min(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.min('foo');
-                    assert.equal(query.compile().query, 'SELECT MIN(foo) FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT MIN(foo) FROM table'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -180,11 +244,17 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "min(<field>) as <alias>" to the SELECT clause', () => {
-                    const query = getQueryBuilder();
-                    query.min('foo', 'bar');
-                    assert.equal(query.compile().query, 'SELECT MIN(foo) AS "bar" FROM table');
-                });
+                it(
+                    'should add "min(<field>) as <alias>" to the SELECT clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.min('foo', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT MIN(foo) AS "bar" FROM table'
+                        );
+                    }
+                );
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
                     assert.equal(query.min('foo', 'bar'), query);
@@ -196,7 +266,10 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "sum(<field>)" to the SELECT clause', () => {
                     const query = getQueryBuilder();
                     query.sum('foo');
-                    assert.equal(query.compile().query, 'SELECT SUM(foo) FROM table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT SUM(foo) FROM table'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -204,11 +277,17 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
             });
             describe('(<field>, <alias>) signature', () => {
-                it('should add "sum(<field>) as <alias>" to the SELECT clause', () => {
-                    const query = getQueryBuilder();
-                    query.sum('foo', 'bar');
-                    assert.equal(query.compile().query, 'SELECT SUM(foo) AS "bar" FROM table');
-                });
+                it(
+                    'should add "sum(<field>) as <alias>" to the SELECT clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.sum('foo', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT SUM(foo) AS "bar" FROM table'
+                        );
+                    }
+                );
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
                     assert.equal(query.sum('foo', 'bar'), query);
@@ -216,7 +295,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
     });
-    describe('INSERT INTO <table-name> (<fields>) VALUES (<values>) clause', () => {
+    describe('INSERT INTO <table-name> (...) VALUES (...) clause', () => {
         describe('insert method', () => {
             describe('({ <field>: <value>, ... }) signature', () => {
                 it('should send the request', () => {
@@ -224,38 +303,60 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const connection = {
                         send() {
                             sent = true;
-                        }
+                        },
                     };
                     getQueryBuilder(connection).insert({});
                     assert.isTrue(sent);
                 });
-                it('should add "(<...field>) VALUES (<...value>) to the INSERT clause', () => {
-                    const fields = { 'foo': 'my-foo', 'bar': 'my-bar' };
+                it('should add "(<...field>) VALUES (<...value>)', () => {
+                    const fields = {
+                        'bar': 'my-bar',
+                        'foo': 'my-foo',
+                    };
                     const connection = {
                         send(query) {
-                            assert.equal(query, 'INSERT INTO table (foo, bar) VALUES ($1, $2)');
-                        }
+                            assert.equal(
+                                query,
+                                'INSERT INTO table (bar, foo) VALUES ($1, $2)'
+                            );
+                        },
                     };
                     getQueryBuilder(connection).insert(fields);
                 });
                 it('should accept any number of arguments', () => {
                     const fields = [
-                        { 'foo': 'my-foo',  'bar': 'my-bar'  },
-                        { 'foo': 'muh-foo', 'bar': 'muh-bar' },
+                        {
+                            'bar': 'my-bar',
+                            'foo': 'my-foo',
+                        },
+                        {
+                            'bar': 'muh-bar',
+                            'foo': 'muh-foo',
+                        },
                     ];
                     const connection = {
                         send(query) {
-                            assert.equal(query, 'INSERT INTO table (foo, bar) VALUES ($1, $2), ($3, $4)');
-                        }
+                            assert.equal(
+                                query,
+                                'INSERT INTO table (bar, foo) VALUES '
+                                + '($1, $2), ($3, $4)'
+                            );
+                        },
                     };
                     getQueryBuilder(connection).insert(...fields);
                 });
                 it('should add every <value> to the bound arguments', () => {
-                    const fields = { 'foo': 'my-foo', 'bar': 'my-bar' };
+                    const fields = {
+                        'bar': 'my-bar',
+                        'foo': 'my-foo',
+                    };
                     const connection = {
                         send(query, bind) {
-                            assert.equal(bind.length, 2);
-                        }
+                            assert.equal(
+                                bind.length,
+                                Object.keys(fields).length
+                            );
+                        },
                     };
                     getQueryBuilder(connection).insert(fields);
                 });
@@ -268,34 +369,57 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const connection = {
                         send() {
                             sent = true;
-                        }
+                        },
                     };
                     getQueryBuilder(connection, '<table>').insertRaw(
                         '(foo, bar) VALUES ($1, $2), ($3, $4)',
-                        ['foo', 'bar', 'my-foo', 'my-bar']
+                        [
+                            'foo',
+                            'bar',
+                            'my-foo',
+                            'my-bar',
+                        ]
                     );
                     assert.isTrue(sent);
                 });
-                it('should add "(<...field>) VALUES (<...value>), ... to the INSERT clause', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(query, 'INSERT INTO <table> (foo, bar) VALUES ($1, $2), ($3, $4)');
-                        }
-                    };
-                    getQueryBuilder(connection, '<table>').insertRaw(
-                        '(foo, bar) VALUES ($1, $2), ($3, $4)',
-                        ['my-foo', 'my-bar', 'muh-foo', 'muh-bar']
-                    );
-                });
+                it(
+                    'should add "(<...field>) VALUES (<...value>), ... to the '
+                    + 'INSERT clause',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'INSERT INTO <table> (foo, bar) VALUES '
+                                    + '($1, $2), ($3, $4)');
+                            },
+                        };
+                        getQueryBuilder(connection, '<table>').insertRaw(
+                            '(foo, bar) VALUES ($1, $2), ($3, $4)',
+                            [
+                                'my-foo',
+                                'my-bar',
+                                'muh-foo',
+                                'muh-bar',
+                            ]
+                        );
+                    }
+                );
                 it('should add every <value> to the bound arguments', () => {
+                    const bound = [
+                        'my-foo',
+                        'my-bar',
+                        'muh-foo',
+                        'muh-bar',
+                    ];
                     const connection = {
                         send(query, bind) {
-                            assert.equal(bind.length, 4);
-                        }
+                            assert.equal(bind.length, bound.length);
+                        },
                     };
                     getQueryBuilder(connection, '<table>').insertRaw(
                         '(foo, bar) VALUES ($1, $2), ($3, $4)',
-                        ['my-foo', 'my-bar', 'muh-foo', 'muh-bar']
+                        bound
                     );
                 });
             });
@@ -303,158 +427,260 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('UPDATE <table-name> SET clause', () => {
         describe('decrement method', () => {
-            describe('(<decr-field>, <decr-value = 1>, { <field>: <value>, ... } = {}) signature', () => {
+            describe('(<decr-field>, <decr-value = 1>, { <field>: <value>, } = '
+                + '{}) signature', () => {
                 it('should send the request', () => {
                     let sent = false;
                     const connection = {
-                        send() { sent = true; }
+                        send() {
+                            sent = true;
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.decrement('decr', 1, { 'field': 'my-foo' });
                     assert.isTrue(sent);
                 });
-                it('should set the SET clause to include "<decr-field> = <decr-field> - <decr-value>"', () => {
+                it('should set the SET clause to include "<decr-field> = '
+                    + '<decr-field> - <decr-value>"', () => {
                     const connection = {
                         send(query) {
-                            assert.equal(query, 'UPDATE table SET decr = decr - $1');
-                        }
+                            assert.equal(
+                                query,
+                                'UPDATE table SET decr = decr - $1'
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.decrement('decr');
                 });
-                it('should set the SET clause to include "<field> = <value>" for each key/value pair', () => {
+                it('should set the SET clause to include "<field> = <value>" '
+                    + 'for each key/value pair', () => {
                     const connection = {
                         send(query) {
-                            assert.equal(query, 'UPDATE table SET decr = decr - $1, field = $2');
-                        }
+                            assert.equal(
+                                query,
+                                'UPDATE table SET decr = decr - $1, field = $2'
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.decrement('decr', 1, { 'field': 'my-foo' });
                 });
-                it('should add all of the <value> and <incr-value> values to the bound arguments', () => {
+                it('should add all of the <value> and <incr-value> values to '
+                    + 'the bound arguments', () => {
+                    const attributes = { 'field': 'my-foo' };
                     const connection = {
                         send(query, bind) {
-                            assert.equal(bind.length, 2);
-                        }
+                            assert.equal(
+                                bind.length,
+                                Object.keys(attributes).length + 1
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection);
-                    query.decrement('decr', 1, { 'field': 'my-foo' });
+                    query.decrement('decr', 1, attributes);
                 });
             });
-            describe('({ <incr-field>: <incr-value>, ... }, { <field>: <value>, ... } = {}) signature', () => {
+            describe('({ <incr-field>: <incr-value>, }, { <field>: <value>, } '
+                + '= {}) signature', () => {
                 it('should send the request', () => {
                     let sent = false;
                     const connection = {
-                        send() { sent = true; }
+                        send() {
+                            sent = true;
+                        },
                     };
                     const query = getQueryBuilder(connection);
-                    query.decrement({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                    query.decrement({
+                        'bar': 2,
+                        'foo': 1,
+                    }, { 'field': 'my-foo' });
                     assert.isTrue(sent);
                 });
-                it('should set the SET clause to include "<incr-field> = <incr-field> + <incr-value>" for each key/value pair', () => {
+                it(
+                    'should set the SET clause to include "<incr-field> = '
+                    + '<incr-field> + <incr-value>" for each key/value pair',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'UPDATE table SET bar = bar - $1, '
+                                    + 'foo = foo - $2'
+                                );
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        query.decrement({
+                            'bar': 2,
+                            'foo': 1,
+                        });
+                    }
+                );
+                it('should set the SET clause to include "<field> = <value>" '
+                    + 'for each key/value pair', () => {
                     const connection = {
                         send(query) {
-                            assert.equal(query, 'UPDATE table SET foo = foo - $1, bar = bar - $2');
-                        }
+                            assert.equal(
+                                query,
+                                'UPDATE table SET bar = bar - $1, '
+                                + 'foo = foo - $2, field = $3'
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection);
-                    query.decrement({ 'foo': 1, 'bar': 2 });
+                    query.decrement({
+                        'bar': 2,
+                        'foo': 1,
+                    }, { 'field': 'my-foo' });
                 });
-                it('should set the SET clause to include "<field> = <value>" for each key/value pair', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(query, 'UPDATE table SET foo = foo - $1, bar = bar - $2, field = $3');
-                        }
+                it('should add all of the <value> and <incr-value> values to '
+                    + 'the bound arguments', () => {
+                    const decrements = {
+                        'bar': 2,
+                        'foo': 1,
                     };
-                    const query = getQueryBuilder(connection);
-                    query.decrement({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
-                });
-                it('should add all of the <value> and <incr-value> values to the bound arguments', () => {
+                    const values = { 'field': 'my-foo' };
                     const connection = {
                         send(query, bind) {
-                            assert.equal(bind.length, 3);
-                        }
+                            assert.equal(
+                                bind.length,
+                                Object.keys(decrements).length
+                                + Object.keys(values).length
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection);
-                    query.decrement({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                    query.decrement(decrements, values);
                 });
             });
         });
         describe('increment method', () => {
-            describe('(<incr-field>, <incr-value = 1>, { <field>: <value>, ...} = {}) signature', () => {
+            describe('(<incr-field>, <incr-value = 1>, { <field>: <value>, } = '
+                + '{}) signature', () => {
                 it('should send the request', () => {
                     let sent = false;
                     const connection = {
-                        send() { sent = true; }
+                        send() {
+                            sent = true;
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.increment('incr');
                     assert.isTrue(sent);
                 });
-                it('should set the SET clause to include "<incr-field> = <incr-field> + <incr-value>"', () => {
+                it('should set the SET clause to include "<incr-field> = '
+                    + '<incr-field> + <incr-value>"', () => {
                     const connection = {
                         send(query) {
-                            assert.equal(query, 'UPDATE table SET incr = incr + $1');
-                        }
+                            assert.equal(
+                                query,
+                                'UPDATE table SET incr = incr + $1'
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.increment('incr');
                 });
-                it('should set the SET clause to include "<field> = <value>" for each key/value pair', () => {
+                it('should set the SET clause to include "<field> = <value>" '
+                    + 'for each key/value pair', () => {
                     const connection = {
                         send(query) {
-                            assert.equal(query, 'UPDATE table SET incr = incr + $1, foo = $2');
-                        }
+                            assert.equal(
+                                query,
+                                'UPDATE table SET incr = incr + $1, foo = $2'
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.increment('incr', 1, { 'foo': 'foo' });
                 });
-                it('should add all of the <value> and <incr-value> values to the bound arguments', () => {
+                it('should add all of the <value> and <incr-value> values to '
+                    + 'the bound arguments', () => {
+                    const values = { 'foo': 'foo' };
                     const connection = {
                         send(query, bind) {
-                            assert.equal(bind.length, 2);
-                        }
+                            assert.equal(
+                                bind.length,
+                                Object.keys(values).length + 1
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection);
-                    query.increment('incr', 1, { 'foo': 'foo' });
+                    query.increment('incr', 1, values);
                 });
             });
-            describe('({ <incr-field>: <incr-value>, ... }, { <field>: <value>, ... } = {}) signature', () => {
+            describe('({ <incr-field>: <incr-value>, }, { <field>: <value>, } '
+                + '= {}) signature', () => {
                 it('should send the request', () => {
                     let sent = false;
                     const connection = {
-                        send() { sent = true; }
+                        send() {
+                            sent = true;
+                        },
                     };
                     const query = getQueryBuilder(connection);
-                    query.increment({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                    query.increment({
+                        'bar': 2,
+                        'foo': 1,
+                    }, { 'field': 'my-foo' });
                     assert.isTrue(sent);
                 });
-                it('should set the SET clause to include "<incr-field> = <incr-field> + <incr-value>" for each key/value pair', () => {
+                it(
+                    'should set the SET clause to include "<incr-field> = '
+                    + '<incr-field> + <incr-value>" for each key/value pair',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'UPDATE table SET bar = bar + $1, '
+                                    + 'foo = foo + $2'
+                                );
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        query.increment({
+                            'bar': 2,
+                            'foo': 1,
+                        });
+                    }
+                );
+                it('should set the SET clause to include "<field> = <value>" '
+                    + 'for each key/value pair', () => {
                     const connection = {
                         send(query) {
-                            assert.equal(query, 'UPDATE table SET foo = foo + $1, bar = bar + $2');
-                        }
-                    };
-                    const query = getQueryBuilder(connection);
-                    query.increment({ 'foo': 1, 'bar': 2 });
-                });
-                it('should set the SET clause to include "<field> = <value>" for each key/value pair', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(query, 'UPDATE <table> SET foo = foo + $1, bar = bar + $2, field = $3');
-                        }
+                            assert.equal(
+                                query,
+                                'UPDATE <table> SET bar = bar + $1, '
+                                + 'foo = foo + $2, field = $3'
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection, '<table>');
-                    query.increment({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                    query.increment({
+                        'bar': 2,
+                        'foo': 1,
+                    }, { 'field': 'my-foo' });
                 });
-                it('should add all of the <value> and <incr-value> values to the bound arguments', () => {
+                it('should add all of the <value> and <incr-value> values to '
+                    + 'the bound arguments', () => {
+                    const increments = {
+                        'bar': 2,
+                        'foo': 1,
+                    };
+                    const values = { 'field': 'my-foo' };
                     const connection = {
                         send(query, bind) {
-                            assert.equal(bind.length, 3);
-                        }
+                            assert.equal(
+                                bind.length,
+                                Object.keys(increments).length
+                                + Object.keys(values).length
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection, '<table>');
-                    query.decrement({ 'foo': 1, 'bar': 2 }, { 'field': 'my-foo' });
+                    query.decrement(increments, values);
                 });
             });
         });
@@ -465,17 +691,18 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const connection = {
                         send() {
                             wasSent = true;
-                        }
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.update({ foo: true });
                     assert.isTrue(wasSent);
                 });
-                it('should set the SET clause to "<field> = <value>" for each key/value pair', () => {
+                it('should set the SET clause to "<field> = <value>" for each '
+                    + 'key/value pair', () => {
                     const connection = {
                         send(query) {
                             assert.equal(query, 'UPDATE table SET foo = $1');
-                        }
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.update({ foo: true });
@@ -484,7 +711,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const connection = {
                         send(query, bind) {
                             assert.equal(bind.length, 1);
-                        }
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.update({ foo: true });
@@ -498,7 +725,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const connection = {
                         send() {
                             wasSent = true;
-                        }
+                        },
                     };
                     const query = getQueryBuilder(connection);
                     query.updateRaw('foo = $1', ['my-foo']);
@@ -507,20 +734,30 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should set the SET clause to "<signature>"', () => {
                     const connection = {
                         send(query) {
-                            assert.equal(query, 'UPDATE table SET foo = $1, bar = $2');
-                        }
+                            assert.equal(
+                                query,
+                                'UPDATE table SET foo = $1, bar = $2'
+                            );
+                        },
                     };
                     const query = getQueryBuilder(connection);
-                    query.updateRaw('foo = $1, bar = $2', ['my-foo', 'my-bar']);
+                    query.updateRaw(
+                        'foo = $1, bar = $2',
+                        [ 'my-foo', 'my-bar' ]
+                    );
                 });
                 it('should add each <...values> to the bound arguments', () => {
+                    const values = [ 'my-foo', 'my-bar' ];
                     const connection = {
                         send(query, bind) {
-                            assert.equal(bind.length, 2);
-                        }
+                            assert.equal(bind.length, values.length);
+                        },
                     };
                     const query = getQueryBuilder(connection);
-                    query.updateRaw('foo = $1, bar = $2', ['my-foo', 'my-bar']);
+                    query.updateRaw(
+                        'foo = $1, bar = $2',
+                        values
+                    );
                 });
             });
         });
@@ -533,7 +770,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const connection = {
                         send() {
                             isSent = true;
-                        }
+                        },
                     };
                     getQueryBuilder(connection).delete();
                     assert.isTrue(isSent);
@@ -545,7 +782,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                                 query,
                                 'DELETE FROM table'
                             );
-                        }
+                        },
                     };
                     getQueryBuilder(connection).delete();
                 });
@@ -576,7 +813,10 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should set the FROM clause to "<table> AS <alias>"', () => {
                     const query = getQueryBuilder();
                     query.from('table', 'alias');
-                    assert.equal(query.compile().query, 'SELECT * FROM table AS "alias"');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table AS "alias"'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -589,7 +829,10 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should set the FROM clause to "<signature>"', () => {
                     const query = getQueryBuilder();
                     query.fromRaw('"table" AS "alias"');
-                    assert.equal(query.compile().query, 'SELECT * FROM "table" AS "alias"');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM "table" AS "alias"'
+                    );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
@@ -617,29 +860,60 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('join method', () => {
             describe('(<table>, <key-name>) signature', () => {
-                it('should add "INNER JOIN <table> ON <table>.<key-name> = <this.table>.<key-name>" to the query');
+                it(
+                    'should add "INNER JOIN <table> ON <table>.<key-name> = '
+                    + '<this.table>.<key-name>" to the query'
+                );
                 it('should return the Query Builder');
             });
             describe('({ <alias>: <table> }, <key-name>) signature', () => {
-                it('should add "INNER JOIN <table> AS <alias> ON <alias>.<key-name> = <this.table>.<key-name>" to the query');
+                it(
+                    'should add "INNER JOIN <table> AS <alias> ON '
+                    + '<alias>.<key-name> = <this.table>.<key-name>" to '
+                    + 'the query'
+                );
                 it('should return the Query Builder');
             });
             describe('(<table>, <local-key>, <remote-key>) signature', () => {
-                it('should add "INNER JOIN <table> ON <table>.<remote-key> = <this.table>.<local-key>" to the query');
+                it(
+                    'should add "INNER JOIN <table> ON <table>.<remote-key> = '
+                    + '<this.table>.<local-key>" to the query'
+                );
                 it('should return the Query Builder');
             });
-            describe('({ <alias>: <table> }, <local-key>, <operation>, <remote-key>', () => {
-                it('should add "INNER JOIN <table> AS <alias> ON <alias>.<remote-key> = <this.table>.<local-key>" to the query');
-                it('should return the Query Builder');
-            });
-            describe('(<table>, <local-key>, <operation>, <remote-key>) signature', () => {
-                it('should add "INNER JOIN <table> ON <table>.<remote-key> <operation> <this.table>.<local-key>" to the query');
-                it('should return the Query Builder');
-            });
-            describe('({ <alias>: <table> }, <local-key>, <operation>, <remote-key>) signature', () => {
-                it('should add "INNER JOIN <table> AS <alias> ON <alias>.<remote-key> <operation> <this.table>.<local-key>" to the query');
-                it('should return the Query Builder');
-            });
+            describe(
+                '({ <alias>: <table> }, <local-key>, <operation>, <remote-key>',
+                () => {
+                    it(
+                        'should add "INNER JOIN <table> AS <alias> ON <alias>.'
+                        + '<remote-key> = <this.table>.<local-key>" to '
+                        + 'the query'
+                    );
+                    it('should return the Query Builder');
+                }
+            );
+            describe(
+                '(<table>, <local-key>, <operation>, <remote-key>) signature',
+                () => {
+                    it(
+                        'should add "INNER JOIN <table> ON <table>.<remote-key>'
+                        + ' <operation> <this.table>.<local-key>" to the query'
+                    );
+                    it('should return the Query Builder');
+                }
+            );
+            describe(
+                '({ <alias>: <table> }, <local-key>, <operation>, <remote-key>)'
+                + ' signature',
+                () => {
+                    it(
+                        'should add "INNER JOIN <table> AS <alias> ON '
+                        + '<alias>.<remote-key> <operation> '
+                        + '<this.table>.<local-key>" to the query'
+                    );
+                    it('should return the Query Builder');
+                }
+            );
         });
         describe('joinRaw method', () => {
             describe('(<definition>, <bind = []>) signature', () => {
@@ -650,29 +924,60 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('leftJoin method', () => {
             describe('(<table>, <key-name>) signature', () => {
-                it('should add "LEFT JOIN <table> ON <table>.<key-name> = <this.table>.<key-name>" to the query');
+                it(
+                    'should add "LEFT JOIN <table> ON <table>.<key-name> = '
+                    + '<this.table>.<key-name>" to the query'
+                );
                 it('should return the Query Builder');
             });
             describe('({ <alias>: <table> }, <key-name>) signature', () => {
-                it('should add "LEFT JOIN <table> AS <alias> ON <alias>.<key-name> = <this.table>.<key-name>" to the query');
+                it(
+                    'should add "LEFT JOIN <table> AS <alias> ON '
+                    + '<alias>.<key-name> = <this.table>.<key-name>" to '
+                    + 'the query'
+                );
                 it('should return the Query Builder');
             });
             describe('(<table>, <local-key>, <remote-key>) signature', () => {
-                it('should add "LEFT JOIN <table> ON <table>.<remote-key> = <this.table>.<local-key>" to the query');
+                it(
+                    'should add "LEFT JOIN <table> ON <table>.<remote-key> = '
+                    + '<this.table>.<local-key>" to the query'
+                );
                 it('should return the Query Builder');
             });
-            describe('({ <alias>: <table> }, <local-key>, <operation>, <remote-key>', () => {
-                it('should add "LEFT JOIN <table> AS <alias> ON <alias>.<remote-key> = <this.table>.<local-key>" to the query');
-                it('should return the Query Builder');
-            });
-            describe('(<table>, <local-key>, <operation>, <remote-key>) signature', () => {
-                it('should add "LEFT JOIN <table> ON <table>.<remote-key> <operation> <this.table>.<local-key>" to the query');
-                it('should return the Query Builder');
-            });
-            describe('({ <alias>: <table> }, <local-key>, <operation>, <remote-key>) signature', () => {
-                it('should add "LEFT JOIN <table> AS <alias> ON <alias>.<remote-key> <operation> <this.table>.<local-key>" to the query');
-                it('should return the Query Builder');
-            });
+            describe(
+                '({ <alias>: <table> }, <local-key>, <operation>, <remote-key>',
+                () => {
+                    it(
+                        'should add "LEFT JOIN <table> AS <alias> ON '
+                        + '<alias>.<remote-key> = <this.table>.<local-key>" to '
+                        + 'the query'
+                    );
+                    it('should return the Query Builder');
+                }
+            );
+            describe(
+                '(<table>, <local-key>, <operation>, <remote-key>) signature',
+                () => {
+                    it(
+                        'should add "LEFT JOIN <table> ON <table>.<remote-key> '
+                        + '<operation> <this.table>.<local-key>" to the query'
+                    );
+                    it('should return the Query Builder');
+                }
+            );
+            describe(
+                '({ <alias>: <table> }, <local-key>, <operation>, <remote-key>)'
+                + ' signature',
+                () => {
+                    it(
+                        'should add "LEFT JOIN <table> AS <alias> ON '
+                        + '<alias>.<remote-key> <operation> '
+                        + '<this.table>.<local-key>" to the query'
+                    );
+                    it('should return the Query Builder');
+                }
+            );
         });
         describe('leftJoinRaw method', () => {
             describe('(<signature>, <bind = []>) signature', () => {
@@ -683,29 +988,60 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('rightJoin method', () => {
             describe('(<table>, <key-name>) signature', () => {
-                it('should add "RIGHT JOIN <table> ON <table>.<key-name> = <this.table>.<key-name>" to the query');
+                it(
+                    'should add "RIGHT JOIN <table> ON <table>.<key-name> = '
+                    + '<this.table>.<key-name>" to the query'
+                );
                 it('should return the Query Builder');
             });
             describe('({ <alias>: <table> }, <key-name>) signature', () => {
-                it('should add "RIGHT JOIN <table> AS <alias> ON <alias>.<key-name> = <this.table>.<key-name>" to the query');
+                it(
+                    'should add "RIGHT JOIN <table> AS <alias> ON '
+                    + '<alias>.<key-name> = <this.table>.<key-name>" to '
+                    + 'the query'
+                );
                 it('should return the Query Builder');
             });
             describe('(<table>, <local-key>, <remote-key>) signature', () => {
-                it('should add "RIGHT JOIN <table> ON <table>.<remote-key> = <this.table>.<local-key>" to the query');
+                it(
+                    'should add "RIGHT JOIN <table> ON <table>.<remote-key> = '
+                    + '<this.table>.<local-key>" to the query'
+                );
                 it('should return the Query Builder');
             });
-            describe('({ <alias>: <table> }, <local-key>, <operation>, <remote-key>', () => {
-                it('should add "RIGHT JOIN <table> AS <alias> ON <alias>.<remote-key> = <this.table>.<local-key>" to the query');
-                it('should return the Query Builder');
-            });
-            describe('(<table>, <local-key>, <operation>, <remote-key>) signature', () => {
-                it('should add "RIGHT JOIN <table> ON <table>.<remote-key> <operation> <this.table>.<local-key>" to the query');
-                it('should return the Query Builder');
-            });
-            describe('({ <alias>: <table> }, <local-key>, <operation>, <remote-key>) signature', () => {
-                it('should add "RIGHT JOIN <table> AS <alias> ON <alias>.<remote-key> <operation> <this.table>.<local-key>" to the query');
-                it('should return the Query Builder');
-            });
+            describe(
+                '({ <alias>: <table> }, <local-key>, <operation>, <remote-key>',
+                () => {
+                    it(
+                        'should add "RIGHT JOIN <table> AS <alias> ON '
+                        + '<alias>.<remote-key> = <this.table>.<local-key>" to '
+                        + 'the query'
+                    );
+                    it('should return the Query Builder');
+                }
+            );
+            describe(
+                '(<table>, <local-key>, <operation>, <remote-key>) signature',
+                () => {
+                    it(
+                        'should add "RIGHT JOIN <table> ON <table>.<remote-key>'
+                        + ' <operation> <this.table>.<local-key>" to the query'
+                    );
+                    it('should return the Query Builder');
+                }
+            );
+            describe(
+                '({ <alias>: <table> }, <local-key>, <operation>, '
+                + '<remote-key>) signature',
+                () => {
+                    it(
+                        'should add "RIGHT JOIN <table> AS <alias> ON '
+                        + '<alias>.<remote-key> <operation> '
+                        + '<this.table>.<local-key>" to the query'
+                    );
+                    it('should return the Query Builder');
+                }
+            );
         });
         describe('rightJoinRaw method', () => {
             describe('(<signature>, <bind = []>) signature', () => {
@@ -718,70 +1054,92 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('WHERE clause', () => {
         describe('orWhere method', () => {
             describe('(<field>, <value>) signature', () => {
-                it('should set WHERE <field> = <value> on SELECT queries', () => {
-                    const query = getQueryBuilder();
-                    query.where('foo', 'bar').orWhere('bar', 'baz');
-                    assert.equal(
-                        query.compile().query,
-                        'SELECT * FROM table WHERE foo = $1 OR bar = $2'
-                    );
-                });
-                it('should set WHERE <field> = <value> on UPDATE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'UPDATE table WHERE foo = $1 OR bar = $2'
-                            );
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhere('bar', 'baz')
-                        .update();
-                });
-                it('should set WHERE <field> = <value> on DELETE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'DELETE FROM table WHERE foo = $1 OR bar = $2'
-                            );
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhere('bar', 'baz')
-                        .delete();
-                });
-                it('should add <value> to the bound arguments on SELECT queries', () => {
-                    const query = getQueryBuilder();
-                    query.where('foo', 'bar');
-                    query.orWhere('bar', 'baz');
-                    assert.equal(query.compile().bound.length, 2);
-                });
-                it('should add <value> to the bound arguments on UPDATE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 2);
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhere('bar', 'baz')
-                        .update();
-                });
-                it('should add <value> to the bound arguments on DELETE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 2);
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhere('bar', 'baz')
-                        .delete();
-                });
+                it(
+                    'should set WHERE <field> = <value> on SELECT queries',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.where('foo', 'bar').orWhere('bar', 'baz');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo = $1 OR bar = $2'
+                        );
+                    }
+                );
+                it(
+                    'should set WHERE <field> = <value> on UPDATE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'UPDATE table WHERE foo = $1 OR bar = $2'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection)
+                            .where('foo', 'bar')
+                            .orWhere('bar', 'baz')
+                            .update();
+                    }
+                );
+                it(
+                    'should set WHERE <field> = <value> on DELETE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'DELETE FROM table WHERE foo = $1 '
+                                    + 'OR bar = $2'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection)
+                            .where('foo', 'bar')
+                            .orWhere('bar', 'baz')
+                            .delete();
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on SELECT queries',
+                    () => {
+                        const query = getQueryBuilder();
+                        let i = 0;
+                        ++i && query.where('foo', 'bar');
+                        ++i && query.orWhere('bar', 'baz');
+                        assert.equal(query.compile().bound.length, i);
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on UPDATE queries',
+                    () => {
+                        let i = 0;
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, i);
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        ++i && query.where('foo', 'bar');
+                        ++i && query.orWhere('bar', 'baz');
+                        query.update();
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on DELETE queries',
+                    () => {
+                        let i = 0;
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, i);
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        ++i && query.where('foo', 'bar');
+                        ++i && query.orWhere('bar', 'baz');
+                        query.delete();
+                    }
+                );
                 it('should join conditionals with ... OR ...', () => {
                     const query = getQueryBuilder();
                     query.where('foo', 'bar').orWhere('bar', 'baz');
@@ -797,69 +1155,95 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
             });
             describe('(<field>, <operator>, <value>) signature', () => {
-                it('should set WHERE ... <field> <operator> <value> on SELECT queries', () => {
-                    const query = getQueryBuilder();
-                    query.where('foo', 'bar').orWhere('foo', '!=', 'baz');
-                    assert.equal(
-                        query.compile().query,
-                        'SELECT * FROM table WHERE foo = $1 OR foo != $2'
-                    );
-                });
-                it('should set WHERE ... <field> <operator> <value> on UPDATE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'UPDATE table WHERE foo = $1 OR foo != $2'
-                            );
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhere('foo', '!=', 'baz')
-                        .update();
-                });
-                it('should set WHERE ... <field> <operator> <value> on DELETE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'DELETE FROM table WHERE foo = $1 OR foo != $2'
-                            );
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhere('foo', '!=', 'baz')
-                        .delete();
-                });
-                it('should add <value> to the bound arguments on SELECT queries', () => {
-                    const query = getQueryBuilder();
-                    query.where('foo', 'bar').orWhere('foo', '!=', 'baz');
-                    assert.equal(query.compile().bound.length, 2);
-                });
-                it('should add <value> to the bound arguments on UPDATE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 2);
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhere('foo', '!=', 'baz')
-                        .update();
-                });
-                it('should add <value> to the bound arguments on DELETE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 2);
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhere('foo', '!=', 'baz')
-                        .delete();
-                });
+                it(
+                    'should set WHERE ... <field> <operator> <value> on '
+                    + 'SELECT queries',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.where('foo', 'bar').orWhere('foo', '!=', 'baz');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo = $1 OR foo != $2'
+                        );
+                    }
+                );
+                it(
+                    'should set WHERE ... <field> <operator> <value> on '
+                    + 'UPDATE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'UPDATE table WHERE foo = $1 OR foo != $2'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection)
+                            .where('foo', 'bar')
+                            .orWhere('foo', '!=', 'baz')
+                            .update();
+                    }
+                );
+                it(
+                    'should set WHERE ... <field> <operator> <value> on '
+                    + 'DELETE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'DELETE FROM table WHERE foo = $1 OR '
+                                    + 'foo != $2'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection)
+                            .where('foo', 'bar')
+                            .orWhere('foo', '!=', 'baz')
+                            .delete();
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on SELECT queries',
+                    () => {
+                        const query = getQueryBuilder();
+                        let i = 0;
+                        ++i && query.where('foo', 'bar');
+                        ++i && query.orWhere('foo', '!=', 'baz');
+                        assert.equal(query.compile().bound.length, i);
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on UPDATE queries',
+                    () => {
+                        let i = 0;
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, i);
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        ++i && query.where('foo', 'bar');
+                        ++i && query.orWhere('foo', '!=', 'baz');
+                        query.update();
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on DELETE queries',
+                    () => {
+                        let i = 0;
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, i);
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        ++i && query.where('foo', 'bar');
+                        ++i && query.orWhere('foo', '!=', 'baz');
+                        query.delete();
+                    }
+                );
                 it('should join conditionals with ... OR ...', () => {
                     const query = getQueryBuilder();
                     query.where('foo', 'bar').orWhere('foo', '!=', 'bar');
@@ -876,71 +1260,93 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('orWhereRaw method', () => {
             describe('(<conditional>, <bind = []>) signature', () => {
-                it('should set WHERE ... <conditional> on SELECT queries', () => {
-                    const query = getQueryBuilder();
-                    query.where('foo', 'bar');
-                    query.orWhereRaw('foo = $2', ['baz']);
-                    assert.equal(
-                        query.compile().query,
-                        'SELECT * FROM table WHERE foo = $1 OR foo = $2'
-                    );
-                });
-                it('should set WHERE ... <conditional> on UPDATE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'UPDATE table WHERE foo = $1 OR foo = $2'
-                            );
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhereRaw('foo = $2', ['baz'])
-                        .update();
-                });
-                it('should set WHERE ... <conditional> on DELETE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'DELETE FROM table WHERE foo = $1 OR foo = $2'
-                            );
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhereRaw('foo = $2', ['baz'])
-                        .delete();
-                });
-                it('should add <...bind> to the bound arguments on SELECT queries', () => {
-                    const query = getQueryBuilder();
-                    query.where('foo', 'bar');
-                    query.orWhereRaw('foo = $2', ['baz']);
-                    assert.equal(query.compile().bound.length, 2);
-                });
-                it('should add <...bind> to the bound arguments on UPDATE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 2);
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhereRaw('foo = $2', ['baz'])
-                        .update();
-                });
-                it('should add <...bind> to the bound arguments on DELETE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 2);
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .where('foo', 'bar')
-                        .orWhereRaw('foo = $2', ['baz'])
-                        .delete();
-                });
+                it(
+                    'should set WHERE ... <conditional> on SELECT queries',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.where('foo', 'bar');
+                        query.orWhereRaw('foo = $2', ['baz']);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo = $1 OR foo = $2'
+                        );
+                    }
+                );
+                it(
+                    'should set WHERE ... <conditional> on UPDATE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'UPDATE table WHERE foo = $1 OR foo = $2'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection)
+                            .where('foo', 'bar')
+                            .orWhereRaw('foo = $2', ['baz'])
+                            .update();
+                    }
+                );
+                it(
+                    'should set WHERE ... <conditional> on DELETE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'DELETE FROM table WHERE foo = $1 OR '
+                                    + 'foo = $2'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection)
+                            .where('foo', 'bar')
+                            .orWhereRaw('foo = $2', ['baz'])
+                            .delete();
+                    }
+                );
+                it(
+                    'should add <...bind> to bound arguments on SELECT queries',
+                    () => {
+                        let i = 0;
+                        const query = getQueryBuilder();
+                        ++i && query.where('foo', 'bar');
+                        ++i && query.orWhereRaw('foo = $2', ['baz']);
+                        assert.equal(query.compile().bound.length, i);
+                    }
+                );
+                it(
+                    'should add <...bind> to bound arguments on UPDATE queries',
+                    () => {
+                        let i = 0;
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, i);
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        ++i && query.where('foo', 'bar');
+                        ++i && query.orWhereRaw('foo = $2', ['baz']);
+                        query.update();
+                    }
+                );
+                it(
+                    'should add <...bind> to bound arguments on DELETE queries',
+                    () => {
+                        let i = 0;
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, i);
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        ++i && query.where('foo', 'bar');
+                        ++i && query.orWhereRaw('foo = $2', ['baz']);
+                        query.delete();
+                    }
+                );
                 it('should join conditionals with ... OR ...', () => {
                     const query = getQueryBuilder();
                     query.where('foo', 'bar').orWhereRaw('foo = $2', ['baz']);
@@ -957,56 +1363,80 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('where method', () => {
             describe('(<field>, <value>) signature', () => {
-                it('should set WHERE ... <field> = <value> on SELECT queries', () => {
-                    assert.equal(
-                        getQueryBuilder().where('foo', 'bar').compile().query,
-                        'SELECT * FROM table WHERE foo = $1'
-                    );
-                });
-                it('should set WHERE ... <field> = <value> on UPDATE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'UPDATE table WHERE foo = $1'
-                            );
-                        }
-                    };
-                    getQueryBuilder(connection).where('foo', 'bar').update();
-                });
-                it('should set WHERE ... <field> = <value> on DELETE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'DELETE FROM table WHERE foo = $1'
-                            );
-                        }
-                    };
-                    getQueryBuilder(connection).where('foo', 'bar').delete();
-                });
-                it('should add <value> to the bound arguments on SELECT queries', () => {
-                    assert.equal(
-                        getQueryBuilder().where('foo', 'bar').compile().bound.length,
-                        1
-                    );
-                });
-                it('should add <value> to the bound arguments on UPDATE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 1);
-                        }
-                    };
-                    getQueryBuilder(connection).where('foo', 'bar').update();
-                });
-                it('should add <value> to the bound arguments on DELETE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 1);
-                        }
-                    };
-                    getQueryBuilder(connection).where('foo', 'bar').delete();
-                });
+                it(
+                    'should set WHERE ... <field> = <value> on SELECT queries',
+                    () => {
+                        assert.equal(
+                            getQueryBuilder().where('foo', 'bar')
+                                .compile().query,
+                            'SELECT * FROM table WHERE foo = $1'
+                        );
+                    }
+                );
+                it(
+                    'should set WHERE ... <field> = <value> on UPDATE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'UPDATE table WHERE foo = $1'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection).where('foo', 'bar')
+                            .update();
+                    }
+                );
+                it(
+                    'should set WHERE ... <field> = <value> on DELETE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'DELETE FROM table WHERE foo = $1'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection).where('foo', 'bar')
+                            .delete();
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on SELECT queries',
+                    () => {
+                        assert.equal(
+                            getQueryBuilder().where('foo', 'bar')
+                                .compile().bound.length,
+                            1
+                        );
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on UPDATE queries',
+                    () => {
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, 1);
+                            },
+                        };
+                        getQueryBuilder(connection).where('foo', 'bar')
+                            .update();
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on DELETE queries',
+                    () => {
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, 1);
+                            },
+                        };
+                        getQueryBuilder(connection).where('foo', 'bar')
+                            .delete();
+                    }
+                );
                 it('should join conditionals with ... AND ...', () => {
                     const query = getQueryBuilder();
                     query.where('foo', 'my-foo');
@@ -1022,65 +1452,86 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
             });
             describe('(<field>, <operator>, <value>) signature', () => {
-                it('should set WHERE ... <field> <operator> <value> on SELECT queries', () => {
-                    const query = getQueryBuilder();
-                    query.where('foo', '<=', 'bar');
-                    assert.equal(
-                        query.compile().query,
-                        'SELECT * FROM table WHERE foo <= $1'
-                    );
-                });
-                it('should set WHERE ... <field> <operator> <value> on UPDATE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'UPDATE table WHERE foo <= $1'
-                            );
-                        }
-                    };
-                    const query = getQueryBuilder(connection);
-                    query.where('foo', '<=', 'bar');
-                    query.update();
-                });
-                it('should set WHERE ... <field> <operator> <value> on DELETE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(
-                                query,
-                                'DELETE FROM table WHERE foo <= $1'
-                            );
-                        }
-                    };
-                    const query = getQueryBuilder(connection);
-                    query.where('foo', '<=', 'bar');
-                    query.delete();
-                });
-                it('should add <value> to the bound arguments on SELECT queries', () => {
-                    const query = getQueryBuilder();
-                    query.where('foo', '<=', 'bar');
-                    assert.equal(query.compile().bound.length, 1);
-                });
-                it('should add <value> to the bound arguments on UPDATE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 1);
-                        }
-                    };
-                    const query = getQueryBuilder(connection);
-                    query.where('foo', '<=', 'bar');
-                    query.update();
-                });
-                it('should add <value> to the bound arguments on DELETE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 1);
-                        }
-                    };
-                    const query = getQueryBuilder(connection);
-                    query.where('foo', '<=', 'bar');
-                    query.delete();
-                });
+                it(
+                    'should set WHERE ... <field> <operator> <value> on '
+                    + 'SELECT queries',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.where('foo', '<=', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo <= $1'
+                        );
+                    }
+                );
+                it(
+                    'should set WHERE ... <field> <operator> <value> on '
+                    + 'UPDATE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'UPDATE table WHERE foo <= $1'
+                                );
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        query.where('foo', '<=', 'bar');
+                        query.update();
+                    }
+                );
+                it(
+                    'should set WHERE ... <field> <operator> <value> on '
+                    + 'DELETE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'DELETE FROM table WHERE foo <= $1'
+                                );
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        query.where('foo', '<=', 'bar');
+                        query.delete();
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on SELECT queries',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.where('foo', '<=', 'bar');
+                        assert.equal(query.compile().bound.length, 1);
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on UPDATE queries',
+                    () => {
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, 1);
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        query.where('foo', '<=', 'bar');
+                        query.update();
+                    }
+                );
+                it(
+                    'should add <value> to bound arguments on DELETE queries',
+                    () => {
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, 1);
+                            },
+                        };
+                        const query = getQueryBuilder(connection);
+                        query.where('foo', '<=', 'bar');
+                        query.delete();
+                    }
+                );
                 it('should join conditionals with ... AND ...', () => {
                     const query = getQueryBuilder();
                     query.where('foo', '<=', 'my-foo');
@@ -1097,14 +1548,29 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
         describe('whereBetween method', () => {
-            describe('(<field>, [<x>, <y>], <inclusive = true>) signature', () => {
-                it('should add "<field> >= <Min(x, y)>" to the WHERE clause if <inclusive> is true');
-                it('should add "<field> <= <Max(x, y)>" to the WHERE clause if <inclusive> is true');
-                it('should add "<field> > <Min(x, y)>" to the WHERE clause if <inclusive> is false');
-                it('should add "<field> < <Max(x, y)>" to the WHERE clause if <inclusive> is false');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
-            });
+            describe(
+                '(<field>, [<x>, <y>], <inclusive = true>) signature',
+                () => {
+                    it(
+                        'should add "<field> >= <Min(x, y)>" to the WHERE '
+                        + 'clause if <inclusive> is true'
+                    );
+                    it(
+                        'should add "<field> <= <Max(x, y)>" to the WHERE '
+                        + 'clause if <inclusive> is true'
+                    );
+                    it(
+                        'should add "<field> > <Min(x, y)>" to the WHERE '
+                        + 'clause if <inclusive> is false'
+                    );
+                    it(
+                        'should add "<field> < <Max(x, y)>" to the WHERE '
+                        + 'clause if <inclusive> is false'
+                    );
+                    it('should join conditionals with ... AND ...');
+                    it('should return the Query Builder');
+                }
+            );
         });
         describe('whereColumn method', () => {
             describe('(<field-1>, <field-2>) signature', () => {
@@ -1112,7 +1578,10 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should return the Query Builder');
             });
             describe('(<field-1>, <operator>, <field-2>) signature', () => {
-                it('should add "<field-1> <operator> <field-2>" to the WHERE clause');
+                it(
+                    'should add "<field-1> <operator> <field-2>" to the '
+                    + 'WHERE clause'
+                );
                 it('should return the Query Builder');
             });
         });
@@ -1120,14 +1589,20 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<field>, <date>) signature', () => {
                 it('should add "<field> = <date>" to the WHERE clause');
                 it('should add <date> to the bound arguments');
-                it('should accept a Date object for the <date> field and extract the appropriate date');
+                it(
+                    'should accept a Date object for the <date> field and '
+                    + 'extract the appropriate date'
+                );
                 it('should return the Query Builder');
             });
             describe('(<field>, <operator>, <date>) signature', () => {
-                it('should add "<field> <operator> <date>" to the WHERE clause');
+                it('should add "<field> <operator> <date>"');
                 it('should add <date> to the bound arguments');
                 it('should throw an error if <date> is not a positive integer');
-                it('should accept a Date object for the <date> field and extract the appropriate date');
+                it(
+                    'should accept a Date object for the <date> field and '
+                    + 'extract the appropriate date'
+                );
                 it('should return the Query Builder');
             });
         });
@@ -1135,15 +1610,24 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<field>, <day>) signature', () => {
                 it('should add "DAY(<field>) = <day>" to the WHERE clause');
                 it('should add <day> to the bound arguments');
-                it('should throw an error if <day> is not an integer in the range [1 .. 31]');
-                it('should accept a Date object for the <day> field and extract the appropriate day');
+                it(
+                    'should throw an error if <day> is not an integer in the '
+                    + 'range [1 .. 31]'
+                );
+                it(
+                    'should accept a Date object for the <day> field and '
+                    + 'extract the appropriate day'
+                );
                 it('should return the Query Builder');
             });
             describe('(<field>, <operator>, <day>) signature', () => {
-                it('should add "DAY(<field>) <operator> <day>" to the WHERE clause');
+                it('should add "DAY(<field>) <operator> <day>"');
                 it('should add <day> to the bound arguments');
                 it('should throw an error if <day> is not a positive integer');
-                it('should accept a Date object for the <day> field and extract the appropriate day');
+                it(
+                    'should accept a Date object for the <day> field and '
+                    + 'extract the appropriate day'
+                );
                 it('should return the Query Builder');
             });
         });
@@ -1174,33 +1658,60 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<field>, <month>) signature', () => {
                 it('should add "MONTH(<field>) = <month>" to the WHERE clause');
                 it('should add <month> to the bound arguments');
-                it('should throw an error if <month> is not in the range [1..12]');
-                it('should accept a Date object for the <month> field and extract the appropriate month');
+                it(
+                    'should throw an error if <month> is not in the '
+                    + 'range [1..12]'
+                );
+                it(
+                    'should accept a Date object for the <month> field and '
+                    + 'extract the appropriate month'
+                );
                 it('should return the Query Builder');
             });
             describe('(<field>, <operator>, <month>) signature', () => {
-                it('should add "MONTH(<field>) <operator> <month>" to the WHERE clause');
+                it('should add "MONTH(<field>) <operator> <month>"');
                 it('should add <month> to the bound arguments');
-                it('should throw an error if <month> is not in the range [1..12]');
-                it('should accept a Date object for the <month> field and extract the appropriate month');
+                it(
+                    'should throw an error if <month> is not in the '
+                    + 'range [1..12]'
+                );
+                it(
+                    'should accept a Date object for the <month> field and '
+                    + 'extract the appropriate month'
+                );
                 it('should return the Query Builder');
             });
         });
         describe('whereNotBetween method', () => {
-            describe('(<field>, [<x>, <y>], <inclusive = true>) signature', () => {
-                it('should add "<field> < <Min(x, y)>" to the WHERE clause if <inclusive> is true');
-                it('should add "<field> > <Max(x, y)>" to the WHERE clause if <inclusive> is true');
-                it('should add "<field> <= <Min(x, y)>" to the WHERE clause if <inclusive> is false');
-                it('should add "<field> >= <Max(x, y)>" to the WHERE clause if <inclusive> is false');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
-            });
+            describe(
+                '(<field>, [<x>, <y>], <inclusive = true>) signature',
+                () => {
+                    it(
+                        'should add "<field> < <Min(x, y)>" to the WHERE '
+                        + 'clause if <inclusive> is true'
+                    );
+                    it(
+                        'should add "<field> > <Max(x, y)>" to the WHERE '
+                        + 'clause if <inclusive> is true'
+                    );
+                    it(
+                        'should add "<field> <= <Min(x, y)>" to the WHERE '
+                        + 'clause if <inclusive> is false'
+                    );
+                    it(
+                        'should add "<field> >= <Max(x, y)>" to the WHERE '
+                        + 'clause if <inclusive> is false'
+                    );
+                    it('should join conditionals with ... AND ...');
+                    it('should return the Query Builder');
+                }
+            );
         });
         describe('whereNotIn method', () => {
             describe('(<field>, <values = []>) signature', () => {
-                it('should add "<field> NOT IN (<...values>)" to the WHERE clause');
+                it('should add "<field> NOT IN (<...values>)"');
                 it('should add <...values> to the bound arguments');
-                it('should use "<field> IS NOT NULL" if a blank array is passed');
+                it('should use "<field> IS NOT NULL" if [] is passed');
                 it('should throw an error if a non-array value is passed');
                 it('should join conditionals with ... AND ...');
                 it('should return the Query Builder');
@@ -1208,76 +1719,109 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereNull method', () => {
             describe('(<field>, ...) signature', () => {
-                it('should add "<field> IS NULL" to the WHERE clause for each <field>');
+                it(
+                    'should add "<field> IS NULL" to the WHERE clause for '
+                    + 'each <field>'
+                );
                 it('should join conditionals with ... AND ...');
                 it('should return the Query Builder');
             });
         });
         describe('whereNotNull method', () => {
             describe('(<field>, ...) signature', () => {
-                it('should add "<field> IS NOT NULL" to the WHERE clause for each <field>');
+                it(
+                    'should add "<field> IS NOT NULL" to the WHERE clause for '
+                    + 'each <field>'
+                );
                 it('should join conditionals with ... AND ...');
                 it('should return the Query Builder');
             });
         });
         describe('whereRaw method', () => {
             describe('(<conditional>, <bind = []>) signature', () => {
-                it('should set WHERE ... <conditional> on SELECT queries', () => {
-                    const query = getQueryBuilder();
-                    assert.equal(
-                        query.whereRaw('foo is null').compile().query,
-                        'SELECT * FROM table WHERE foo is null'
-                    );
-                });
-                it('should set WHERE ... <conditional> on UPDATE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(query, 'UPDATE table WHERE foo is null');
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .whereRaw('foo is null')
-                        .update();
-                });
-                it('should set WHERE ... <conditional> on DELETE queries', () => {
-                    const connection = {
-                        send(query) {
-                            assert.equal(query, 'DELETE FROM table WHERE foo is null');
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .whereRaw('foo is null')
-                        .delete();
-                });
-                it('should add <...bind> to the bound arguments on SELECT queries', () => {
-                    assert.equal(
-                        getQueryBuilder().whereRaw('foo = $1', [1]).compile().bound.length,
-                        1
-                    );
-                });
-                it('should add <...bind> to the bound arguments on UPDATE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 1);
-                        }
-                    };
-                    getQueryBuilder(connection)
-                        .whereRaw('foo = $1', [1])
-                        .update();
-                });
-                it('should add <...bind> to the bound arguments on DELETE queries', () => {
-                    const connection = {
-                        send(query, bound) {
-                            assert.equal(bound.length, 1);
-                        }
-                    };
-                    getQueryBuilder(connection).whereRaw('foo = $1', [1]).delete();
-                });
+                it(
+                    'should set WHERE ... <conditional> on SELECT queries',
+                    () => {
+                        const query = getQueryBuilder();
+                        assert.equal(
+                            query.whereRaw('foo is null').compile().query,
+                            'SELECT * FROM table WHERE foo is null'
+                        );
+                    }
+                );
+                it(
+                    'should set WHERE ... <conditional> on UPDATE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'UPDATE table WHERE foo is null'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection)
+                            .whereRaw('foo is null')
+                            .update();
+                    }
+                );
+                it(
+                    'should set WHERE ... <conditional> on DELETE queries',
+                    () => {
+                        const connection = {
+                            send(query) {
+                                assert.equal(
+                                    query,
+                                    'DELETE FROM table WHERE foo is null'
+                                );
+                            },
+                        };
+                        getQueryBuilder(connection)
+                            .whereRaw('foo is null')
+                            .delete();
+                    }
+                );
+                it(
+                    'should add <...bind> to the bound arguments on '
+                    + 'SELECT queries',
+                    () => {
+                        assert.equal(
+                            getQueryBuilder().whereRaw('foo = $1', [1])
+                                .compile().bound.length,
+                            1
+                        );
+                    }
+                );
+                it(
+                    'should add <...bind> to bound arguments on UPDATE queries',
+                    () => {
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, 1);
+                            },
+                        };
+                        getQueryBuilder(connection)
+                            .whereRaw('foo = $1', [1])
+                            .update();
+                    }
+                );
+                it(
+                    'should add <...bind> to bound arguments on DELETE queries',
+                    () => {
+                        const connection = {
+                            send(query, bound) {
+                                assert.equal(bound.length, 1);
+                            },
+                        };
+                        getQueryBuilder(connection).whereRaw('foo = $1', [1])
+                            .delete();
+                    }
+                );
                 it('should join conditionals with ... AND ...', () => {
                     const query = getQueryBuilder();
                     query.whereRaw('foo is null').whereRaw('bar is null');
                     assert.equal(
-                        query.compile().query, 
+                        query.compile().query,
                         'SELECT * FROM table WHERE foo is null AND bar is null'
                     );
                 });
@@ -1292,14 +1836,20 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "YEAR(<field>) = <year>" to the WHERE clause');
                 it('should add <year> to the bound arguments');
                 it('should throw an error if <year> is not an integer');
-                it('should accept a Date object for the <year> field and extract the appropriate year');
+                it(
+                    'should accept a Date object for the <year> field and '
+                    + 'extract the appropriate year'
+                );
                 it('should return the Query Builder');
             });
             describe('(<field>, <operator>, <year>) signature', () => {
-                it('should add "YEAR(<field>) <operator> <year>" to the WHERE clause');
+                it('should add "YEAR(<field>) <operator> <year>"');
                 it('should add <year> to the bound arguments');
                 it('should throw an error if <year> is not a positive integer');
-                it('should accept a Date object for the <year> field and extract the appropriate year');
+                it(
+                    'should accept a Date object for the <year> field and '
+                    + 'extract the appropriate year'
+                );
                 it('should return the Query Builder');
             });
         });
@@ -1307,15 +1857,24 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('GROUP BY clause', () => {
         describe('groupBy method', () => {
             describe('(<field>, ...) signature', () => {
-                it('should add "<field>" to the GROUP BY clause for each <field>');
+                it(
+                    'should add "<field>" to the GROUP BY clause for '
+                    + 'each <field>'
+                );
                 it('should return the Query Builder');
             });
             describe('({ <table>: <field> }, ...) signature', () => {
-                it('should add "<table>.<field>" to the GROUP BY clause for each object');
+                it(
+                    'should add "<table>.<field>" to the GROUP BY clause for '
+                    + 'each object'
+                );
                 it('should return the Query Builder');
             });
             describe('({ <table>: <field[]> }, ...) signature', () => {
-                it('should add "<table>.<field>" to the GROUP BY clause for each table/field pair');
+                it(
+                    'should add "<table>.<field>" to the GROUP BY clause for '
+                    + 'each table/field pair'
+                );
                 it('should return the Query Builder');
             });
         });
@@ -1375,13 +1934,13 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('UNION clause', () => {
         describe('union method', () => {
             describe(`(${CLASS_NAME}) signature`, () => {
-                it(`should add the ${CLASS_NAME} to the UNION clause of the query`);
+                it(`should add the ${CLASS_NAME} to the UNION clause`);
                 it('should return the Query Builder');
             });
         });
         describe('unionAll method', () => {
             describe(`(${CLASS_NAME}) signature`, () => {
-                it(`should add the ${CLASS_NAME} to the UNION clause of the query`);
+                it(`should add the ${CLASS_NAME} to the UNION clause`);
                 it('should return the Query Builder');
             });
         });
@@ -1409,8 +1968,14 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('orderBy method', () => {
             describe('(<field>, <ascending = true>) signature', () => {
-                it('should add "<field> ASC" to the ORDER BY clause if <ascending> is true');
-                it('should add "<field> DESC" to the ORDER BY clause if <ascending> is false');
+                it(
+                    'should add "<field> ASC" to the ORDER BY clause if '
+                    + '<ascending> is true'
+                );
+                it(
+                    'should add "<field> DESC" to the ORDER BY clause if '
+                    + '<ascending> is false'
+                );
                 it('should return the Query Builder');
             });
         });
@@ -1456,15 +2021,15 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('FOR clause', () => {
         describe('lockForUpdate', () => {
             describe('(<lock = true>) signature', () => {
-                it('should set the FOR UPDATE clause on the query if <lock> is true');
-                it('should disable the FOR UPDATE clause on the query if <lock> is false');
+                it('should set the FOR UPDATE clause if <lock> is true');
+                it('should disable the FOR UPDATE clause if <lock> is false');
                 it('should return the Query Builder');
             });
         });
         describe('sharedLock method', () => {
             describe('(<lock = true>) signature', () => {
-                it('should set the FOR SHARE clause on the query if <lock> is true');
-                it('should disable the FOR SHARE clause on the query if <lock> is false');
+                it('should set the FOR SHARE clause if <lock> is true');
+                it('should disable the FOR SHARE clause if <lock> is false');
                 it('should return the Query Builder');
             });
         });
@@ -1476,13 +2041,22 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should iterate into a Promise');
                 it('should resolve into a Collection');
             });
-            describe('(<chunk size>, function(<collection>), <async = false>) signature', () => {
-                it('should terminate if the callback returns "false"');
-                it('should fetch the next set of records if the callback does not return "false"');
-                it('should return the Query Builder if <async> is false');
-                it('should return a Promise if <async> is true');
-                it('should resolve to the Query Builder if <async> is true');
-            });
+            describe(
+                '(<chunk size>, function(<collection>), <async = false>)'
+                + ' signature',
+                () => {
+                    it('should terminate if the callback returns "false"');
+                    it(
+                        'should fetch the next set of records if the callback '
+                        + 'does not return "false"'
+                    );
+                    it('should return the Query Builder if <async> is false');
+                    it('should return a Promise if <async> is true');
+                    it(
+                        'should resolve to the Query Builder if <async> is true'
+                    );
+                }
+            );
         });
         describe('first method', () => {
             describe('() signature', () => {
@@ -1528,7 +2102,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
         describe('value method', () => {
-            describe('(<field>) signature', () => {            
+            describe('(<field>) signature', () => {
                 it('should return a Promise');
                 it('should resolve to a value');
             });
@@ -1542,22 +2116,33 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('compile method', () => {
             describe('() signature', () => {
-                it('should return a string of the SQL query at compile().query', () => {
-                    const query = getQueryBuilder();
-                    assert.isString(query.compile().query);
-                });
-                it('should return an array of the bound parameters at compile().bound', () => {
-                    const query = getQueryBuilder();
-                    assert.isArray(query.compile().bound);
-                });
+                it(
+                    'should return the SQL query string at compile().query',
+                    () => {
+                        const query = getQueryBuilder();
+                        assert.isString(query.compile().query);
+                    }
+                );
+                it(
+                    'should return an array of bound parameters at '
+                    + 'compile().bound',
+                    () => {
+                        const query = getQueryBuilder();
+                        assert.isArray(query.compile().bound);
+                    }
+                );
             });
         });
         describe('when method', () => {
-            describe('(<variable>, <onTrue:function(this)>, <onFalse:function(this) = () => {}>) signature', () => {
-                it('should execute <onTrue> if <variable> is truthy');
-                it('should execute <onFalse> if <variable> is falsy');
-                it('should return the Query Builder');
-            });
+            describe(
+                '(<variable>, <onTrue:function(this)>, <onFalse:function(this) '
+                + '= () => {}>) signature',
+                () => {
+                    it('should execute <onTrue> if <variable> is truthy');
+                    it('should execute <onFalse> if <variable> is falsy');
+                    it('should return the Query Builder');
+                }
+            );
         });
     });
 });

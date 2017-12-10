@@ -98,7 +98,7 @@
         ],
         "complexity": [
             "error",
-            20
+            5
         ],
         "consistent-return": [
             "warn"
