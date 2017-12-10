@@ -13,20 +13,22 @@ const { rootDir, SystemConfig } = require('../bootstrap/system-config');
 
 const AppConfig = requireApp(SystemConfig.AppConfig.file);
 const Regent    = requireLib('core/regent');
+const LAST_THREE = -3;
 
 global.newRegent = () => new Regent(rootDir, SystemConfig, AppConfig);
 
-function readdir(directory, mocha)
-{
-    fs.readdirSync(directory).forEach(file => {
+function readdir(directory, mocha) {
+    fs.readdirSync(directory).forEach((file) => {
         const filePath = path.join(directory, file);
         if (fs.lstatSync(filePath).isDirectory()) {
             return readdir(filePath, mocha);
         }
 
-        if ('.js' === file.substr(-3)) {
+        if ('.js' === file.substr(LAST_THREE)) {
             mocha.addFile(filePath);
         }
+
+        return null;
     });
 }
 
@@ -34,8 +36,18 @@ const mocha = new Mocha();
 readdir(TEST_FOLDER, mocha);
 
 mocha.run()
-    .on('test', (/* test */) => {})
-    .on('test end', (/* test */) => {})
-    .on('pass', (/* test */) => {})
-    .on('fail', (/* test, err */) => {})
-    .on('end', (/* test */) => {});
+    .on('test', () => {
+        //
+    })
+    .on('test end', () => {
+        //
+    })
+    .on('pass', () => {
+        //
+    })
+    .on('fail', () => {
+        //
+    })
+    .on('end', () => {
+        //
+    });

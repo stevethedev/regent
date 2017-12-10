@@ -27,7 +27,7 @@ const Regent    = requireLib('core/regent');
  | Next, we need to initialize the application so that it can start responding
  | to requests. This is the heart of the software and is responsible for the
  | low-level routing and function of Regent's HTTP and Console kernels.
- | 
+ |
  */
 const app = new Regent(rootDir, SystemConfig, AppConfig);
 

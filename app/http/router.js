@@ -5,8 +5,7 @@
 
 const BaseHttpRouter = requireLib('http/router');
 
-class HttpRouter extends BaseHttpRouter
-{
+class HttpRouter extends BaseHttpRouter {
     // Your custom router content
 }
 

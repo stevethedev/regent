@@ -28,7 +28,7 @@ module.exports = {
      */
     bindings: {
         // Override the HTTP Kernel
-        HttpKernel: HttpKernel,
+        HttpKernel,
     },
 
     /*
@@ -47,6 +47,6 @@ module.exports = {
         http: {
             // Routes designed for web-facing content
             web: 'routes/web.js',
-        }
+        },
     },
 };

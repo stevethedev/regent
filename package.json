@@ -28,9 +28,9 @@
     "ps-node": "^0.1.6"
   },
   "devDependencies": {
-    "babel-eslint": "^8.0.2",
+    "babel-eslint": "^8.0.3",
     "docdash": "^0.4.0",
-    "eslint": "^4.11.0",
+    "eslint": "^4.13.0",
     "jsdoc": "^3.5.5",
     "mocha": "^4.0.1"
   }

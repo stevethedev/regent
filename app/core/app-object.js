@@ -18,16 +18,8 @@ const RegentObject = requireLib('util/regent-object');
  |
  */
 
-class AppObject extends RegentObject
-{
-    constructor(regent)
-    {
-        super(regent);
-
-        // your actions here
-    }
-
-    // add more methods to make them available across the whole app.
+class AppObject extends RegentObject {
+    // Add more methods to make them available across the whole app.
 }
 
 module.exports = AppObject;

@@ -5,16 +5,13 @@
 
 const BaseMiddleware = requireLib('core/middleware/middleware');
 
-class MiddlewareHelloWorld extends BaseMiddleware
-{
-    async run(request, response, next)
-    {
+class MiddlewareHelloWorld extends BaseMiddleware {
+    run(request, response, next) {
         response.setBody('Hello, World');
         next();
     }
 
-    async terminate(request, response, next)
-    {
+    terminate(request, response, next) {
         next();
     }
 }
