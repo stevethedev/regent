@@ -102,8 +102,8 @@ describe(`The ${CLASS_NAME} class`, () => {
                     assert.equal(
                         query.compile().query,
                         `SELECT ${[
-                            'foo AS "FOO"',
                             'bar AS "BAR"',
+                            'foo AS "FOO"',
                             'baz AS "BAZ"',
                         ].join(', ')} FROM table`
                     );

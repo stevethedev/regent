@@ -268,7 +268,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             };
             const collection = getMap(array);
             const reducer = (a, b) => (a || '') + b;
-            assert.equal(collection.reduce(reducer), 'foobar');
+            assert.equal(collection.reduce(reducer), 'barfoo');
         });
         it('should accept a function in the first parameter', () => {
             getMap().reduce(() => true);

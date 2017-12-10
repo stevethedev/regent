@@ -183,8 +183,8 @@ describe(`The ${CLASS_NAME} class`, () => {
         it('should append an item to the end of the collection', () => {
             const array = DEFAULT_PARAM.slice();
             const collection = getSet(array);
-            collection.push(array.length);
-            array.push(array.length);
+            collection.push(1 + array.length);
+            array.push(1 + array.length);
             assert.equal(collection.size(), array.length);
         });
         it('should accept any number of parameters', () => {
