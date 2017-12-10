@@ -46,7 +46,7 @@ mocha.run()
         //
     })
     .on('fail', () => {
-        //
+        process.exitCode = 1;
     })
     .on('end', () => {
         //
