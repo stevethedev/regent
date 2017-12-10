@@ -2,7 +2,7 @@
  * This is the intended entry-point for Regent when the package is used as a
  * dependency. This file handles the configuration and bootstrapping of the
  * Regent package, and fills in some sensible (yet configurable) options.
- * 
+ *
  * @author Steven Jimenez
  */
 'use strict';
@@ -21,9 +21,9 @@ function create(appDir = rootDir, LocalConfig = {}) {
         },
     };
     const SystemConfig = deepmerge.all([
-        {}, 
-        DefaultConfig, 
-        interimConfig, 
+        {},
+        DefaultConfig,
+        interimConfig,
         LocalConfig,
     ]);
 
