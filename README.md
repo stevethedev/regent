@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/stevethedev/regent.svg?branch=master)](https://travis-ci.org/stevethedev/regent)
+
 [![codebeat badge](https://codebeat.co/badges/a19f4cc4-03aa-4ef6-b3b9-dfcf59afc4ff)](https://codebeat.co/projects/github-com-stevethedev-regent-master)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1d9972def2334992a30922b030249798)](https://www.codacy.com/app/stevethedev/regent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=stevethedev/regent&amp;utm_campaign=Badge_Grade)
