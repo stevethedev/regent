@@ -2,12 +2,11 @@
  * This is the intended entry-point for Regent when the package is used as a
  * dependency. This file handles the configuration and bootstrapping of the
  * Regent package, and fills in some sensible (yet configurable) options.
- * 
+ *
  * @author Steven Jimenez
  */
 'use strict';
 
-const path            = require('path');
 const deepmerge       = require('deepmerge');
 const GlobalFunctions = require('./bootstrap/global-functions');
 const DefaultConfig   = require('./etc/default');
@@ -22,14 +21,13 @@ function create(appDir = rootDir, LocalConfig = {}) {
         },
     };
     const SystemConfig = deepmerge.all([
-        {}, 
-        DefaultConfig, 
-        interimConfig, 
+        {},
+        DefaultConfig,
+        interimConfig,
         LocalConfig,
     ]);
 
     GlobalFunctions.configure(rootDir, SystemConfig.Directories);
-    console.log(appDir)
 
     const AppConfig    = requireApp(SystemConfig.AppConfig.file);
     const Regent       = requireLib('core/regent');

@@ -5,13 +5,13 @@
 
 const path = require('path');
 
-class GlobalFunctions
-{
-    static configure(rootPath, config)
-    {
-        const resolve = global.resolve = (src = '') => {
+class GlobalFunctions {
+    static configure(rootPath, config) {
+        const resolve = (src = '') => {
             return path.resolve(path.resolve(rootPath, src));
         };
+
+        global.resolve = resolve;
 
         /**
          * Resolve a path to the base Pub folder
@@ -47,7 +47,9 @@ class GlobalFunctions
          *
          * @return {String}
          */
-        global.resolveSession = (src = '') => resolve(path.join(config.session, src));
+        global.resolveSession = (src = '') => {
+            return resolve(path.join(config.session, src));
+        };
 
         /**
          * Resolve a path to the base view folder
@@ -65,6 +67,7 @@ class GlobalFunctions
          * @return {mixed}
          */
         global.requireApp = (src) => {
+            // eslint-disable-next-line global-require
             return require(path.resolve(rootPath, config.app, src));
         };
 
@@ -75,6 +78,7 @@ class GlobalFunctions
          * @return {mixed}
          */
         global.requireEtc = (src) => {
+            // eslint-disable-next-line global-require
             return require(path.resolve(rootPath, config.etc, src));
         };
 
@@ -85,6 +89,7 @@ class GlobalFunctions
          * @return {mixed}
          */
         global.requireLib = (src) => {
+            // eslint-disable-next-line global-require
             return require(path.resolve(rootPath, config.lib, src));
         };
 
@@ -96,6 +101,7 @@ class GlobalFunctions
          */
         global.reload     = (src) => {
             delete require.cache[require.resolve(src)];
+            // eslint-disable-next-line global-require
             return require(src);
         };
 

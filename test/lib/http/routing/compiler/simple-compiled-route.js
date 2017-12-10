@@ -4,11 +4,13 @@
 'use strict';
 
 const assert                  = requireLib('util/assert');
-const SimpleCompiledHttpRoute = requireLib('http/routing/compiler/simple-compiled-route');
+const SimpleCompiledHttpRoute = requireLib(
+    'http/routing/compiler/simple-compiled-route'
+);
 const http                    = require('http');
 const HttpRequest             = requireLib('http/request');
 const HttpResponse            = requireLib('http/response');
-const newRegent               = global.newRegent;
+const { newRegent }           = global;
 const regent                  = newRegent();
 
 const CLASS_NAME              = SimpleCompiledHttpRoute.name;
@@ -25,62 +27,72 @@ describe(`The ${CLASS_NAME} class`, () => {
      |
      */
     describe('constructor', () => {
+        // eslint-disable-next-line max-len
         it('should throw an error if an invalid regent object is provided', () => {
             assert.throws(() => {
                 new SimpleCompiledHttpRoute(
-                    /* regent        */ null, 
-                    /* reouteType    */ ROUTE_TYPE, 
-                    /* handler       */ () => {}, 
-                    /* middleware    */ [],
-                    /* uri           */ 'foo', 
-                    /* caseSensitive */ true
+                    null,
+                    ROUTE_TYPE,
+                    () => {
+                        //
+                    },
+                    [],
+                    'foo',
+                    true
                 );
             });
         });
         it('should throw an error if an invalid handler is provided', () => {
             assert.throws(() => {
                 new SimpleCompiledHttpRoute(
-                    /* regent        */ regent, 
-                    /* reouteType    */ ROUTE_TYPE, 
-                    /* handler       */ null, 
-                    /* middleware    */ [],
-                    /* uri           */ 'foo', 
-                    /* caseSensitive */ true
+                    regent,
+                    ROUTE_TYPE,
+                    null,
+                    [],
+                    'foo',
+                    true
                 );
             });
         });
         it('should throw an error if an invalid uri is provded', () => {
             assert.throws(() => {
                 new SimpleCompiledHttpRoute(
-                    /* regent        */ regent, 
-                    /* reouteType    */ ROUTE_TYPE, 
-                    /* handler       */ () => {}, 
-                    /* middleware    */ [],
-                    /* uri           */ null, 
-                    /* caseSensitive */ true
+                    regent,
+                    ROUTE_TYPE,
+                    () => {
+                        //
+                    },
+                    [],
+                    null,
+                    true
                 );
             });
         });
+        // eslint-disable-next-line max-len
         it('should throw an error if an invalid case-sensitivity is provided', () => {
             assert.throws(() => {
                 new SimpleCompiledHttpRoute(
-                    /* regent        */ regent, 
-                    /* reouteType    */ ROUTE_TYPE, 
-                    /* handler       */ () => {}, 
-                    /* middleware    */ [],
-                    /* uri           */ 'foo', 
-                    /* caseSensitive */ null
+                    regent,
+                    ROUTE_TYPE,
+                    () => {
+                        //
+                    },
+                    [],
+                    'foo',
+                    null
                 );
             });
         });
         it('should create a new instance if all inputs are valid', () => {
             new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ 'foo', 
-                /* caseSensitive */ true
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                'foo',
+                true
             );
         });
     });
@@ -88,56 +100,69 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('matches() method', () => {
         it('should return false if a non-string value is provided', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI, 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI,
+                false
             );
             assert.isFalse(route.matches(null));
         });
+        // eslint-disable-next-line max-len
         it('should return false if a non-matching string value is provided', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI, 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI,
+                false
             );
             assert.isFalse(route.matches('a/b'));
         });
         it('should return true if a matching string value is provided', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI, 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI,
+                false
             );
             assert.isTrue(route.matches(HTTP_URI));
         });
+        // eslint-disable-next-line max-len
         it('should return false if case-sensitivity is on and mismatched', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI.toLowerCase(), 
-                /* caseSensitive */ true
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI.toLowerCase(),
+                true
             );
             assert.isFalse(route.matches(HTTP_URI.toUpperCase()));
         });
+        // eslint-disable-next-line max-len
         it('should return true if case-sensitivity is off and mismatched', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI.toLowerCase(), 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI.toLowerCase(),
+                false
             );
             assert.isTrue(route.matches(HTTP_URI.toUpperCase()));
         });
@@ -145,14 +170,16 @@ describe(`The ${CLASS_NAME} class`, () => {
 
     describe('getHandler() method', () => {
         it('should return the contained handler function', () => {
-            const fn = () => {};
+            const fn = () => {
+                //
+            };
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ fn, 
-                /* middleware    */ [],
-                /* uri           */ 'foo', 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                fn,
+                [],
+                'foo',
+                false
             );
             assert.equal(route.getHandler(), fn);
         });
@@ -160,56 +187,69 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('checkPrefix() method', () => {
         it('should return false if a non-string value is provided', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI, 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI,
+                false
             );
             assert.isFalse(route.checkPrefix(null));
         });
+        // eslint-disable-next-line max-len
         it('should return false if a non-matching string value is provided', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI, 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI,
+                false
             );
             assert.isFalse(route.checkPrefix('a/b'));
         });
         it('should return true if a matching string value is provided', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI, 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI,
+                false
             );
             assert.isTrue(route.checkPrefix(HTTP_URI));
         });
+        // eslint-disable-next-line max-len
         it('should return false if case-sensitivity is on and mismatched', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI.toLowerCase(), 
-                /* caseSensitive */ true
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI.toLowerCase(),
+                true
             );
             assert.isFalse(route.checkPrefix(HTTP_URI.toUpperCase()));
         });
+        // eslint-disable-next-line max-len
         it('should return true if case-sensitivity is off and mismatched', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ HTTP_URI.toLowerCase(), 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                HTTP_URI.toLowerCase(),
+                false
             );
             assert.isTrue(route.checkPrefix(HTTP_URI.toUpperCase()));
         });
@@ -217,51 +257,78 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('getVariables() method', () => {
         it('should return an empty Map', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ 'foo', 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                'foo',
+                false
             );
             assert.instanceOf(route.getVariables('foo'), Map);
             assert.equal(route.getVariables('foo').size, 0);
         });
     });
     describe('run() method', () => {
-        it(`should throw an error if the first parameter is not a ${HttpRequest.name} object`, () => {
+        // eslint-disable-next-line max-len
+        it(`should throw an error if the first parameter is not a ${HttpRequest.name} object`, async () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ 'foo', 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                'foo',
+                false
             );
-            // assert.throws(() => route.run(null));
+            let threw  = false;
+            let result = null;
+            try {
+                result = await route.run(null);
+            } catch (err) {
+                threw = true;
+            }
+            assert.isTrue(threw, 'Expected an error to be thrown');
+            assert.isNull(result, 'Expected route to fail');
         });
-        it(`should throw an error if the second parameter is not a ${HttpResponse.name} object`, () => {
+        // eslint-disable-next-line max-len
+        it(`should throw an error if the second parameter is not a ${HttpResponse.name} object`, async () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ 'foo', 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                'foo',
+                false
             );
             const req = new http.IncomingMessage();
             req.url = 'foo';
             const request = new HttpRequest(regent.getKernel('http'), req);
-            // assert.throws(() => route.run(request, null));
+
+            let threw  = false;
+            let result = null;
+            try {
+                result = await route.run(request, null);
+            } catch (err) {
+                threw = true;
+            }
+            assert.isTrue(threw, 'Expected an error to be thrown');
+            assert.isNull(result, 'Expected route to fail');
         });
         it('should succeed if all parameters pass checks', () => {
             const route = new SimpleCompiledHttpRoute(
-                /* regent        */ regent, 
-                /* reouteType    */ ROUTE_TYPE, 
-                /* handler       */ () => {}, 
-                /* middleware    */ [],
-                /* uri           */ 'foo', 
-                /* caseSensitive */ false
+                regent,
+                ROUTE_TYPE,
+                () => {
+                    //
+                },
+                [],
+                'foo',
+                false
             );
             const req = new http.IncomingMessage();
             req.url = '/foo';
@@ -273,20 +340,19 @@ describe(`The ${CLASS_NAME} class`, () => {
             route.run(request, response);
         });
         describe('success', () => {
+            // eslint-disable-next-line max-len
             it('should pass the request into the handler as the first parameter', () => {
-                const callback = (req) => assert.equal(req, request);
-
-                const route = new SimpleCompiledHttpRoute(
-                    /* regent        */ regent, 
-                    /* reouteType    */ ROUTE_TYPE, 
-                    /* handler       */ callback, 
-                    /* middleware    */ [],
-                    /* uri           */ 'foo', 
-                    /* caseSensitive */ false
-                );
                 const req = new http.IncomingMessage();
-                req.url = '/foo';
                 const request = new HttpRequest(regent.getKernel('http'), req);
+                const route = new SimpleCompiledHttpRoute(
+                    regent,
+                    ROUTE_TYPE,
+                    (paramRequest) => assert.equal(paramRequest, request),
+                    [],
+                    'foo',
+                    false
+                );
+                req.url = '/foo';
                 const response = new HttpResponse(
                     regent.getKernel('http'),
                     new http.ServerResponse(req)
@@ -294,17 +360,8 @@ describe(`The ${CLASS_NAME} class`, () => {
 
                 route.run(request, response);
             });
+            // eslint-disable-next-line max-len
             it('should pass the response into the handler as the second parameter', () => {
-                const callback = (req, res) => assert.equal(res, response);
-                
-                const route = new SimpleCompiledHttpRoute(
-                    /* regent        */ regent, 
-                    /* reouteType    */ ROUTE_TYPE, 
-                    /* handler       */ callback, 
-                    /* middleware    */ [],
-                    /* uri           */ 'foo', 
-                    /* caseSensitive */ false
-                );
                 const req = new http.IncomingMessage();
                 req.url = '/foo';
                 const request = new HttpRequest(regent.getKernel('http'), req);
@@ -312,19 +369,32 @@ describe(`The ${CLASS_NAME} class`, () => {
                     regent.getKernel('http'),
                     new http.ServerResponse(req)
                 );
+                const callback = (paramRequest, paramResponse) => {
+                    assert.equal(paramResponse, response);
+                };
+
+                const route = new SimpleCompiledHttpRoute(
+                    regent,
+                    ROUTE_TYPE,
+                    callback,
+                    [],
+                    'foo',
+                    false
+                );
 
                 route.run(request, response);
             });
+            // eslint-disable-next-line max-len
             it('should pass a Map into the handler as the third parameter', () => {
                 const callback = (req, res, obj) => assert.isObject(obj);
-                
+
                 const route = new SimpleCompiledHttpRoute(
-                    /* regent        */ regent, 
-                    /* reouteType    */ ROUTE_TYPE, 
-                    /* handler       */ callback, 
-                    /* middleware    */ [],
-                    /* uri           */ 'foo', 
-                    /* caseSensitive */ false
+                    regent,
+                    ROUTE_TYPE,
+                    callback,
+                    [],
+                    'foo',
+                    false
                 );
                 const req = new http.IncomingMessage();
                 req.url = '/foo';
