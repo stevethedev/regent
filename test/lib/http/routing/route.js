@@ -4,10 +4,8 @@
 'use strict';
 
 const assert       = requireLib('util/assert');
-const HttpRequest  = requireLib('http/request');
-const HttpResponse = requireLib('http/response');
 const HttpRoute    = requireLib('http/routing/route');
-const newRegent    = global.newRegent;
+const { newRegent } = global;
 
 const regent       = newRegent();
 
@@ -18,7 +16,9 @@ const ROUTE_TYPE   = 'web';
 describe(`The ${CLASS_NAME} class`, () => {
     describe('constructor', () => {
         it('should let me instantiate a new class', () => {
-            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {});
+            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {
+                //
+            });
             assert.instanceOf(route, HttpRoute);
         });
         it('should define required parameters with the {segment} pattern');
@@ -26,7 +26,9 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('where() method', () => {
         it('should create a constraint on the associated parameter', () => {
-            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {});
+            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {
+                //
+            });
             const PARAM_NAME    = 'foo';
             const PARAM_PATTERN = 'bar';
             route.where(PARAM_NAME, PARAM_PATTERN);
@@ -38,21 +40,29 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('route() method', () => {
         it('should create a named route', () => {
-            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {});
+            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {
+                //
+            });
             const ROUTE_NAME = 'foo';
             route.route(ROUTE_NAME);
             assert.equal(route.getName(), ROUTE_NAME);
         });
     });
     describe('named() method', () => {
+        // eslint-disable-next-line max-len
         it('should return TRUE if the parameter matches the current route\'s name', () => {
-            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {});
+            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {
+                //
+            });
             const ROUTE_NAME = 'foo';
             route.route(ROUTE_NAME);
             assert.isTrue(route.named(ROUTE_NAME));
         });
+        // eslint-disable-next-line max-len
         it('should return FALSE if the parameter does not match the current route\'s name', () => {
-            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {});
+            const route = new HttpRoute(regent, ROUTE_TYPE, HTTP_URI, () => {
+                //
+            });
             const ROUTE_NAME = 'foo';
             route.route(ROUTE_NAME);
             assert.isFalse(route.named(`${ROUTE_NAME}foo`));

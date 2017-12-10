@@ -3,6 +3,8 @@
  */
 'use strict';
 
+const operatingSystem = require('os');
+
 /*
  |------------------------------------------------------------------------------
  | Default Configuration
@@ -28,13 +30,13 @@
 module.exports.Directories = {
     // Your application files are stored here
     app: './app',
-    
+
     // Configuration Files
     etc: './etc',
-    
+
     // Core Regent Files
     lib: './lib',
-    
+
     // Log files
     log: './storage/log',
 
@@ -48,27 +50,25 @@ module.exports.Directories = {
     view: './storage/views',
 };
 
-module.exports.AppConfig = {
-    file: 'app.js'
-};
+module.exports.AppConfig = { file: 'app.js' };
 
 /*
  |------------------------------------------------------------------------------
  | HTTP Server Configuration
  |------------------------------------------------------------------------------
  |
- | This section defines the HTTP Configuration Options that are imported by the 
- | kernel and used to configure the HTTP server. NOTE: If the server is using 
+ | This section defines the HTTP Configuration Options that are imported by the
+ | kernel and used to configure the HTTP server. NOTE: If the server is using
  | NGINX or Apache, a reverse proxy may need to route traffic into Regent.
  |
  */
 module.exports.HttpConfig = {
-    host: 'localhost',
-    port: 8080,
     // TRUE to use clustering, or FALSE to turn it off
-    cluster: true,
+    cluster  : true,
+    host     : 'localhost',
+    port     : 8080,
     // Number of clusters to use, if clustering is enabled
-    processes: require('os').cpus().length,
+    processes: operatingSystem.cpus().length,
 };
 
 /*
@@ -84,6 +84,6 @@ module.exports.HttpConfig = {
  |
  */
 module.exports.LoggerConfig = {
-    logLevel: 5,
     catchErrors: true,
+    logLevel   : 5,
 };

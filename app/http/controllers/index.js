@@ -2,15 +2,12 @@
 
 const HttpController = requireApp('http/controller');
 
-class IndexHttpController extends HttpController
-{
-    initialize()
-    {
+class IndexHttpController extends HttpController {
+    initialize() {
         //
     }
 
-    index()
-    {
+    index() {
         return this.view('index.njk');
     }
 }
