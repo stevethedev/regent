@@ -1584,7 +1584,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                         assert.equal(
                             query.compile().query,
                             'SELECT * FROM table WHERE '
-                                + 'bar = $1 AND foo >= $1 AND foo <= $2'
+                                + 'foo = $1 AND bar >= $2 AND bar <= $3'
                         );
                     });
                     it('should return the Query Builder', () => {
