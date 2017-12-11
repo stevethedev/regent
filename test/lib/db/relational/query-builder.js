@@ -1599,15 +1599,45 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereColumn method', () => {
             describe('(<field-1>, <field-2>) signature', () => {
-                it('should add "<field-1> = <field-2>" to the WHERE clause');
-                it('should return the Query Builder');
+                it(
+                    'should add "<field-1> = <field-2>" to the WHERE clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.whereColumn('foo', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo = bar'
+                        );
+                    }
+                );
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereColumn('foo', 'bar'),
+                        query
+                    );
+                });
             });
             describe('(<field-1>, <operator>, <field-2>) signature', () => {
                 it(
                     'should add "<field-1> <operator> <field-2>" to the '
-                    + 'WHERE clause'
+                    + 'WHERE clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.whereColumn('foo', '<', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo < bar'
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereColumn('foo', '<', 'bar'),
+                        query
+                    );
+                });
             });
         });
         describe('whereDate method', () => {
