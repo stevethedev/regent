@@ -1699,27 +1699,88 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereDay method', () => {
             describe('(<field>, <day>) signature', () => {
-                it('should add "DAY(<field>) = <day>" to the WHERE clause');
-                it('should add <day> to the bound arguments');
                 it(
-                    'should throw an error if <day> is not an integer in the '
-                    + 'range [1 .. 31]'
+                    'should add "DAY(<field>) = <day>" to the WHERE clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.whereDay('foo', 1);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE DAY(foo) = $1'
+                        );
+                    }
                 );
+                it('should add <day> to the bound arguments', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereDay('foo', date.getDate());
+                    assert.equal(
+                        query.compile().bound[0],
+                        date.getDate()
+                    );
+                });
                 it(
                     'should accept a Date object for the <day> field and '
-                    + 'extract the appropriate day'
+                    + 'extract the appropriate day',
+                    () => {
+                        const date = new Date();
+                        const query = getQueryBuilder();
+                        query.whereDay('foo', date);
+                        assert.equal(
+                            query.compile().bound[0],
+                            date.getDate()
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereDay('foo', date.getDate()),
+                        query
+                    );
+                });
             });
             describe('(<field>, <operator>, <day>) signature', () => {
-                it('should add "DAY(<field>) <operator> <day>"');
-                it('should add <day> to the bound arguments');
-                it('should throw an error if <day> is not a positive integer');
+                it('should add "DAY(<field>) <operator> <day>"', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereDay('foo', '<', date.getDate());
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE DAY(foo) < $1'
+                    );
+                });
+                it('should add <day> to the bound arguments', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereDay('foo', '<', date.getDate());
+                    assert.equal(
+                        query.compile().bound[0],
+                        date.getDate()
+                    );
+                });
                 it(
                     'should accept a Date object for the <day> field and '
-                    + 'extract the appropriate day'
+                    + 'extract the appropriate day',
+                    () => {
+                        const date = new Date();
+                        const query = getQueryBuilder();
+                        query.whereDay('foo', '<', date);
+                        assert.equal(
+                            query.compile().bound[0],
+                            date.getDate()
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereDay('foo', '<', date.getDate()),
+                        query
+                    );
+                });
             });
         });
         describe('whereExists method', () => {
