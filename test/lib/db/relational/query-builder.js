@@ -1552,23 +1552,48 @@ describe(`The ${CLASS_NAME} class`, () => {
                 '(<field>, [<x>, <y>], <inclusive = true>) signature',
                 () => {
                     it(
-                        'should add "<field> >= <Min(x, y)>" to the WHERE '
-                        + 'clause if <inclusive> is true'
+                        'should add "<field> >= <x>" and "<field> <= <y>" to '
+                        + 'the WHERE clause if <inclusive> is true',
+                        () => {
+                            const query = getQueryBuilder();
+                            query.whereBetween('foo', [ 0, 1 ], true);
+                            assert.equal(
+                                query.compile().query,
+                                'SELECT * FROM table WHERE '
+                                    + 'foo >= $1 AND foo <= $2'
+                            );
+                        }
                     );
                     it(
-                        'should add "<field> <= <Max(x, y)>" to the WHERE '
-                        + 'clause if <inclusive> is true'
+                        'should add "<field> > <x>" and "<field> < <y>" to '
+                        + 'the WHERE clause if <inclusive> is true',
+                        () => {
+                            const query = getQueryBuilder();
+                            query.whereBetween('foo', [ 0, 1 ], false);
+                            assert.equal(
+                                query.compile().query,
+                                'SELECT * FROM table WHERE '
+                                    + 'foo > $1 AND foo < $2'
+                            );
+                        }
                     );
-                    it(
-                        'should add "<field> > <Min(x, y)>" to the WHERE '
-                        + 'clause if <inclusive> is false'
-                    );
-                    it(
-                        'should add "<field> < <Max(x, y)>" to the WHERE '
-                        + 'clause if <inclusive> is false'
-                    );
-                    it('should join conditionals with ... AND ...');
-                    it('should return the Query Builder');
+                    it('should join conditionals with ... AND ...', () => {
+                        const query = getQueryBuilder();
+                        query.where('foo', 1);
+                        query.whereBetween('bar', [ 0, 1 ], true);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE '
+                                + 'bar = $1 AND foo >= $1 AND foo <= $2'
+                        );
+                    });
+                    it('should return the Query Builder', () => {
+                        const query = getQueryBuilder();
+                        assert.equal(
+                            query.whereBetween('bar', [ 0, 1 ], true),
+                            query
+                        );
+                    });
                 }
             );
         });
