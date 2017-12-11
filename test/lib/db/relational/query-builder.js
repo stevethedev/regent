@@ -1808,30 +1808,90 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereMonth method', () => {
             describe('(<field>, <month>) signature', () => {
-                it('should add "MONTH(<field>) = <month>" to the WHERE clause');
-                it('should add <month> to the bound arguments');
                 it(
-                    'should throw an error if <month> is not in the '
-                    + 'range [1..12]'
+                    'should add "MONTH(<field>) = <month>" to the WHERE clause',
+                    () => {
+                        const date = new Date();
+                        const query = getQueryBuilder();
+                        query.whereMonth('foo', date.getMonth() + 1);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE MONTH(foo) = $1'
+                        );
+                    }
                 );
+                it('should add <month> to the bound arguments', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereMonth('foo', date.getMonth() + 1);
+                    assert.equal(
+                        query.compile().bound[0],
+                        date.getMonth() + 1
+                    );
+                });
                 it(
                     'should accept a Date object for the <month> field and '
-                    + 'extract the appropriate month'
+                    + 'extract the appropriate month',
+                    () => {
+                        const date = new Date();
+                        const query = getQueryBuilder();
+                        query.whereMonth('foo', date);
+                        assert.equal(
+                            query.compile().bound[0],
+                            date.getMonth() + 1
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereMonth('foo', date),
+                        query
+                    );
+                });
             });
             describe('(<field>, <operator>, <month>) signature', () => {
-                it('should add "MONTH(<field>) <operator> <month>"');
-                it('should add <month> to the bound arguments');
-                it(
-                    'should throw an error if <month> is not in the '
-                    + 'range [1..12]'
-                );
+                it('should add "MONTH(<field>) <operator> <month>"', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereMonth('foo', '<', date.getMonth() + 1);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE MONTH(foo) < $1'
+                    );
+                });
+                it('should add <month> to the bound arguments', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereMonth('foo', '<', date.getMonth() + 1);
+                    assert.equal(
+                        query.compile().bound[0],
+                        date.getMonth() + 1
+                    );
+                });
                 it(
                     'should accept a Date object for the <month> field and '
-                    + 'extract the appropriate month'
+                    + 'extract the appropriate month',
+                    () => {
+                        const date = new Date();
+                        const query = getQueryBuilder();
+                        query.whereMonth('foo', '<', date);
+
+                        assert.equal(
+                            query.compile().bound[0],
+                            date.getMonth() + 1
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereMonth('foo', '<', date),
+                        query
+                    );
+                });
             });
         });
         describe('whereNotBetween method', () => {
