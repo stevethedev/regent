@@ -2045,24 +2045,89 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereYear method', () => {
             describe('(<field>, <year>) signature', () => {
-                it('should add "YEAR(<field>) = <year>" to the WHERE clause');
-                it('should add <year> to the bound arguments');
-                it('should throw an error if <year> is not an integer');
+                it(
+                    'should add "YEAR(<field>) = <year>" to the WHERE clause',
+                    () => {
+                        const date = new Date();
+                        const query = getQueryBuilder();
+                        query.whereYear('foo', date.getFullYear());
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE YEAR(foo) = $1'
+                        );
+                    }
+                );
+                it('should add <year> to the bound arguments', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereYear('foo', date.getFullYear());
+                    assert.equal(
+                        query.compile().bound[0],
+                        date.getFullYear()
+                    );
+                });
                 it(
                     'should accept a Date object for the <year> field and '
-                    + 'extract the appropriate year'
+                    + 'extract the appropriate year',
+                    () => {
+                        const date = new Date();
+                        const query = getQueryBuilder();
+                        query.whereYear('foo', date);
+                        assert.equal(
+                            query.compile().bound[0],
+                            date.getFullYear()
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereYear('foo', date.getFullYear()),
+                        query
+                    );
+                });
             });
             describe('(<field>, <operator>, <year>) signature', () => {
-                it('should add "YEAR(<field>) <operator> <year>"');
-                it('should add <year> to the bound arguments');
-                it('should throw an error if <year> is not a positive integer');
+                it('should add "YEAR(<field>) <operator> <year>"', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereYear('foo', '<', date.getFullYear());
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE YEAR(foo) < $1'
+                    );
+                });
+                it('should add <year> to the bound arguments', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereYear('foo', '<', date.getFullYear());
+                    assert.equal(
+                        query.compile().bound[0],
+                        date.getFullYear()
+                    );
+                });
                 it(
                     'should accept a Date object for the <year> field and '
-                    + 'extract the appropriate year'
+                    + 'extract the appropriate year',
+                    () => {
+                        const date = new Date();
+                        const query = getQueryBuilder();
+                        query.whereYear('foo', '<', date);
+                        assert.equal(
+                            query.compile().bound[0],
+                            date.getFullYear()
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereYear('foo', '<', date.getFullYear()),
+                        query
+                    );
+                });
             });
         });
     });
