@@ -1642,23 +1642,59 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereDate method', () => {
             describe('(<field>, <date>) signature', () => {
-                it('should add "<field> = <date>" to the WHERE clause');
-                it('should add <date> to the bound arguments');
-                it(
-                    'should accept a Date object for the <date> field and '
-                    + 'extract the appropriate date'
-                );
-                it('should return the Query Builder');
+                it('should add "<field> = <date>" to the WHERE clause', () => {
+                    const query = getQueryBuilder();
+                    query.whereDate('foo', new Date());
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1'
+                    );
+                });
+                it('should add <date> to the bound arguments', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereDate('foo', date);
+                    assert.equal(
+                        query.compile().bound[0],
+                        date
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereDate('foo', date),
+                        query
+                    );
+                });
             });
             describe('(<field>, <operator>, <date>) signature', () => {
-                it('should add "<field> <operator> <date>"');
-                it('should add <date> to the bound arguments');
-                it('should throw an error if <date> is not a positive integer');
-                it(
-                    'should accept a Date object for the <date> field and '
-                    + 'extract the appropriate date'
-                );
-                it('should return the Query Builder');
+                it('should add "<field> <operator> <date>"', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereDate('foo', '<', date);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo < $1'
+                    );
+                });
+                it('should add <date> to the bound arguments', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    query.whereDate('foo', '<', date);
+                    assert.equal(
+                        query.compile().bound[0],
+                        date
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const date = new Date();
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereDate('foo', '<', date),
+                        query
+                    );
+                });
             });
         });
         describe('whereDay method', () => {
