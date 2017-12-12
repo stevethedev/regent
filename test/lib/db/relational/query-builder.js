@@ -1798,12 +1798,60 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereIn method', () => {
             describe('(<field>, <values = []>) signature', () => {
-                it('should add "<field> IN (<...values>)" to the WHERE clause');
-                it('should add <...values> to the bound arguments');
-                it('should use "<field> IS NULL" if a blank array is passed');
-                it('should throw an error if a non-array value is passed');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+                it(
+                    'should add "<field> IN (<...values>)" to the WHERE clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.whereIn('foo', [ '1', '2' ]);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo IN ($1, $2)'
+                        );
+                    }
+                );
+                it('should add <...values> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    const array = [ '1', '2' ];
+                    query.whereIn('foo', array);
+                    assert.equal(
+                        query.compile().bound.length,
+                        array.length
+                    );
+                });
+                it(
+                    'should use "<field> IS NULL" if a blank array is passed',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.whereIn('foo', []);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo IS NULL'
+                        );
+                    }
+                );
+                it(
+                    'should throw an error if a non-array value is passed',
+                    () => {
+                        const query = getQueryBuilder();
+                        assert.throws(() => query.whereIn('foo', false));
+                    }
+                );
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'my-foo');
+                    query.whereIn('bar', [ '1', '2' ]);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 AND bar IN ($1, $2)'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereIn('foo', [ 0, 1 ]),
+                        query
+                    );
+                });
             });
         });
         describe('whereMonth method', () => {
