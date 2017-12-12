@@ -2008,7 +2008,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     assert.equal(
                         query.compile().query,
                         'SELECT * FROM table WHERE foo = $1 AND '
-                            + 'bar NOT IN ($1, 2)'
+                            + 'bar NOT IN ($1, $2)'
                     );
                 });
                 it('should return the Query Builder', () => {
