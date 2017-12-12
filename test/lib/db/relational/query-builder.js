@@ -1969,12 +1969,55 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereNotIn method', () => {
             describe('(<field>, <values = []>) signature', () => {
-                it('should add "<field> NOT IN (<...values>)"');
-                it('should add <...values> to the bound arguments');
-                it('should use "<field> IS NOT NULL" if [] is passed');
-                it('should throw an error if a non-array value is passed');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+                it('should add "<field> NOT IN (<...values>)"', () => {
+                    const query = getQueryBuilder();
+                    query.whereNotIn('foo', [ 0, 1 ]);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo NOT IN ($1, $2)'
+                    );
+                });
+                it('should add <...values> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    const array = [ 0, 1 ];
+                    query.whereNotIn('foo', array);
+                    assert.equal(
+                        query.compile().bound.length,
+                        array.length
+                    );
+                });
+                it('should use "<field> IS NOT NULL" if [] is passed', () => {
+                    const query = getQueryBuilder();
+                    query.whereNotIn('foo', []);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo IS NOT NULL'
+                    );
+                });
+                it(
+                    'should throw an error if a non-array value is passed',
+                    () => {
+                        const query = getQueryBuilder();
+                        assert.throws(() => query.whereNotIn('foo', true));
+                    }
+                );
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', true);
+                    query.whereNotIn('bar', [ 0, 1 ]);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 AND '
+                            + 'bar NOT IN ($1, $2)'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereNotIn('foo', [ 0, 1 ]),
+                        query
+                    );
+                });
             });
         });
         describe('whereNull method', () => {
