@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "gen:doc": "node_modules/.bin/jsdoc -c ./jsdoc/jsdoc.json",
-    "gen:coverage": "./node_modules/.bin/nyc --reporter=lcov ./node_modules/mocha/bin/_mocha && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage -p . && rm -rf ./coverage",
+    "gen:coverage": "./node_modules/.bin/nyc --reporter=lcov ./node_modules/mocha/bin/_mocha && cat ./coverage/lcov.info | ./node_modules/.bin/codacy-coverage -p .",
     "run:linter": "node_modules/.bin/eslint ./app/** ./bootstrap/** ./etc/** ./lib/** ./test/**",
     "run:server": "node ./bootstrap/app.js",
     "test": "node ./test/test.js"

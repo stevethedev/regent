@@ -30,3 +30,4 @@ doc/*
 # This section ignores files associated with the automated integration process
 #
 .nyc_output/*
+coverage/*
