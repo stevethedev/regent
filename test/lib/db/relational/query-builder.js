@@ -1785,8 +1785,29 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereExists method', () => {
             describe(`(<query:${CLASS_NAME}>) signature`, () => {
-                it('should add "EXISTS (<query>) to the WHERE clause');
-                it('should return the Query Builder');
+                it('should add "EXISTS (<query>) to the WHERE clause', () => {
+                    const innerQuery = getQueryBuilder();
+                    const outerQuery = getQueryBuilder();
+
+                    innerQuery.where('foo', 'my-foo');
+                    outerQuery.where('bar', 'my-bar');
+                    outerQuery.whereExists(innerQuery);
+
+                    assert.equal(
+                        outerQuery.compile().query,
+                        'SELECT * FROM table WHERE bar = $1 AND '
+                            + 'EXISTS (SELECT * FROM table WHERE foo = $2)'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const innerQuery = getQueryBuilder();
+                    const outerQuery = getQueryBuilder();
+
+                    assert.equal(
+                        outerQuery.whereExists(innerQuery),
+                        outerQuery
+                    );
+                });
             });
         });
         describe('whereExistsRaw method', () => {
