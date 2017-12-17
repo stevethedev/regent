@@ -2468,8 +2468,22 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('orderByRaw method', () => {
             describe('(<string>) signature', () => {
-                it('should add "<string>" to the ORDER BY clause');
-                it('should return the Query Builder');
+                it('should add "<string>" to the ORDER BY clause', () => {
+                    const query = getQueryBuilder();
+                    query.orderByRaw('foo ASC');
+                    query.orderByRaw('bar DESC');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table ORDER BY foo ASC, bar DESC'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.orderByRaw('foo ASC'),
+                        query
+                    );
+                });
             });
         });
     });
