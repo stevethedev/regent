@@ -2081,10 +2081,33 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<field>, ...) signature', () => {
                 it(
                     'should add "<field> IS NOT NULL" to the WHERE clause for '
-                    + 'each <field>'
+                    + 'each <field>',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.whereNotNull('foo');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo IS NOT NULL'
+                        );
+                    }
                 );
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.whereNotNull('foo');
+                    query.whereNotNull('bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo IS NOT NULL '
+                            + 'AND bar IS NOT NULL'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereNotNull('foo'),
+                        query
+                    );
+                });
             });
         });
         describe('whereRaw method', () => {
