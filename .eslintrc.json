@@ -183,13 +183,18 @@
             "unix"
         ],
         "max-depth": [
-            "warn"
+            "warn",
+            3
         ],
         "max-len": [
             "error"
         ],
         "max-nested-callbacks": [
             "error"
+        ],
+        "max-params": [
+            "warn",
+            4
         ],
         "max-statements-per-line": [
             "error"
