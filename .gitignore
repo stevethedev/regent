@@ -21,5 +21,13 @@ log/*
 #
 # This section ignores the files associated with generated documentation
 #
-
 doc/*
+
+#-------------------------------------------------------------------------------
+# Automation Files
+#-------------------------------------------------------------------------------
+#
+# This section ignores files associated with the automated integration process
+#
+.nyc_output/*
+coverage/*
