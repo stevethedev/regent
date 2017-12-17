@@ -2476,16 +2476,62 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('LIMIT clause', () => {
         describe('limit method', () => {
             describe('(<count>) signature', () => {
-                it('should set the LIMIT clause to "<count>"');
-                it('should add <count> to the bound arguments');
-                it('should return the Query Builder');
+                it('should set the LIMIT clause to "<count>"', () => {
+                    const query = getQueryBuilder();
+                    const LIMIT = 5;
+                    query.limit(LIMIT);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table LIMIT $1'
+                    );
+                });
+                it('should add <count> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    const LIMIT = 5;
+                    query.limit(LIMIT);
+                    assert.equal(
+                        query.compile().bound[0],
+                        LIMIT
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    const LIMIT = 5;
+                    assert.equal(
+                        query.limit(LIMIT),
+                        query
+                    );
+                });
             });
         });
         describe('take method', () => {
             describe('(<count = 1>) signature', () => {
-                it('should set the LIMIT clause to "<count>"');
-                it('should add <count> to the bound arguments');
-                it('should return the Query Builder');
+                it('should set the LIMIT clause to "<count>"', () => {
+                    const query = getQueryBuilder();
+                    const LIMIT = 5;
+                    query.limit(LIMIT);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table LIMIT $1'
+                    );
+                });
+                it('should add <count> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    const LIMIT = 5;
+                    query.limit(LIMIT);
+                    assert.equal(
+                        query.compile().bound[0],
+                        LIMIT
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    const LIMIT = 5;
+                    assert.equal(
+                        query.limit(LIMIT),
+                        query
+                    );
+                });
             });
         });
     });
