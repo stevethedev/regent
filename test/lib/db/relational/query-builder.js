@@ -2049,10 +2049,32 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<field>, ...) signature', () => {
                 it(
                     'should add "<field> IS NULL" to the WHERE clause for '
-                    + 'each <field>'
+                    + 'each <field>',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.whereNull('foo');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table WHERE foo IS NULL'
+                        );
+                    }
                 );
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.whereNull('foo');
+                    query.whereNull('bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo IS NULL AND bar IS NULL'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereNull('foo'),
+                        query
+                    );
+                });
             });
         });
         describe('whereNotNull method', () => {
