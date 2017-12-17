@@ -1,12 +1,8 @@
 [![Build Status](https://travis-ci.org/stevethedev/regent.svg?branch=master)](https://travis-ci.org/stevethedev/regent)
 
-[![codebeat badge](https://codebeat.co/badges/a19f4cc4-03aa-4ef6-b3b9-dfcf59afc4ff)](https://codebeat.co/projects/github-com-stevethedev-regent-master)
+[![codebeat badge](https://codebeat.co/badges/fc6f910d-73de-4831-8045-4ff1970dade8)](https://codebeat.co/projects/github-com-stevethedev-regent-master)
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1d9972def2334992a30922b030249798)](https://www.codacy.com/app/stevethedev/regent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=stevethedev/regent&amp;utm_campaign=Badge_Grade)
-
-[![Maintainability](https://api.codeclimate.com/v1/badges/6f5b97f47fc25a7a76f3/maintainability)](https://codeclimate.com/github/stevethedev/regent/maintainability)
-
-[![Test Coverage](https://api.codeclimate.com/v1/badges/6f5b97f47fc25a7a76f3/test_coverage)](https://codeclimate.com/github/stevethedev/regent/test_coverage)
 
 # Regent
 
