@@ -1791,9 +1791,37 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('whereExistsRaw method', () => {
             describe('(<query:string>, <bind = []>) signature', () => {
-                it('should add "EXISTS (<query>) to the WHERE clause');
-                it('should add <...bind> to the bound arguments');
-                it('should return the Query Builder');
+                it('should add "EXISTS (<query>) to the WHERE clause', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'my-foo');
+                    query.whereExistsRaw(
+                        'SELECT * FROM my_table WHERE bar = {0}',
+                        ['my-bar']
+                    );
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table WHERE foo = $1 AND '
+                            + 'EXISTS (SELECT * FROM my_table WHERE bar = $2)'
+                    );
+                });
+                it('should add <...bind> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.where('foo', 'my-foo');
+                    query.whereExistsRaw(
+                        'SELECT * FROM my_table WHERE bar = {0}',
+                        ['my-bar']
+                    );
+                    const { bound } = query.compile();
+                    assert.equal(bound[0], 'my-foo');
+                    assert.equal(bound[1], 'my-bar');
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.whereExistsRaw('SELECT * FROM my_table'),
+                        query
+                    );
+                });
             });
         });
         describe('whereIn method', () => {
