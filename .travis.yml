@@ -47,7 +47,7 @@ script:
   - npm run gen:coverage
 
 after_success:
-  - echo "SUCCESS"
+  - npm run pub:coverage
 
 after_faiulre:
   - echo "FAILURE"
