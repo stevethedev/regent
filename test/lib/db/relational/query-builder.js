@@ -2509,7 +2509,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should set the LIMIT clause to "<count>"', () => {
                     const query = getQueryBuilder();
                     const LIMIT = 5;
-                    query.limit(LIMIT);
+                    query.take(LIMIT);
                     assert.equal(
                         query.compile().query,
                         'SELECT * FROM table LIMIT $1'
@@ -2518,7 +2518,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add <count> to the bound arguments', () => {
                     const query = getQueryBuilder();
                     const LIMIT = 5;
-                    query.limit(LIMIT);
+                    query.take(LIMIT);
                     assert.equal(
                         query.compile().bound[0],
                         LIMIT
@@ -2528,7 +2528,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const query = getQueryBuilder();
                     const LIMIT = 5;
                     assert.equal(
-                        query.limit(LIMIT),
+                        query.take(LIMIT),
                         query
                     );
                 });
@@ -2538,16 +2538,62 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('OFFSET clause', () => {
         describe('offset method', () => {
             describe('(<count>) signature', () => {
-                it('should set the OFFSET clause to "<count>"');
-                it('should add <count> to the bound arguments');
-                it('should return the Query Builder');
+                it('should set the OFFSET clause to "<count>"', () => {
+                    const query = getQueryBuilder();
+                    const OFFSET = 5;
+                    query.offset(OFFSET);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table OFFSET 5'
+                    );
+                });
+                it('should add <count> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    const OFFSET = 5;
+                    query.offset(OFFSET);
+                    assert.equal(
+                        query.compile().bound[0],
+                        OFFSET
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    const OFFSET = 5;
+                    assert.equal(
+                        query.offset(OFFSET),
+                        query
+                    );
+                });
             });
         });
         describe('skip method', () => {
             describe('(<count = 1>) signature', () => {
-                it('should set the OFFSET clause to "<count>"');
-                it('should add <count> to the bound arguments');
-                it('should return the Query Builder');
+                it('should set the OFFSET clause to "<count>"', () => {
+                    const query = getQueryBuilder();
+                    const OFFSET = 5;
+                    query.skip(OFFSET);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table OFFSET 5'
+                    );
+                });
+                it('should add <count> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    const OFFSET = 5;
+                    query.skip(OFFSET);
+                    assert.equal(
+                        query.compile().bound[0],
+                        OFFSET
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    const OFFSET = 5;
+                    assert.equal(
+                        query.skip(OFFSET),
+                        query
+                    );
+                });
             });
         });
     });
