@@ -1265,7 +1265,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     () => {
                         const query = getQueryBuilder();
                         query.where('foo', 'bar');
-                        query.orWhereRaw('foo = $2', ['baz']);
+                        query.orWhereRaw('foo = {0}', ['baz']);
                         assert.equal(
                             query.compile().query,
                             'SELECT * FROM table WHERE foo = $1 OR foo = $2'
@@ -1285,7 +1285,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                         };
                         getQueryBuilder(connection)
                             .where('foo', 'bar')
-                            .orWhereRaw('foo = $2', ['baz'])
+                            .orWhereRaw('foo = {0}', ['baz'])
                             .update();
                     }
                 );
@@ -1303,7 +1303,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                         };
                         getQueryBuilder(connection)
                             .where('foo', 'bar')
-                            .orWhereRaw('foo = $2', ['baz'])
+                            .orWhereRaw('foo = {0}', ['baz'])
                             .delete();
                     }
                 );
@@ -1313,7 +1313,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                         let i = 0;
                         const query = getQueryBuilder();
                         ++i && query.where('foo', 'bar');
-                        ++i && query.orWhereRaw('foo = $2', ['baz']);
+                        ++i && query.orWhereRaw('foo = {0}', ['baz']);
                         assert.equal(query.compile().bound.length, i);
                     }
                 );
@@ -1328,7 +1328,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                         };
                         const query = getQueryBuilder(connection);
                         ++i && query.where('foo', 'bar');
-                        ++i && query.orWhereRaw('foo = $2', ['baz']);
+                        ++i && query.orWhereRaw('foo = {0}', ['baz']);
                         query.update();
                     }
                 );
@@ -1343,13 +1343,13 @@ describe(`The ${CLASS_NAME} class`, () => {
                         };
                         const query = getQueryBuilder(connection);
                         ++i && query.where('foo', 'bar');
-                        ++i && query.orWhereRaw('foo = $2', ['baz']);
+                        ++i && query.orWhereRaw('foo = {0}', ['baz']);
                         query.delete();
                     }
                 );
                 it('should join conditionals with ... OR ...', () => {
                     const query = getQueryBuilder();
-                    query.where('foo', 'bar').orWhereRaw('foo = $2', ['baz']);
+                    query.where('foo', 'bar').orWhereRaw('foo = {0}', ['baz']);
                     assert.equal(
                         query.compile().query,
                         'SELECT * FROM table WHERE foo = $1 OR foo = $2'
@@ -1357,7 +1357,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
-                    assert.equal(query.orWhereRaw('foo = $1', ['foo']), query);
+                    assert.equal(query.orWhereRaw('foo = {0}', ['foo']), query);
                 });
             });
         });
@@ -1842,7 +1842,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     query.whereIn('bar', [ '1', '2' ]);
                     assert.equal(
                         query.compile().query,
-                        'SELECT * FROM table WHERE foo = $1 AND bar IN ($1, $2)'
+                        'SELECT * FROM table WHERE foo = $1 AND bar IN ($2, $3)'
                     );
                 });
                 it('should return the Query Builder', () => {
@@ -2033,7 +2033,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     assert.equal(
                         query.compile().query,
                         'SELECT * FROM table WHERE foo = $1 AND '
-                            + 'bar NOT IN ($1, $2)'
+                            + 'bar NOT IN ($2, $3)'
                     );
                 });
                 it('should return the Query Builder', () => {
@@ -2114,7 +2114,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     + 'SELECT queries',
                     () => {
                         assert.equal(
-                            getQueryBuilder().whereRaw('foo = $1', [1])
+                            getQueryBuilder().whereRaw('foo = {0}', [1])
                                 .compile().bound.length,
                             1
                         );
@@ -2129,7 +2129,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                             },
                         };
                         getQueryBuilder(connection)
-                            .whereRaw('foo = $1', [1])
+                            .whereRaw('foo = {0}', [1])
                             .update();
                     }
                 );
@@ -2141,7 +2141,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                                 assert.equal(bound.length, 1);
                             },
                         };
-                        getQueryBuilder(connection).whereRaw('foo = $1', [1])
+                        getQueryBuilder(connection).whereRaw('foo = {0}', [1])
                             .delete();
                     }
                 );
