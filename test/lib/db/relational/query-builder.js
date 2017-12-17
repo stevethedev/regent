@@ -2544,7 +2544,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                     query.offset(OFFSET);
                     assert.equal(
                         query.compile().query,
-                        'SELECT * FROM table OFFSET 5'
+                        'SELECT * FROM table OFFSET $1'
                     );
                 });
                 it('should add <count> to the bound arguments', () => {
@@ -2574,12 +2574,13 @@ describe(`The ${CLASS_NAME} class`, () => {
                     query.skip(OFFSET);
                     assert.equal(
                         query.compile().query,
-                        'SELECT * FROM table OFFSET 5'
+                        'SELECT * FROM table OFFSET $1'
                     );
                 });
                 it('should add <count> to the bound arguments', () => {
                     const query = getQueryBuilder();
                     const OFFSET = 5;
+                    query.take(OFFSET);
                     query.skip(OFFSET);
                     assert.equal(
                         query.compile().bound[0],
