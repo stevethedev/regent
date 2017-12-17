@@ -4,6 +4,8 @@
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/1d9972def2334992a30922b030249798)](https://www.codacy.com/app/stevethedev/regent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=stevethedev/regent&amp;utm_campaign=Badge_Grade)
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/1d9972def2334992a30922b030249798)](https://www.codacy.com/app/stevethedev/regent?utm_source=github.com&utm_medium=referral&utm_content=stevethedev/regent&utm_campaign=Badge_Coverage)
+
 # Regent
 
 Regent is a web application framework written in Node.js (v8.9.0 LTS). Drawing
