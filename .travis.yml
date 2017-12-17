@@ -29,8 +29,8 @@ env:
 
 # Services
 services:
-  - mongodb     # will start mongodb
-  - rabbitmq # will start rabbitmq-server
+  # - mongodb     # will start mongodb
+  # - rabbitmq # will start rabbitmq-server
 
 ## begin build steps
 ####################
@@ -42,6 +42,9 @@ before_install:
 before_script:
   - echo "BEFORE SCRIPT"
   - npm install
+
+script:
+  - npm run gen:coverage
 
 after_success:
   - echo "SUCCESS"
