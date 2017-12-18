@@ -609,6 +609,19 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const query = getQueryBuilder(connection);
                     query.increment('incr', 1, values);
                 });
+                it('should prefer overwrites to the increment', () => {
+                    const values = { 'foo': 'foo' };
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'UPDATE table SET foo = $1'
+                            );
+                        },
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.increment('foo', 1, values);
+                });
             });
             describe('({ <incr-field>: <incr-value>, }, { <field>: <value>, } '
                 + '= {}) signature', () => {
@@ -1588,7 +1601,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                         + 'the WHERE clause if <inclusive> is true',
                         () => {
                             const query = getQueryBuilder();
-                            query.whereBetween('foo', [ 0, 1 ], true);
+                            query.whereBetween('foo', [ 0, 1 ]);
                             assert.equal(
                                 query.compile().query,
                                 'SELECT * FROM table WHERE '
@@ -2590,8 +2603,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<count = 1>) signature', () => {
                 it('should set the LIMIT clause to "<count>"', () => {
                     const query = getQueryBuilder();
-                    const LIMIT = 5;
-                    query.take(LIMIT);
+                    query.take();
                     assert.equal(
                         query.compile().query,
                         'SELECT * FROM table LIMIT $1'
@@ -2599,18 +2611,16 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
                 it('should add <count> to the bound arguments', () => {
                     const query = getQueryBuilder();
-                    const LIMIT = 5;
-                    query.take(LIMIT);
+                    query.take();
                     assert.equal(
                         query.compile().bound[0],
-                        LIMIT
+                        1
                     );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
-                    const LIMIT = 5;
                     assert.equal(
-                        query.take(LIMIT),
+                        query.take(),
                         query
                     );
                 });
@@ -2652,8 +2662,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<count = 1>) signature', () => {
                 it('should set the OFFSET clause to "<count>"', () => {
                     const query = getQueryBuilder();
-                    const OFFSET = 5;
-                    query.skip(OFFSET);
+                    query.skip();
                     assert.equal(
                         query.compile().query,
                         'SELECT * FROM table OFFSET $1'
@@ -2661,19 +2670,17 @@ describe(`The ${CLASS_NAME} class`, () => {
                 });
                 it('should add <count> to the bound arguments', () => {
                     const query = getQueryBuilder();
-                    const OFFSET = 5;
-                    query.take(OFFSET);
-                    query.skip(OFFSET);
+                    query.take();
+                    query.skip();
                     assert.equal(
                         query.compile().bound[0],
-                        OFFSET
+                        1
                     );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
-                    const OFFSET = 5;
                     assert.equal(
-                        query.skip(OFFSET),
+                        query.skip(),
                         query
                     );
                 });
