@@ -873,12 +873,12 @@ describe(`The ${CLASS_NAME} class`, () => {
                     );
                 });
             });
-            describe('(<table>, <alias>) signature', () => {
+            describe('({ <alias>: <table> }) signature', () => {
                 it(
                     'should add "CROSS JOIN <table> AS <alias>" to the query',
                     () => {
                         const query = getQueryBuilder();
-                        query.crossJoin('foreign_table', 'my_alias');
+                        query.crossJoin({ 'my_alias': 'foreign_table' });
                         assert.equal(
                             query.compile().query,
                             'SELECT * FROM table CROSS JOIN foreign_table '
@@ -889,7 +889,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
                     assert.equal(
-                        query.crossJoin('foreign_table', 'my_alias'),
+                        query.crossJoin({ 'my_alias': 'foreign_table' }),
                         query
                     );
                 });
