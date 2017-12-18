@@ -917,9 +917,41 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('joinRaw method', () => {
             describe('(<definition>, <bind = []>) signature', () => {
-                it('should add "INNER JOIN <definition>" to the query');
-                it('should add <...bind> to the bound arguments');
-                it('should return the Query Builder');
+                it('should add "INNER JOIN <definition>" to the query', () => {
+                    const query = getQueryBuilder();
+                    query.joinRaw(
+                        'foreign_table ON foreign_table.foo = table.foo '
+                            + 'AND foreign_table.bar = {0}',
+                        ['my-bar']
+                    );
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table INNER JOIN foreign_table '
+                            + 'ON foreign_table.foo = table.foo '
+                            + 'AND foreign_table.bar = $1'
+                    );
+                });
+                it('should add <...bind> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.joinRaw(
+                        'foreign_table ON foreign_table.foo = table.foo '
+                            + 'AND foreign_table.bar = {0}',
+                        ['my-bar']
+                    );
+                    assert.equal(
+                        query.compile().bound[0],
+                        'my-bar'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.joinRaw(
+                            'foreign_table ON foreign_table.foo = table.foo'
+                        ),
+                        query
+                    );
+                });
             });
         });
         describe('leftJoin method', () => {
