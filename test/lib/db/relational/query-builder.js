@@ -2457,13 +2457,35 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<field>, <ascending = true>) signature', () => {
                 it(
                     'should add "<field> ASC" to the ORDER BY clause if '
-                    + '<ascending> is true'
+                    + '<ascending> is true',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.orderBy('foo', true);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table ORDER BY foo ASC'
+                        );
+                    }
                 );
                 it(
                     'should add "<field> DESC" to the ORDER BY clause if '
-                    + '<ascending> is false'
+                    + '<ascending> is false',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.orderBy('foo', false);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table ORDER BY foo DESC'
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.orderBy('foo'),
+                        query
+                    );
+                });
             });
         });
         describe('orderByRaw method', () => {
