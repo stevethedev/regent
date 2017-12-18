@@ -1044,9 +1044,41 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('leftJoinRaw method', () => {
             describe('(<signature>, <bind = []>) signature', () => {
-                it('should add "LEFT JOIN <signature>" to the query');
-                it('should add <...bind> to the bound arguments');
-                it('should return the Query Builder');
+                it('should add "LEFT JOIN <signature>" to the query', () => {
+                    const query = getQueryBuilder();
+                    query.leftJoinRaw(
+                        'foreign_table ON foreign_table.foo = table.bar AND '
+                            + 'foreign_table.baz = {0}',
+                        ['my-baz']
+                    );
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table LEFT JOIN foreign_table '
+                            + 'ON foreign_table.foo = table.bar '
+                            + 'AND foreign_table.baz = $1'
+                    );
+                });
+                it('should add <...bind> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.leftJoinRaw(
+                        'foreign_table ON foreign_table.foo = table.bar '
+                            + 'AND foreign_table.baz = {0}',
+                        ['my-baz']
+                    );
+                    assert.equal(
+                        query.compile().bound[0],
+                        'my-baz'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.leftJoinRaw(
+                            'foreign_table ON foreign_table.foo = table.bar'
+                        ),
+                        query
+                    );
+                });
             });
         });
         describe('rightJoin method', () => {
