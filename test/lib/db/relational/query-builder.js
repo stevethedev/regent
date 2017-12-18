@@ -920,34 +920,109 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<table>, <key-name>) signature', () => {
                 it(
                     'should add "INNER JOIN <table> ON <table>.<key-name> = '
-                    + '<this.table>.<key-name>" to the query'
+                    + '<this.table>.<key-name>" to the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.join('foreign_table', 'shared_key');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table INNER JOIN foreign_table ON '
+                                + 'foreign_table.shared_key = table.shared_key'
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.join('foreign_table', 'shared_key'),
+                        query
+                    );
+                });
             });
             describe('({ <alias>: <table> }, <key-name>) signature', () => {
                 it(
                     'should add "INNER JOIN <table> AS <alias> ON '
                     + '<alias>.<key-name> = <this.table>.<key-name>" to '
-                    + 'the query'
+                    + 'the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        const table = 'foreign_table';
+                        const alias = 'my_table';
+                        query.join({ [alias]: table }, 'shared_key');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table '
+                                + 'INNER JOIN foreign_table AS "my_table" '
+                                + 'ON "my_table".shared_key = table.shared_key'
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.join({ 'my_table': 'foreign_table' }, 'sharekey'),
+                        query
+                    );
+                });
             });
             describe('(<table>, <local-key>, <remote-key>) signature', () => {
                 it(
                     'should add "INNER JOIN <table> ON <table>.<remote-key> = '
-                    + '<this.table>.<local-key>" to the query'
+                    + '<this.table>.<local-key>" to the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.join('foreign_table', 'local', 'foreign');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table '
+                                + 'INNER JOIN foreign_table '
+                                + 'ON foreign_table.foreign = table.local'
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.join('foreign_table', 'local', 'foreign'),
+                        query
+                    );
+                });
             });
             describe(
                 '({ <alias>: <table> }, <local-key>, <operation>, <remote-key>',
                 () => {
                     it(
                         'should add "INNER JOIN <table> AS <alias> ON <alias>.'
-                        + '<remote-key> = <this.table>.<local-key>" to '
-                        + 'the query'
+                            + '<remote-key> = <this.table>.<local-key>" to '
+                            + 'the query',
+                        () => {
+                            const query = getQueryBuilder();
+                            query.join(
+                                { alias: 'foreign_table' },
+                                'local',
+                                '=',
+                                'foreign',
+                            );
+                            assert.equal(
+                                query.compile().query,
+                                'SELECT * FROM table '
+                                    + 'INNER JOIN foreign_table AS "alias" '
+                                    + 'ON "alias".foreign = table.local'
+                            );
+                        }
                     );
-                    it('should return the Query Builder');
+                    it('should return the Query Builder', () => {
+                        const query = getQueryBuilder();
+                        query.join(
+                            query.join(
+                                { alias: 'foreign_table' },
+                                'local',
+                                '=',
+                                'foreign',
+                            ),
+                            query
+                        );
+                    });
                 }
             );
             describe(
@@ -955,9 +1030,35 @@ describe(`The ${CLASS_NAME} class`, () => {
                 () => {
                     it(
                         'should add "INNER JOIN <table> ON <table>.<remote-key>'
-                        + ' <operation> <this.table>.<local-key>" to the query'
+                        + ' <operation> <this.table>.<local-key>" to the query',
+                        () => {
+                            const query = getQueryBuilder();
+                            query.join(
+                                'foreign_table',
+                                'local',
+                                '=',
+                                'foreign',
+                            );
+                            assert.equal(
+                                query.compile().query,
+                                'SELECT * FROM table '
+                                    + 'INNER JOIN foreign_table '
+                                    + 'ON foreign_table.foreign = table.local'
+                            );
+                        }
                     );
-                    it('should return the Query Builder');
+                    it('should return the Query Builder', () => {
+                        const query = getQueryBuilder();
+                        assert.equal(
+                            query.join(
+                                'foreign_table',
+                                'local',
+                                '=',
+                                'foreign',
+                            ),
+                            query
+                        );
+                    });
                 }
             );
             describe(
@@ -966,10 +1067,36 @@ describe(`The ${CLASS_NAME} class`, () => {
                 () => {
                     it(
                         'should add "INNER JOIN <table> AS <alias> ON '
-                        + '<alias>.<remote-key> <operation> '
-                        + '<this.table>.<local-key>" to the query'
+                            + '<alias>.<remote-key> <operation> '
+                            + '<this.table>.<local-key>" to the query',
+                        () => {
+                            const query = getQueryBuilder();
+                            query.join(
+                                { alias: 'foreign_table' },
+                                'local',
+                                '=',
+                                'foreign',
+                            );
+                            assert.equal(
+                                query.compile().query,
+                                'SELECT * FROM table '
+                                    + 'INNER JOIN foreign_table '
+                                    + 'ON foreign_table.foreign = table.local'
+                            );
+                        }
                     );
-                    it('should return the Query Builder');
+                    it('should return the Query Builder', () => {
+                        const query = getQueryBuilder();
+                        assert.equal(
+                            query.join(
+                                { alias: 'foreign_table' },
+                                'local',
+                                '=',
+                                'foreign',
+                            ),
+                            query
+                        );
+                    });
                 }
             );
         });
