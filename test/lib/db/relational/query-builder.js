@@ -2346,29 +2346,43 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<field>, ...) signature', () => {
                 it(
                     'should add "<field>" to the GROUP BY clause for '
-                    + 'each <field>'
+                    + 'each <field>',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.groupBy('foo', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table GROUP BY foo, bar'
+                        );
+                    }
                 );
-                it('should return the Query Builder');
-            });
-            describe('({ <table>: <field> }, ...) signature', () => {
-                it(
-                    'should add "<table>.<field>" to the GROUP BY clause for '
-                    + 'each object'
-                );
-                it('should return the Query Builder');
-            });
-            describe('({ <table>: <field[]> }, ...) signature', () => {
-                it(
-                    'should add "<table>.<field>" to the GROUP BY clause for '
-                    + 'each table/field pair'
-                );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.groupBy('foo', 'bar'),
+                        query
+                    );
+                });
             });
         });
         describe('groupByRaw method', () => {
             describe('(<signature>) signature', () => {
-                it('should add "<signature>" to the GROUP BY clause');
-                it('should return the Query Builder');
+                it('should add "<signature>" to the GROUP BY clause', () => {
+                    const query = getQueryBuilder();
+                    query.groupByRaw('foo');
+                    query.groupByRaw('bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table GROUP BY foo, bar'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.groupByRaw('foo'),
+                        query
+                    );
+                });
             });
         });
     });
