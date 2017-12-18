@@ -1140,9 +1140,43 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('rightJoinRaw method', () => {
             describe('(<signature>, <bind = []>) signature', () => {
-                it('should add "RIGHT JOIN <signature>" to the query');
-                it('should add <...bind> to the bound arguments');
-                it('should return the Query Builder');
+                it('should add "RIGHT JOIN <signature>" to the query', () => {
+                    const query = getQueryBuilder();
+                    query.rightJoinRaw(
+                        'foreign_table ON foreign_table.foo = table.foo '
+                            + 'AND foreign_table.bar = {0}',
+                        ['my-bar']
+                    );
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table RIGHT JOIN foreign_table '
+                            + 'ON foreign_table.foo = table.foo '
+                            + 'AND foreign_table.bar = $1'
+                    );
+                });
+                it('should add <...bind> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.rightJoinRaw(
+                        'foreign_table ON foreign_table.foo = table.foo '
+                            + 'AND foreign_table.bar = {0}',
+                        ['my-bar']
+                    );
+                    assert.equal(
+                        query.compile().bound[0],
+                        'my-bar'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.rightJoinRaw(
+                            'foreign_table ON foreign_table.foo = table.foo '
+                                + 'AND foreign_table.bar = {0}',
+                            ['my-bar']
+                        ),
+                        query
+                    );
+                });
             });
         });
     });
