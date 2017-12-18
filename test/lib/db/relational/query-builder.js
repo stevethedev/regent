@@ -867,8 +867,26 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('crossJoinRaw method', () => {
             describe('(<definition>) signature', () => {
-                it('should add "CROSS JOIN <definition>" to the query');
-                it('should return the Query Builder');
+                it('should add "CROSS JOIN <definition>" to the query', () => {
+                    const query = getQueryBuilder();
+                    query.crossJoinRaw(
+                        'foreign_table ON foreign_table.foo = table.foo'
+                    );
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table CROSS JOIN foreign_table ON '
+                            + 'foreign_table.foo = table.foo'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.crossJoinRaw(
+                            'foreign_table on foreign_table.foo = table.foo'
+                        ),
+                        query
+                    );
+                });
             });
         });
         describe('join method', () => {
