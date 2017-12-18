@@ -857,12 +857,42 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('JOIN clauses', () => {
         describe('crossJoin method', () => {
             describe('(<table>) signature', () => {
-                it('should add "CROSS JOIN <table>" to the query');
-                it('should return the Query Builder');
+                it('should add "CROSS JOIN <table>" to the query', () => {
+                    const query = getQueryBuilder();
+                    query.crossJoin('foreign_table');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table CROSS JOIN foreign_table'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.crossJoin('foreign_table'),
+                        query
+                    );
+                });
             });
             describe('({ <alias>: <table> }) signature', () => {
-                it('should add "CROSS JOIN <table> AS <alias>" to the query');
-                it('should return the Query Builder');
+                it(
+                    'should add "CROSS JOIN <table> AS <alias>" to the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.crossJoin({ 'my_alias': 'foreign_table' });
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table CROSS JOIN foreign_table '
+                                + 'AS "my_alias"'
+                        );
+                    }
+                );
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.crossJoin({ 'my_alias': 'foreign_table' }),
+                        query
+                    );
+                });
             });
         });
         describe('crossJoinRaw method', () => {
@@ -870,20 +900,17 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should add "CROSS JOIN <definition>" to the query', () => {
                     const query = getQueryBuilder();
                     query.crossJoinRaw(
-                        'foreign_table ON foreign_table.foo = table.foo'
+                        'foreign_table'
                     );
                     assert.equal(
                         query.compile().query,
-                        'SELECT * FROM table CROSS JOIN foreign_table ON '
-                            + 'foreign_table.foo = table.foo'
+                        'SELECT * FROM table CROSS JOIN foreign_table'
                     );
                 });
                 it('should return the Query Builder', () => {
                     const query = getQueryBuilder();
                     assert.equal(
-                        query.crossJoinRaw(
-                            'foreign_table on foreign_table.foo = table.foo'
-                        ),
+                        query.crossJoinRaw('foreign_table'),
                         query
                     );
                 });
