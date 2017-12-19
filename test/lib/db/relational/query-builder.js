@@ -1080,8 +1080,8 @@ describe(`The ${CLASS_NAME} class`, () => {
                             assert.equal(
                                 query.compile().query,
                                 'SELECT * FROM table '
-                                    + 'INNER JOIN foreign_table '
-                                    + 'ON foreign_table.foreign = table.local'
+                                    + 'INNER JOIN foreign_table AS "alias" '
+                                    + 'ON "alias".foreign = table.local'
                             );
                         }
                     );
