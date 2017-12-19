@@ -1143,34 +1143,118 @@ describe(`The ${CLASS_NAME} class`, () => {
             describe('(<table>, <key-name>) signature', () => {
                 it(
                     'should add "LEFT JOIN <table> ON <table>.<key-name> = '
-                    + '<this.table>.<key-name>" to the query'
+                        + '<this.table>.<key-name>" to the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.leftJoin('foreign_table', 'shared_key');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table LEFT JOIN foreign_table ON '
+                                + 'foreign_table.shared_key = table.shared_key'
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.leftJoin('foreign_table', 'shared_key'),
+                        query,
+                    );
+                });
             });
             describe('({ <alias>: <table> }, <key-name>) signature', () => {
                 it(
                     'should add "LEFT JOIN <table> AS <alias> ON '
-                    + '<alias>.<key-name> = <this.table>.<key-name>" to '
-                    + 'the query'
+                        + '<alias>.<key-name> = <this.table>.<key-name>" to '
+                        + 'the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.leftJoin(
+                            { alias: 'foreign_table' },
+                            'shared_key'
+                        );
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table LEFT JOIN '
+                                + 'foreign_table AS "alias" ON '
+                                + '"alias".shared_key = table.shared_key'
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.leftJoin({ alias: 'foreign_table' }, 'skey'),
+                        query,
+                    );
+                });
             });
             describe('(<table>, <local-key>, <remote-key>) signature', () => {
                 it(
                     'should add "LEFT JOIN <table> ON <table>.<remote-key> = '
-                    + '<this.table>.<local-key>" to the query'
+                        + '<this.table>.<local-key>" to the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.leftJoin(
+                            { alias: 'foreign_table' },
+                            'local_key',
+                            'foreign_key'
+                        );
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table '
+                                + 'LEFT JOIN foreign_table AS "alias" ON '
+                                + '"alias".foreign_key = table.local_key'
+                        );
+                    }
                 );
-                it('should return the Query Builder');
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.leftJoin(
+                            { alias: 'foreign_table' },
+                            'local_key',
+                            'foreign_key',
+                        ),
+                        query,
+                    );
+                });
             });
             describe(
                 '({ <alias>: <table> }, <local-key>, <operation>, <remote-key>',
                 () => {
                     it(
                         'should add "LEFT JOIN <table> AS <alias> ON '
-                        + '<alias>.<remote-key> = <this.table>.<local-key>" to '
-                        + 'the query'
+                            + '<alias>.<remote-key> = <this.table>.<local-key>"'
+                            + ' to the query',
+                        () => {
+                            const query = getQueryBuilder();
+                            query.leftJoin(
+                                { alias: 'foreign_table' },
+                                'local_key',
+                                '<>',
+                                'remote_key',
+                            );
+                            assert.equal(
+                                query.compile().query,
+                                'SELECT * FROM table '
+                                    + 'LEFT JOIN foreign_table AS "alias" ON '
+                                    + '"alias".remote_key <> table.local_key'
+                            );
+                        }
                     );
-                    it('should return the Query Builder');
+                    it('should return the Query Builder', () => {
+                        const query = getQueryBuilder();
+                        assert.equal(
+                            query.leftJoin(
+                                { alias: 'foreign_table' },
+                                'local_key',
+                                '<>',
+                                'remote_key',
+                            ),
+                            query,
+                        );
+                    });
                 }
             );
             describe(
@@ -1178,9 +1262,36 @@ describe(`The ${CLASS_NAME} class`, () => {
                 () => {
                     it(
                         'should add "LEFT JOIN <table> ON <table>.<remote-key> '
-                        + '<operation> <this.table>.<local-key>" to the query'
+                        + '<operation> <this.table>.<local-key>" to the query',
+                        () => {
+                            const query = getQueryBuilder();
+                            query.leftJoin(
+                                'remote_table',
+                                'local_key',
+                                '<>',
+                                'remote_key',
+                            );
+                            assert.equal(
+                                query.compile().query,
+                                'SELECT * FROM table '
+                                    + 'LEFT JOIN remote_table ON '
+                                    + 'remote_table.remote_key <> '
+                                    + 'table.local_key'
+                            );
+                        }
                     );
-                    it('should return the Query Builder');
+                    it('should return the Query Builder', () => {
+                        const query = getQueryBuilder();
+                        assert.equal(
+                            query.leftJoin(
+                                'remote_table',
+                                'local_key',
+                                '<>',
+                                'remote_key',
+                            ),
+                            query,
+                        );
+                    });
                 }
             );
             describe(
@@ -1189,10 +1300,36 @@ describe(`The ${CLASS_NAME} class`, () => {
                 () => {
                     it(
                         'should add "LEFT JOIN <table> AS <alias> ON '
-                        + '<alias>.<remote-key> <operation> '
-                        + '<this.table>.<local-key>" to the query'
+                            + '<alias>.<remote-key> <operation> '
+                            + '<this.table>.<local-key>" to the query',
+                        () => {
+                            const query = getQueryBuilder();
+                            query.leftJoin(
+                                { alias: 'remote_table' },
+                                'local_key',
+                                '<>',
+                                'remote_key',
+                            );
+                            assert.equal(
+                                query.compile().query,
+                                'SELECT * FROM table '
+                                    + 'LEFT JOIN remote_table AS "alias" ON '
+                                    + '"alias".remote_key <> table.local_key'
+                            );
+                        }
                     );
-                    it('should return the Query Builder');
+                    it('should return the Query Builder', () => {
+                        const query = getQueryBuilder();
+                        assert.equal(
+                            query.leftJoin(
+                                { alias: 'remote_table' },
+                                'local_key',
+                                '<>',
+                                'remote_key',
+                            ),
+                            query,
+                        );
+                    });
                 }
             );
         });
