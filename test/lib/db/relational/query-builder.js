@@ -1503,7 +1503,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                         () => {
                             const query = getQueryBuilder();
                             query.rightJoin(
-                                'remote_table',
+                                'foreign_table',
                                 'local_key',
                                 '<>',
                                 'remote_key',
@@ -1512,7 +1512,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                                 query.compile().query,
                                 'SELECT * FROM table '
                                     + 'RIGHT JOIN foreign_table ON '
-                                    + 'remote_table.remote_key <> '
+                                    + 'foreign_table.remote_key <> '
                                     + 'table.local_key'
                             );
                         }
