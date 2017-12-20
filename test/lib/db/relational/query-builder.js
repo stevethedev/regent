@@ -2992,28 +2992,118 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('UNION clause', () => {
         describe('union method', () => {
             describe(`(${CLASS_NAME}) signature`, () => {
-                it(`should add the ${CLASS_NAME} to the UNION clause`);
-                it('should return the Query Builder');
+                it(`should add the ${CLASS_NAME} to the UNION clause`, () => {
+                    const subquery = getQueryBuilder(CONNECTION, 'fake_table');
+                    const query = getQueryBuilder();
+                    query.union(subquery);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table UNION SELECT * FROM fake_table'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const subquery = getQueryBuilder(CONNECTION, 'fake_table');
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.union(subquery),
+                        query,
+                    );
+                });
             });
         });
         describe('unionAll method', () => {
             describe(`(${CLASS_NAME}) signature`, () => {
-                it(`should add the ${CLASS_NAME} to the UNION clause`);
-                it('should return the Query Builder');
+                it(`should add the ${CLASS_NAME} to the UNION clause`, () => {
+                    const subquery = getQueryBuilder(CONNECTION, 'fake_table');
+                    const query = getQueryBuilder();
+                    query.unionAll(subquery);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table UNION ALL SELECT * FROM fake_table'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const subquery = getQueryBuilder(CONNECTION, 'fake_table');
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.unionAll(subquery),
+                        query,
+                    );
+                });
             });
         });
         describe('unionAllRaw method', () => {
             describe('(<string>, <bind = []>) signature', () => {
-                it('should add "UNION ALL <string>" to the query');
-                it('should add <...bind> to the bound arguments');
-                it('should return the Query Builder');
+                it('should add "UNION ALL <string>" to the query', () => {
+                    const query = getQueryBuilder();
+                    query.unionAllRaw(
+                        'SELECT * FROM fake_table WHERE foo = {0}',
+                        ['my-foo']
+                    );
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table UNION ALL '
+                            + 'SELECT * FROM fake_table WHERE foo = $1'
+                    );
+                });
+                it('should add <...bind> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.unionAllRaw(
+                        'SELECT * FROM fake_table WHERE foo = {0}',
+                        ['my-foo']
+                    );
+                    assert.equal(
+                        query.compile().bound[0],
+                        'my-foo'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.unionAllRaw(
+                            'SELECT * FROM fake_table WHERE foo = {0}',
+                            ['my-foo']
+                        ),
+                        query,
+                    );
+                });
             });
         });
         describe('unionRaw method', () => {
-            describe('(<string>) signature', () => {
-                it('should add "UNION <string>" to the query');
-                it('should add <...bind> to the bound arguments');
-                it('should return the Query Builder');
+            describe('(<string>, <bind = []>) signature', () => {
+                it('should add "UNION ALL <string>" to the query', () => {
+                    const query = getQueryBuilder();
+                    query.unionRaw(
+                        'SELECT * FROM fake_table WHERE foo = {0}',
+                        ['my-foo']
+                    );
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table UNION '
+                            + 'SELECT * FROM fake_table WHERE foo = $1'
+                    );
+                });
+                it('should add <...bind> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.unionRaw(
+                        'SELECT * FROM fake_table WHERE foo = {0}',
+                        ['my-foo']
+                    );
+                    assert.equal(
+                        query.compile().bound[0],
+                        'my-foo'
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.unionRaw(
+                            'SELECT * FROM fake_table WHERE foo = {0}',
+                            ['my-foo']
+                        ),
+                        query,
+                    );
+                });
             });
         });
     });
