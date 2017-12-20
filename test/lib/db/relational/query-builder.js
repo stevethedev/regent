@@ -804,8 +804,42 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('TRUNCATE clause', () => {
         describe('truncate method', () => {
-            describe('() signature', () => {
-                it('should send the request');
+            describe('(options = {}) signature', () => {
+                it('should send the request', () => {
+                    let sent = false;
+                    const connection = {
+                        send() {
+                            sent = true;
+                        },
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.truncate();
+                    assert.isTrue(sent);
+                });
+                it('should use the format TRUNCATE <table>', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'TRUNCATE TABLE table',
+                            );
+                        },
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.truncate();
+                });
+                it('should cascade if options.cascade === true', () => {
+                    const connection = {
+                        send(query) {
+                            assert.equal(
+                                query,
+                                'TRUNCATE TABLE table CASCADE'
+                            );
+                        },
+                    };
+                    const query = getQueryBuilder(connection);
+                    query.truncate({ cascade: true });
+                });
             });
         });
     });
