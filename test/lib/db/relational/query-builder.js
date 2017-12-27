@@ -3695,7 +3695,14 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('auxiliary methods', () => {
         describe('boundArguments method', () => {
             describe('() signature', () => {
-                it('should return an array of all bound arguments');
+                it('should return an array of all bound arguments', () => {
+                    const query  = getQueryBuilder();
+                    query.where('foo', 'bar');
+                    const args   = query.compile().query;
+                    query.boundArguments().forEach((value, i) => {
+                        return assert.equal(value, args[i]);
+                    });
+                });
             });
         });
         describe('compile method', () => {
@@ -3722,9 +3729,34 @@ describe(`The ${CLASS_NAME} class`, () => {
                 '(<variable>, <onTrue:function(this)>, <onFalse:function(this) '
                 + '= () => {}>) signature',
                 () => {
-                    it('should execute <onTrue> if <variable> is truthy');
-                    it('should execute <onFalse> if <variable> is falsy');
-                    it('should return the Query Builder');
+                    it(
+                        'should execute <onTrue> if <variable> is truthy',
+                        () => {
+                            const query = getQueryBuilder();
+                            let isRun = false;
+                            query.when('foo', (queryReference) => {
+                                assert.equal(queryReference, query);
+                                isRun = true;
+                            });
+                            assert.isTrue(isRun);
+                        }
+                    );
+                    it(
+                        'should execute <onFalse> if <variable> is falsy',
+                        () => {
+                            const query = getQueryBuilder();
+                            let isRun = false;
+                            query.when('foo', () => 1, (queryReference) => {
+                                assert.equal(queryReference, query);
+                                isRun = true;
+                            });
+                            assert.isTrue(isRun);
+                        }
+                    );
+                    it('should return the Query Builder', () => {
+                        const query = getQueryBuilder();
+                        assert.equal(query.when('foo'), query);
+                    });
                 }
             );
         });
