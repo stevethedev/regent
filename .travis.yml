@@ -11,6 +11,9 @@ node_js:
 os:
   - linux
 
+services:
+  - postgresql
+
 # Branches that can trigger Travis-CI
 branches:
   only:
@@ -36,12 +39,13 @@ services:
 ####################
 
 before_install:
-  - echo "BEFORE INSTALL"
   - sudo apt-get -qq update
 
 before_script:
-  - echo "BEFORE SCRIPT"
   - npm install
+  - psql -c 'CREATE DATABASE regent_test;' -U postgres
+  - psql -c 'CREATE USER regent;' -U postgres
+  - psql -c 'GRANT ALL PRIVILEGES ON DATABASE regent_test TO regent;' -U postgres
 
 script:
   - npm run gen:coverage
