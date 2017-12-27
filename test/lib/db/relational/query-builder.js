@@ -3565,16 +3565,56 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('FOR clause', () => {
         describe('lockForUpdate', () => {
             describe('(<lock = true>) signature', () => {
-                it('should set the FOR UPDATE clause if <lock> is true');
-                it('should disable the FOR UPDATE clause if <lock> is false');
-                it('should return the Query Builder');
+                it('should set the FOR UPDATE clause if <lock> is true', () => {
+                    const query = getQueryBuilder();
+                    query.lockForUpdate();
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table FOR UPDATE',
+                    );
+                });
+                it(
+                    'should disable the FOR UPDATE clause if <lock> is false',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.lockForUpdate(false);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table',
+                        );
+                    }
+                );
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.lockForUpdate(), query);
+                });
             });
         });
         describe('sharedLock method', () => {
             describe('(<lock = true>) signature', () => {
-                it('should set the FOR SHARE clause if <lock> is true');
-                it('should disable the FOR SHARE clause if <lock> is false');
-                it('should return the Query Builder');
+                it('should set the FOR SHARE clause if <lock> is true', () => {
+                    const query = getQueryBuilder();
+                    query.sharedLock();
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table FOR SHARE',
+                    );
+                });
+                it(
+                    'should disable the FOR SHARE clause if <lock> is false',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.sharedLock(false);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table',
+                        );
+                    }
+                );
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.sharedLock(), query);
+                });
             });
         });
     });
