@@ -2946,46 +2946,319 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('HAVING clause', () => {
         describe('having method', () => {
             describe('(<field>, <value>) signature', () => {
-                it('should set HAVING ... <field> = <value> on the query');
-                it('should add <value> to the bound arguments');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+                it('should not render if no GROUP BY is present', () => {
+                    const query = getQueryBuilder();
+                    query.having('foo', 'bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table',
+                    );
+                });
+                it(
+                    'should not add <value> to the bound arguments if no '
+                        + 'GROUP BY is present',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.having('foo', 'bar');
+                        assert.equal(query.compile().bound.length, 0);
+                    }
+                );
+                it(
+                    'should set HAVING ... <field> = <value> on the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.groupBy('foo');
+                        query.having('foo', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table GROUP BY foo HAVING foo = $1',
+                        );
+                    }
+                );
+                it('should add <value> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.having('foo', 'bar');
+                    assert.equal(query.compile().bound[0], 'bar');
+                });
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.having('foo', 'bar');
+                    query.having('foo', 'baz');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table GROUP BY foo HAVING '
+                            + 'foo = $1 AND foo = $2',
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.having('foo', 'bar'), query);
+                });
             });
             describe('(<field>, <operator>, <value>) signature', () => {
-                it('should set HAVING ... <field> <operator> <value>');
-                it('should add <value> to the bound arguments');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+                it('should not render if no GROUP BY is present', () => {
+                    const query = getQueryBuilder();
+                    query.having('foo', '<', 'bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table',
+                    );
+                });
+                it(
+                    'should not add <value> to the bound arguments if no '
+                        + 'GROUP BY is present',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.having('foo', '<', 'bar');
+                        assert.equal(query.compile().bound.length, 0);
+                    }
+                );
+                it('should set HAVING ... <field> <operator> <value>', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.having('foo', '<', 'bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table GROUP BY foo HAVING foo < $1',
+                    );
+                });
+                it('should add <value> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.having('foo', '<', 'bar');
+                    assert.equal(query.compile().bound[0], 'bar');
+                });
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.having('foo', '<', 'bar');
+                    query.having('foo', '>', 'baz');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table GROUP BY foo HAVING '
+                            + 'foo < $1 AND foo > $2',
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.having('foo', '<', 'bar'), query);
+                });
             });
         });
         describe('havingRaw method', () => {
-            describe('(<condition>, <bind = []>) signature', () => {
-                it('should set HAVING ... <condition> on the query');
-                it('should add <...bind> to the bound arguments');
-                it('should join conditionals with ... AND ...');
-                it('should return the Query Builder');
+            describe('(<signature>, <bind = []>) signature', () => {
+                it('should not render if no GROUP BY is present', () => {
+                    const query = getQueryBuilder();
+                    query.havingRaw('foo < {0}', ['bar']);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table',
+                    );
+                });
+                it(
+                    'should not add <value> to the bound arguments if no '
+                        + 'GROUP BY is present',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.havingRaw('foo < {0}', ['bar']);
+                        assert.equal(query.compile().bound.length, 0);
+                    }
+                );
+                it(
+                    'should set HAVING ... <signature> on the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.groupBy('foo');
+                        query.havingRaw('foo < {0}', ['bar']);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table GROUP BY foo HAVING foo < $1',
+                        );
+                    }
+                );
+                it('should add <...bind> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.havingRaw('foo < {0}', ['bar']);
+                    assert.equal(query.compile().bound[0], 'bar');
+                });
+                it('should join conditionals with ... AND ...', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.havingRaw('foo < {0}', ['bar']);
+                    query.havingRaw('foo > {0}', ['baz']);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table GROUP BY foo HAVING '
+                            + 'foo < $1 AND foo > $2',
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.havingRaw('foo < {0}', ['bar']), query);
+                });
             });
         });
         describe('orHaving method', () => {
             describe('(<field>, <value>) signature', () => {
-                it('should set HAVING ... <field> = <value> on the query');
-                it('should add <value> to the bound arguments');
-                it('should join conditionals with ... OR ...');
-                it('should return the Query Builder');
+                it('should not render if no GROUP BY is present', () => {
+                    const query = getQueryBuilder();
+                    query.having('foo', 'bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table',
+                    );
+                });
+                it(
+                    'should not add <value> to the bound arguments if no '
+                        + 'GROUP BY is present',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.orHaving('foo', 'bar');
+                        assert.equal(query.compile().bound.length, 0);
+                    }
+                );
+                it(
+                    'should set HAVING ... <field> = <value> on the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.groupBy('foo');
+                        query.orHaving('foo', 'bar');
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table GROUP BY foo HAVING foo = $1',
+                        );
+                    }
+                );
+                it('should add <value> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.orHaving('foo', 'bar');
+                    assert.equal(query.compile().bound[0], 'bar');
+                });
+                it('should join conditionals with ... OR ...', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.orHaving('foo', 'bar');
+                    query.orHaving('foo', 'baz');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table GROUP BY foo HAVING '
+                            + 'foo = $1 OR foo = $2',
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.orHaving('foo', 'bar'), query);
+                });
             });
             describe('(<field>, <operator>, <value>) signature', () => {
-                it('should set HAVING ... <field> <operator> <value>');
-                it('should add <value> to the bound arguments');
-                it('should join conditionals with ... OR ...');
-                it('should return the Query Builder');
+                it('should not render if no GROUP BY is present', () => {
+                    const query = getQueryBuilder();
+                    query.orHaving('foo', '<', 'bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table',
+                    );
+                });
+                it(
+                    'should not add <value> to the bound arguments if no '
+                        + 'GROUP BY is present',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.orHaving('foo', '<', 'bar');
+                        assert.equal(query.compile().bound.length, 0);
+                    }
+                );
+                it('should set HAVING ... <field> <operator> <value>', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.orHaving('foo', '<', 'bar');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table GROUP BY foo HAVING foo < $1',
+                    );
+                });
+                it('should add <value> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.orHaving('foo', '<', 'bar');
+                    assert.equal(query.compile().bound[0], 'bar');
+                });
+                it('should join conditionals with ... OR ...', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.orHaving('foo', '<', 'bar');
+                    query.orHaving('foo', '>', 'baz');
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table GROUP BY foo HAVING '
+                            + 'foo < $1 OR foo > $2',
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.orHaving('foo', '<', 'bar'), query);
+                });
             });
         });
         describe('orHavingRaw method', () => {
             describe('(<condition>, <bind = []> signature', () => {
-                it('should set HAVING ... <condition> on the query');
-                it('should add <...bind> to the bound arguments');
-                it('should join conditionals with ... OR ...');
-                it('should return the Query Builder');
+                it('should not render if no GROUP BY is present', () => {
+                    const query = getQueryBuilder();
+                    query.orHavingRaw('foo < {0}', ['bar']);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table',
+                    );
+                });
+                it(
+                    'should not add <value> to the bound arguments if no '
+                        + 'GROUP BY is present',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.orHavingRaw('foo < {0}', ['bar']);
+                        assert.equal(query.compile().bound.length, 0);
+                    }
+                );
+                it(
+                    'should set HAVING ... <signature> on the query',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.groupBy('foo');
+                        query.orHavingRaw('foo < {0}', ['bar']);
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table GROUP BY foo HAVING foo < $1',
+                        );
+                    }
+                );
+                it('should add <...bind> to the bound arguments', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.orHavingRaw('foo < {0}', ['bar']);
+                    assert.equal(query.compile().bound[0], 'bar');
+                });
+                it('should join conditionals with ... OR ...', () => {
+                    const query = getQueryBuilder();
+                    query.groupBy('foo');
+                    query.orHavingRaw('foo < {0}', ['bar']);
+                    query.orHavingRaw('foo > {0}', ['baz']);
+                    assert.equal(
+                        query.compile().query,
+                        'SELECT * FROM table GROUP BY foo HAVING '
+                            + 'foo < $1 OR foo > $2',
+                    );
+                });
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(
+                        query.orHavingRaw('foo < {0}', ['bar']),
+                        query,
+                    );
+                });
             });
         });
     });
