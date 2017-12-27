@@ -3698,7 +3698,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 it('should return an array of all bound arguments', () => {
                     const query  = getQueryBuilder();
                     query.where('foo', 'bar');
-                    const args   = query.compile().query;
+                    const args   = query.compile().bound;
                     query.boundArguments().forEach((value, i) => {
                         return assert.equal(value, args[i]);
                     });
@@ -3726,11 +3726,11 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('when method', () => {
             describe(
-                '(<variable>, <onTrue:function(this)>, <onFalse:function(this) '
-                + '= () => {}>) signature',
+                '(<condition>, <onTrue:function(this)>, <onFalse:function(this)'
+                    + ' = () => {}>) signature',
                 () => {
                     it(
-                        'should execute <onTrue> if <variable> is truthy',
+                        'should execute <onTrue> if <condition> is truthy',
                         () => {
                             const query = getQueryBuilder();
                             let isRun = false;
@@ -3742,14 +3742,18 @@ describe(`The ${CLASS_NAME} class`, () => {
                         }
                     );
                     it(
-                        'should execute <onFalse> if <variable> is falsy',
+                        'should execute <onFalse> if <condition> is falsy',
                         () => {
                             const query = getQueryBuilder();
                             let isRun = false;
-                            query.when('foo', () => 1, (queryReference) => {
-                                assert.equal(queryReference, query);
-                                isRun = true;
-                            });
+                            query.when(
+                                null,
+                                () => 1,
+                                (queryReference) => {
+                                    assert.equal(queryReference, query);
+                                    isRun = true;
+                                }
+                            );
                             assert.isTrue(isRun);
                         }
                     );
