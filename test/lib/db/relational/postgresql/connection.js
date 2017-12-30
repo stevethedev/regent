@@ -76,12 +76,43 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('disconnect', () => {
         describe('() signature', () => {
-            it('should throw an error if disconnection fails');
-            it('should disconnect from the database');
-            it('should emit a "db-disconnect" event on success');
-            it('should not emit a "db-disconnect" event on failure');
-            it('should return a Promise');
-            it('should resolve to the connection object');
+            it('should return a Promise', () => {
+                const result = getConnection().connect();
+                assert.instanceOf(result, Promise);
+            });
+            it('should resolve to true if disconnect succeeds', () => {
+                const psql = getConnection();
+                return psql.connect().then(() => {
+                    return psql.disconnect().then((result) => {
+                        assert.isTrue(result);
+                    });
+                });
+            });
+            it('should resolve to false if disconnection fails', () => {
+                return getConnection()
+                    .disconnect()
+                    .then((result) => {
+                        assert.isFalse(result);
+                    });
+            });
+            it('should emit a "db-disconnect" event on success', () => {
+                const psql = getConnection();
+                let eventCount = 0;
+                psql.on('db-disconnect', () => ++eventCount);
+                psql.connect().then(() => {
+                    psql.disconnect().then(() => {
+                        assert.equal(eventCount, 1);
+                    });
+                });
+            });
+            it('should not emit a "db-disconnect" event on failure', () => {
+                const psql = getConnection();
+                let eventCount = 0;
+                psql.on('db-disconnect', () => ++eventCount);
+                psql.disconnect().then(() => {
+                    assert.equal(eventCount, 0);
+                });
+            });
         });
     });
     describe('send', () => {
