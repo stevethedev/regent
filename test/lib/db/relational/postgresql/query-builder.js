@@ -24,12 +24,17 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
 
     before(() => {
         psql = PostgresDb.create(config);
-        return Promise.resolve()
+        return psql.connect()
             .then(() => psql.send(`DROP TABLE IF EXISTS ${TABLE_NAME}`))
             .then(() => psql.send(`CREATE TABLE ${TABLE_NAME} (test_col TEXT)`))
-            .then(() => psql.send(`INSERT INTO ${TABLE_NAME} VALUES (${
-                TABLE_VALUES.join('), (')
-            })`));
+            .then(() => psql.send(
+                `INSERT INTO ${
+                    TABLE_NAME
+                } (test_col) VALUES (${
+                    TABLE_VALUES.map((...[ , i ]) => `$${++i}`).join('), (')
+                })`,
+                TABLE_VALUES
+            ));
     });
 
     after(() => {
