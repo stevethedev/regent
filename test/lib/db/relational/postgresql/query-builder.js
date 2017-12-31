@@ -4,6 +4,7 @@
 'use strict';
 
 const assert       = requireLib('util/assert');
+const Collection   = requireLib('support/collection');
 const QueryBuilder = requireLib('db/relational/query-builder');
 const PostgresDb   = requireLib('db/relational/postgresql/connection');
 const config       = require('./config');
@@ -64,11 +65,14 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
                 assert.instanceOf(promise, Promise);
                 return promise.then(() => iter.done());
             });
-            it('should resolve into an Array', () => {
+            it('should resolve into a Collection', () => {
                 const query = psql.table(TABLE_NAME);
                 const iter  = query.chunk(1);
                 return iter.next().value
-                    .then((result) => assert.isArray(result))
+                    .then((result) => assert.instanceOf(
+                        result,
+                        Collection
+                    ))
                     .then(() => iter.done());
             });
             it('should iterate through the entire result set', () => {
@@ -78,8 +82,9 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
                 for (let i = 0; i < TABLE_VALUES.length; ++i) {
                     promise = promise.then(() => iter.next().value)
                         .then((rows) => {
-                            assert.equal(rows.length, 1);
-                            assert.equal(rows[0][COL_NAME], TABLE_VALUES[i]);
+                            console.log(rows[0], COL_NAME)
+                            assert.equal(rows.size(), 1);
+                            assert.equal(rows.get(0)[COL_NAME], TABLE_VALUES[i]);
                         });
                 }
                 return promise.then(() => iter.done());
@@ -92,7 +97,10 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
                     promise = promise.then(() => iter.next().value);
                 }
                 return promise.then(() => iter.next().value)
-                    .then((rows) => assert.isArray(rows))
+                    .then((rows) => assert.instanceOf(
+                        rows,
+                        Collection,
+                    ))
                     .then(() => {
                         const node = iter.next();
                         assert.isTrue(node.done);
@@ -104,10 +112,13 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
                     const query = psql.table(TABLE_NAME);
                     let i = 0;
                     for (const chunk of query.chunk(1)) {
-                        assert.isArray(await chunk);
+                        assert.instanceOf(
+                            await chunk,
+                            Collection,
+                        );
                         i++;
                     }
-                    // last set is empty
+                    // Last set is empty
                     assert.equal(i, 1 + TABLE_VALUES.length);
                     done();
                 })();
@@ -116,16 +127,26 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
     });
     describe('first method', () => {
         describe('() signature', () => {
-            it('should send a request to the database');
             it('should return a Promise');
             it('should resolve to a Record');
         });
     });
     describe('get method', () => {
         describe('() signature', () => {
-            it('should send a request to the database');
-            it('should return a Promise');
-            it('should resolve to a Collection');
+            it('should return a Promise', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.get();
+                assert.instanceOf(promise, Promise);
+                return promise;
+            });
+            it('should resolve to a Collection', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.get();
+                return promise.then((collection) => assert.instanceOf(
+                    collection,
+                    Collection,
+                ));
+            });
         });
     });
     describe('iterator method', () => {
