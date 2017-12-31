@@ -5,8 +5,10 @@
 
 const assert       = requireLib('util/assert');
 const Collection   = requireLib('support/collection');
-const QueryBuilder = requireLib('db/relational/query-builder');
 const PostgresDb   = requireLib('db/relational/postgresql/connection');
+const QueryBuilder = requireLib('db/relational/query-builder');
+const Record       = requireLib('db/relational/record');
+
 const config       = require('./config');
 
 const CLASS_NAME   = QueryBuilder.name;
@@ -17,9 +19,6 @@ const TABLE_VALUES = [
     'bar',
     'baz',
 ];
-const GeneratorFunction = Object.getPrototypeOf((function* () {
-    // Empty function
-})()).constructor;
 
 describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
     let psql = null;
@@ -53,10 +52,7 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
         describe('(<chunk-size>) signature', () => {
             it('should return a generator-iterator', () => {
                 const query = psql.table(TABLE_NAME);
-                return assert.equal(
-                    query.chunk(1).constructor,
-                    GeneratorFunction
-                );
+                return assert.isGenerator(query.chunk(1));
             });
             it('should iterate into a Promise', () => {
                 const query   = psql.table(TABLE_NAME);
@@ -129,8 +125,18 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
     });
     describe('first method', () => {
         describe('() signature', () => {
-            it('should return a Promise');
-            it('should resolve to a Record');
+            it('should return a Promise', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.first();
+                assert.instanceOf(promise, Promise);
+                return promise;
+            });
+            it('should resolve to a Record', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.first();
+                return Promise.resolve(promise)
+                    .then((record) => assert.instanceOf(record, Record));
+            });
         });
     });
     describe('get method', () => {
@@ -153,10 +159,31 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
     });
     describe('iterator method', () => {
         describe('() signature', () => {
-            it('should return a generator-iterator');
-            it('should iterate into Promises');
-            it('should send a request to the database on each iteration');
-            it('should resolve into Records');
+            it('should return a generator-iterator', () => {
+                const query = psql.table(TABLE_NAME);
+                const iter  = query.iterator();
+                assert.isGenerator(iter);
+                iter.done();
+            });
+            it('should iterate into Promises', () => {
+                const query = psql.table(TABLE_NAME);
+                const iter  = query.iterator();
+                const promise = iter.next().value;
+                assert.instanceOf(promise, Promise);
+                return Promise.resolve(promise)
+                    .then(() => iter.done());
+            });
+            it('should resolve into Records', () => {
+                const query = psql.table(TABLE_NAME);
+                const iter  = query.iterator();
+                const promise = iter.next().value;
+                return Promise.resolve(promise)
+                    .then((record) => {
+                        iter.done();
+                        return record;
+                    })
+                    .then((record) => assert.instanceOf(record, Record));
+            });
         });
     });
     describe('last method', () => {
