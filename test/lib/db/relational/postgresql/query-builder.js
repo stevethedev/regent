@@ -82,9 +82,12 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
                 for (let i = 0; i < TABLE_VALUES.length; ++i) {
                     promise = promise.then(() => iter.next().value)
                         .then((rows) => {
-                            console.log(rows[0], COL_NAME)
                             assert.equal(rows.size(), 1);
-                            assert.equal(rows.get(0)[COL_NAME], TABLE_VALUES[i]);
+                            console.log(rows.get(0))
+                            assert.equal(
+                                rows.get(0).getAttribute(COL_NAME),
+                                TABLE_VALUES[i]
+                            );
                         });
                 }
                 return promise.then(() => iter.done());
