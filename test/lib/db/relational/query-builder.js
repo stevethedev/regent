@@ -3383,8 +3383,21 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('ORDER BY clause', () => {
         describe('inRandomOrder method', () => {
             describe('() signature', () => {
-                it('should add "ORDER BY RANDOM()" to the ORDER BY clause');
-                it('should return the Query Builder');
+                it(
+                    'should add "ORDER BY RANDOM()" to the ORDER BY clause',
+                    () => {
+                        const query = getQueryBuilder();
+                        query.inRandomOrder();
+                        assert.equal(
+                            query.compile().query,
+                            'SELECT * FROM table ORDER BY RANDOM()'
+                        );
+                    }
+                );
+                it('should return the Query Builder', () => {
+                    const query = getQueryBuilder();
+                    assert.equal(query.inRandomOrder(), query);
+                });
             });
         });
         describe('orderBy method', () => {
@@ -3615,80 +3628,6 @@ describe(`The ${CLASS_NAME} class`, () => {
                     const query = getQueryBuilder();
                     assert.equal(query.sharedLock(), query);
                 });
-            });
-        });
-    });
-    describe('execution methods', () => {
-        describe('chunk method', () => {
-            describe('(<chunk-size>) signature', () => {
-                it('should return a generator-iterator');
-                it('should iterate into a Promise');
-                it('should resolve into a Collection');
-            });
-            describe(
-                '(<chunk size>, function(<collection>), <async = false>)'
-                + ' signature',
-                () => {
-                    it('should terminate if the callback returns "false"');
-                    it(
-                        'should fetch the next set of records if the callback '
-                        + 'does not return "false"'
-                    );
-                    it('should return the Query Builder if <async> is false');
-                    it('should return a Promise if <async> is true');
-                    it(
-                        'should resolve to the Query Builder if <async> is true'
-                    );
-                }
-            );
-        });
-        describe('first method', () => {
-            describe('() signature', () => {
-                it('should send a request to the database');
-                it('should return a Promise');
-                it('should resolve to a Record');
-            });
-        });
-        describe('get method', () => {
-            describe('() signature', () => {
-                it('should send a request to the database');
-                it('should return a Promise');
-                it('should resolve to a Collection');
-            });
-        });
-        describe('iterator method', () => {
-            describe('() signature', () => {
-                it('should return a generator-iterator');
-                it('should iterate into Promises');
-                it('should send a request to the database on each iteration');
-                it('should resolve into Records');
-            });
-        });
-        describe('last method', () => {
-            describe('(<field>) signature', () => {
-                it('should send a request to the database');
-                it('should add "ORDER BY <DESC>" to the query');
-                it('should add "LIMIT 1" to the query');
-                it('should return a Promise');
-                it('should resolve to a value');
-            });
-        });
-        describe('pluck method', () => {
-            describe('(<field>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to a Collection');
-                it('should only include the <field> key in the Collection');
-            });
-            describe('(<field>, <alias>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to a Collection');
-                it('should only include the <alias> key in the Collection');
-            });
-        });
-        describe('value method', () => {
-            describe('(<field>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to a value');
             });
         });
     });
