@@ -10,14 +10,15 @@ const config       = require('./config');
 
 const CLASS_NAME   = QueryBuilder.name;
 const TABLE_NAME   = 'psql_execution';
+const COL_NAME     = 'test_col';
 const TABLE_VALUES = [
     'foo',
     'bar',
     'baz',
 ];
-const GeneratorFunction = Object.getPrototypeOf(function* () {
+const GeneratorFunction = Object.getPrototypeOf((function* () {
     // Empty function
-}).constructor;
+})()).constructor;
 
 describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
     let psql = null;
@@ -26,11 +27,15 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
         psql = PostgresDb.create(config);
         return psql.connect()
             .then(() => psql.send(`DROP TABLE IF EXISTS ${TABLE_NAME}`))
-            .then(() => psql.send(`CREATE TABLE ${TABLE_NAME} (test_col TEXT)`))
+            .then(() => psql.send(
+                `CREATE TABLE ${TABLE_NAME} (${COL_NAME} TEXT)`
+            ))
             .then(() => psql.send(
                 `INSERT INTO ${
                     TABLE_NAME
-                } (test_col) VALUES (${
+                } (${
+                    COL_NAME
+                }) VALUES (${
                     TABLE_VALUES.map((...[ , i ]) => `$${++i}`).join('), (')
                 })`,
                 TABLE_VALUES
@@ -46,17 +51,52 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
         describe('(<chunk-size>) signature', () => {
             it('should return a generator-iterator', () => {
                 const query = psql.table(TABLE_NAME);
-                return assert.instanceOf(query.chunk(1), GeneratorFunction);
+                return assert.equal(
+                    query.chunk(1).constructor,
+                    GeneratorFunction
+                );
             });
             it('should iterate into a Promise', () => {
-                const query = psql.table(TABLE_NAME);
-                assert.instanceOf(query.chunk(1).next().value, Promise);
+                const query   = psql.table(TABLE_NAME);
+                const iter    = query.chunk(1);
+                const promise = iter.next().value;
+                assert.instanceOf(promise, Promise);
+                return promise.then(() => iter.done());
             });
             it('should resolve into an Array', () => {
                 const query = psql.table(TABLE_NAME);
-                return query.chunk(1).next().value
-                    .then((result) => assert.isArray(result));
+                const iter  = query.chunk(1);
+                return iter.next().value
+                    .then((result) => assert.isArray(result))
+                    .then(() => iter.done());
             });
+            // it('should iterate through the entire result set', () => {
+            //     let promise = Promise.resolve();
+            //     const query = psql.table(TABLE_NAME);
+            //     const iter  = query.chunk(1);
+            //     for (let i = 0; i < TABLE_VALUES.length; ++i) {
+            //         const { value } = iter.next();
+            //         promise = promise.then(() => value)
+            //             .then((rows) => {
+            //                 assert.equal(rows.length, 1);
+            //                 assert.equal(rows[0][COL_NAME], TABLE_VALUES[i]);
+            //             });
+            //     }
+            //     return promise;
+            // });
+            // it('should return an empty array in the last result set', () => {
+            //     const query = psql.table(TABLE_NAME);
+            //     const iter = query.chunk(1);
+            //     for (let i = 0; i < TABLE_VALUES.length; ++i) {
+            //         iter.next();
+            //     }
+            //     return iter.next().value
+            //         .then((rows) => assert.isArray(rows))
+            //         .then(() => {
+            //             const node = iter.next();
+            //             assert.isTrue(node.done);
+            //         });
+            // });
         });
     });
     describe('first method', () => {
