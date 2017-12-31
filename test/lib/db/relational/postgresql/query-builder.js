@@ -43,7 +43,8 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
     });
 
     after(() => {
-        return psql.send(`DROP TABLE ${TABLE_NAME}`)
+        return Promise.resolve()
+            .then(() => psql.send(`DROP TABLE ${TABLE_NAME}`, []))
             .then(() => psql.disconnect());
     });
 
@@ -70,33 +71,47 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
                     .then((result) => assert.isArray(result))
                     .then(() => iter.done());
             });
-            // it('should iterate through the entire result set', () => {
-            //     let promise = Promise.resolve();
-            //     const query = psql.table(TABLE_NAME);
-            //     const iter  = query.chunk(1);
-            //     for (let i = 0; i < TABLE_VALUES.length; ++i) {
-            //         const { value } = iter.next();
-            //         promise = promise.then(() => value)
-            //             .then((rows) => {
-            //                 assert.equal(rows.length, 1);
-            //                 assert.equal(rows[0][COL_NAME], TABLE_VALUES[i]);
-            //             });
-            //     }
-            //     return promise;
-            // });
-            // it('should return an empty array in the last result set', () => {
-            //     const query = psql.table(TABLE_NAME);
-            //     const iter = query.chunk(1);
-            //     for (let i = 0; i < TABLE_VALUES.length; ++i) {
-            //         iter.next();
-            //     }
-            //     return iter.next().value
-            //         .then((rows) => assert.isArray(rows))
-            //         .then(() => {
-            //             const node = iter.next();
-            //             assert.isTrue(node.done);
-            //         });
-            // });
+            it('should iterate through the entire result set', () => {
+                let promise = Promise.resolve();
+                const query = psql.table(TABLE_NAME);
+                const iter  = query.chunk(1);
+                for (let i = 0; i < TABLE_VALUES.length; ++i) {
+                    promise = promise.then(() => iter.next().value)
+                        .then((rows) => {
+                            assert.equal(rows.length, 1);
+                            assert.equal(rows[0][COL_NAME], TABLE_VALUES[i]);
+                        });
+                }
+                return promise.then(() => iter.done());
+            });
+            it('should return an empty array in the last result set', () => {
+                const query = psql.table(TABLE_NAME);
+                const iter = query.chunk(1);
+                let promise = Promise.resolve();
+                for (let i = 0; i < TABLE_VALUES.length; ++i) {
+                    promise = promise.then(() => iter.next().value);
+                }
+                return promise.then(() => iter.next().value)
+                    .then((rows) => assert.isArray(rows))
+                    .then(() => {
+                        const node = iter.next();
+                        assert.isTrue(node.done);
+                    })
+                    .then(() => iter.done());
+            });
+            it('should be iterable with for ... of', (done) => {
+                (async () => {
+                    const query = psql.table(TABLE_NAME);
+                    let i = 0;
+                    for (const chunk of query.chunk(1)) {
+                        assert.isArray(await chunk);
+                        i++;
+                    }
+                    // last set is empty
+                    assert.equal(i, 1 + TABLE_VALUES.length);
+                    done();
+                })();
+            });
         });
     });
     describe('first method', () => {
