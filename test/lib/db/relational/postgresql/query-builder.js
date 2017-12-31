@@ -58,7 +58,7 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
                 const query   = psql.table(TABLE_NAME);
                 const iter    = query.chunk(1);
                 const promise = iter.next().value;
-                assert.instanceOf(promise, Promise);
+                assert.isPromise(promise);
                 return promise.then(() => iter.done());
             });
             it('should resolve into a Collection', () => {
@@ -128,7 +128,7 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
             it('should return a Promise', () => {
                 const query = psql.table(TABLE_NAME);
                 const promise = query.first();
-                assert.instanceOf(promise, Promise);
+                assert.isPromise(promise);
                 return promise;
             });
             it('should resolve to a Record', () => {
@@ -137,6 +137,15 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
                 return Promise.resolve(promise)
                     .then((record) => assert.instanceOf(record, Record));
             });
+            it('should resolve to the first Record', () => {
+                const query   = psql.table(TABLE_NAME);
+                const promise = query.first();
+                return Promise.resolve(promise)
+                    .then((record) => assert.equal(
+                        record.getAttribute(COL_NAME),
+                        TABLE_VALUES[0],
+                    ));
+            });
         });
     });
     describe('get method', () => {
@@ -144,7 +153,7 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
             it('should return a Promise', () => {
                 const query = psql.table(TABLE_NAME);
                 const promise = query.get();
-                assert.instanceOf(promise, Promise);
+                assert.isPromise(promise);
                 return promise;
             });
             it('should resolve to a Collection', () => {
@@ -169,7 +178,7 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
                 const query = psql.table(TABLE_NAME);
                 const iter  = query.iterator();
                 const promise = iter.next().value;
-                assert.instanceOf(promise, Promise);
+                assert.isPromise(promise);
                 return Promise.resolve(promise)
                     .then(() => iter.done());
             });
@@ -188,29 +197,70 @@ describe(`PostgreSQL ${CLASS_NAME} execution methods`, () => {
     });
     describe('last method', () => {
         describe('(<field>) signature', () => {
-            it('should send a request to the database');
-            it('should add "ORDER BY <DESC>" to the query');
-            it('should add "LIMIT 1" to the query');
-            it('should return a Promise');
-            it('should resolve to a value');
+            it('should return a Promise', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.last();
+                assert.isPromise(promise);
+                return promise;
+            });
+            it('should resolve to a Record', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.last();
+                return Promise.resolve(promise)
+                    .then((record) => assert.instanceOf(record, Record));
+            });
+            it('should resolve to the last Record', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.last();
+                return Promise.resolve(promise)
+                    .then((record) => assert.equal(
+                        record.getAttribute(COL_NAME),
+                        TABLE_VALUES[TABLE_VALUES.length - 1],
+                    ));
+            });
         });
     });
     describe('pluck method', () => {
         describe('(<field>) signature', () => {
-            it('should return a Promise');
-            it('should resolve to a Collection');
-            it('should only include the <field> key in the Collection');
-        });
-        describe('(<field>, <alias>) signature', () => {
-            it('should return a Promise');
-            it('should resolve to a Collection');
-            it('should only include the <alias> key in the Collection');
+            it('should return a Promise', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.pluck(COL_NAME);
+                assert.isPromise(promise);
+                return promise;
+            });
+            it('should resolve to a Collection', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.pluck(COL_NAME);
+                return Promise.resolve(promise)
+                    .then((collection) => assert.instanceOf(
+                        collection,
+                        Collection
+                    ));
+            });
+            it('should only include the <field> key in the Collection', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.pluck(COL_NAME);
+                return Promise.resolve(promise)
+                    .then((collection) => collection.forEach((value, index) => {
+                        assert.equal(value, TABLE_VALUES[index]);
+                    }));
+            });
         });
     });
     describe('value method', () => {
         describe('(<field>) signature', () => {
-            it('should return a Promise');
-            it('should resolve to a value');
+            it('should return a Promise', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.value(COL_NAME);
+                assert.isPromise(promise);
+                return promise;
+            });
+            it('should resolve to the value in the first record', () => {
+                const query = psql.table(TABLE_NAME);
+                const promise = query.value(COL_NAME);
+                return Promise.resolve(promise)
+                    .then((value) => assert.equal(value, TABLE_VALUES[0]));
+            });
         });
     });
 });
