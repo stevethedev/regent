@@ -7,9 +7,9 @@
  */
 'use strict';
 
-const deepmerge       = require('deepmerge');
 const GlobalFunctions = require('./bootstrap/global-functions');
 const DefaultConfig   = require('./etc/default');
+const deepmerge       = require('deepmerge');
 const rootDir         = __dirname;
 
 // Configure (but do not start) a Regent instance

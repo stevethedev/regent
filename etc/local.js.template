@@ -8,8 +8,8 @@
  | HTTP Server Configuration
  |------------------------------------------------------------------------------
  |
- | This section defines the HTTP Configuration Options that are imported by the 
- | kernel and used to configure the HTTP server. NOTE: If the server is using 
+ | This section defines the HTTP Configuration Options that are imported by the
+ | kernel and used to configure the HTTP server. NOTE: If the server is using
  | NGINX or Apache, a reverse proxy may need to route traffic into Regent.
  |
  */
