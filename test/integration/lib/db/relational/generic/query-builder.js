@@ -30,9 +30,12 @@ module.exports = function(testGroup, Connection, config) {
                 .then(() => connection.send(
                     `CREATE TABLE ${TABLE_NAME} (${COL_NAME} TEXT)`
                 ))
-                .then(() => connection.table(TABLE_NAME).insert(
-                    ...TABLE_VALUES.map((value) => ({ [COL_NAME]: value }))
-                ));
+                .then(() => {
+                    const query = connection.table(TABLE_NAME);
+                    return Promise.all(TABLE_VALUES.map((value, i) => {
+                        return query.insert({ [COL_NAME]: value });
+                    }));
+                });
         });
 
         after(() => {
