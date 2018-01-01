@@ -130,8 +130,10 @@ module.exports = function(testGroup, Connection, Dialect, config) {
                     const connection = getConnection();
                     return connection.connect()
                         .then(() => {
-                            assert.isPromise(connection.send('SELECT NOW()'));
-                            return connection.disconnect();
+                            const promise = connection.send('SELECT NOW()');
+                            assert.isPromise(promise);
+                            return Promise.resolve(promise)
+                                .then(() => connection.disconnect());
                         });
                 });
                 it('should resolve to the results of the query', () => {
