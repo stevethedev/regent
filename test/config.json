@@ -1,0 +1,12 @@
+{
+    "folders": [
+        {
+            "name": "Unit Tests",
+            "path": "./test/unit"
+        },
+        {
+            "name": "Integration Tests",
+            "path": "./test/integration"
+        }
+    ]
+}
