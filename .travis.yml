@@ -5,7 +5,7 @@ notifications:
 # Regent supports Node.js v8
 language: node_js
 node_js:
-  - '8'
+  - '8' # LTS as of 2017-12-31
 
 # Operating Systems
 os:
@@ -13,6 +13,9 @@ os:
 
 services:
   - postgresql
+
+addons:
+  mariadb: '10.2' # latest stable version, as of 2017-12-31
 
 # Branches that can trigger Travis-CI
 branches:
@@ -27,13 +30,7 @@ env:
     # - SECRET_TOKEN=k399dkkgklsk
   # matrix variables will create a new build for each specified variable
   matrix:
-    # - NODE_ENV=production
     - NODE_ENV=development
-
-# Services
-services:
-  # - mongodb     # will start mongodb
-  # - rabbitmq # will start rabbitmq-server
 
 ## begin build steps
 ####################
@@ -46,12 +43,11 @@ before_script:
   - psql -c "CREATE DATABASE regent_test;" -U postgres
   - psql -c "CREATE USER regent WITH PASSWORD 'password123';" -U postgres
   - psql -c "GRANT ALL PRIVILEGES ON DATABASE regent_test TO regent;" -U postgres
+  - mysql -e "CREATE DATABASE regent_test;"
+  - mysql -e "GRANT ALL PRIVILEGES ON regent_test.* TO 'regent'@'localhost' IDENTIFIED BY 'password123';"
 
 script:
   - npm run gen:coverage
 
 after_success:
   - npm run pub:coverage
-
-after_faiulre:
-  - echo "FAILURE"

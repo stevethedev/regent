@@ -3,10 +3,10 @@
  */
 'use strict';
 
-const config          = require('./config');
-const PostgresDb      = requireLib('db/relational/postgresql/connection');
-const PostgresDialect = requireLib('db/relational/postgresql/dialect');
-const testSet         = require('../generic/connection');
+const config       = require('./config');
+const MysqlDb      = requireLib('db/relational/mysql/connection');
+const MysqlDialect = requireLib('db/relational/mysql/dialect');
+const testSet      = require('../generic/connection');
 
 /*
  |------------------------------------------------------------------------------
@@ -20,4 +20,4 @@ const testSet         = require('../generic/connection');
  |
  */
 
-testSet('PostgreSQL', PostgresDb, PostgresDialect, config);
+testSet('MySQL', MysqlDb, MysqlDialect, config);
