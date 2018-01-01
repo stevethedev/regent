@@ -3,7 +3,9 @@
  */
 'use strict';
 
-const TEST_FOLDER = './test';
+const config = require('./config');
+
+const TEST_FOLDERS = config.folders;
 
 const Mocha = require('mocha');
 const fs    = require('fs');
@@ -33,7 +35,7 @@ function readdir(directory, mocha) {
 }
 
 const mocha = new Mocha();
-readdir(TEST_FOLDER, mocha);
+TEST_FOLDERS.forEach((folder) => readdir(folder.path, mocha));
 
 mocha.run()
     .on('test', () => {
