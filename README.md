@@ -1,12 +1,7 @@
-[![Build Status](https://travis-ci.org/stevethedev/regent.svg?branch=master)](https://travis-ci.org/stevethedev/regent)
-
-[![codebeat badge](https://codebeat.co/badges/fc6f910d-73de-4831-8045-4ff1970dade8)](https://codebeat.co/projects/github-com-stevethedev-regent-master)
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1d9972def2334992a30922b030249798)](https://www.codacy.com/app/stevethedev/regent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=stevethedev/regent&amp;utm_campaign=Badge_Grade)
-
-[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/1d9972def2334992a30922b030249798)](https://www.codacy.com/app/stevethedev/regent?utm_source=github.com&utm_medium=referral&utm_content=stevethedev/regent&utm_campaign=Badge_Coverage)
-
 # Regent
+[![Build Status](https://travis-ci.org/stevethedev/regent.svg?branch=master)](https://travis-ci.org/stevethedev/regent)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/1d9972def2334992a30922b030249798)](https://www.codacy.com/app/stevethedev/regent?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=stevethedev/regent&amp;utm_campaign=Badge_Grade)
+[![Codacy Badge](https://api.codacy.com/project/badge/Coverage/1d9972def2334992a30922b030249798)](https://www.codacy.com/app/stevethedev/regent?utm_source=github.com&utm_medium=referral&utm_content=stevethedev/regent&utm_campaign=Badge_Coverage)
 
 Regent is a web application framework written in Node.js (v8.9.0 LTS). Drawing
 inspiration from the immensely popular Laravel framework, Regent is intended as
