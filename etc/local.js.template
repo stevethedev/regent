@@ -5,16 +5,94 @@
 
 /*
  |------------------------------------------------------------------------------
- | HTTP Server Configuration
+ | Application Configuration
  |------------------------------------------------------------------------------
  |
- | This section defines the HTTP Configuration Options that are imported by the
- | kernel and used to configure the HTTP server. NOTE: If the server is using
- | NGINX or Apache, a reverse proxy may need to route traffic into Regent.
+ | Regent requires an object to be exported from a file named "app.js" in the
+ | main application directory. By default, this is in ./app/app.js, but it
+ | can be changed in ./etc/local.js to move this file to any directory.
  |
  */
-module.exports.HttpConfig = {
-    cluster: false,
-    host   : 'localhost',
-    port   : 8080,
+module.exports = {
+    /*
+     |--------------------------------------------------------------------------
+     | Regent Bindings
+     |--------------------------------------------------------------------------
+     |
+     | Bindings are used to override some objects within the Regent system with
+     | local or custom variants. For example, this custom {@link HttpKernel}
+     | is inserted by our app so we can insert our own middleware array.
+     |
+     */
+    bindings: {
+        // Override the HTTP Kernel
+        HttpKernel: require('./my-http-kernel'),
+
+        // Override the HTTP Router
+        HttpRouter: require('./my-http-router'),
+
+        // Override the Templating Engine
+        TemplateManager: require('./my-template-manager'),
+    },
+
+    /*
+     |--------------------------------------------------------------------------
+     | Database Configuration
+     |--------------------------------------------------------------------------
+     |
+     | This section is used to identify which database connection, defined in
+     | the System Configuration, should be used when communicating with the
+     | database layer. Note that databases may be directly referenced in
+     | the code by passing it to Regent::connection(<name>) function.
+     |
+     */
+    database: {
+        connection: 'postgres',
+    },
+
+    /*
+     |--------------------------------------------------------------------------
+     | Template Options
+     |--------------------------------------------------------------------------
+     |
+     | By default, Regent uses Nunjucks as the templating language. Nunjucks
+     | has several configuration options available, and this is where you
+     | can override the Regent defaults. Uses the standard NJK options.
+     |
+     */
+    templateOptions: {
+        autoescape: true,
+        thrownOnUndefined: false,
+        trimBlocks: false,
+        lstripBlocks: false,
+        watch: false,
+        noCache: false,
+        tags: {
+            blockStart   : '{%',
+            blockEnd     : '%}',
+            variableStart: '{{',
+            variableEnd  : '}}',
+            commentStart : '{#',
+            commentEnd   : '#}',
+        },
+    },
+
+    /*
+     |--------------------------------------------------------------------------
+     | Application Router Configuration
+     |--------------------------------------------------------------------------
+     |
+     | Application Router Config tells the Regent Core where to find the set
+     | of directories that are required for proper traffic routing, but
+     | cannot be included in the core without binding the user to a
+     | very particular or opinionated structure. This will help
+     | ensure that developers maintain maximum flexibility.
+     |
+     */
+    routes: {
+        http: {
+            // Routes designed for web-facing content
+            web: 'routes/web.js',
+        }
+    },
 };
