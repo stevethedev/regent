@@ -87,3 +87,52 @@ module.exports.LoggerConfig = {
     catchErrors: true,
     logLevel   : 5,
 };
+
+/*
+ |------------------------------------------------------------------------------
+ | Database Configuration
+ |------------------------------------------------------------------------------
+ |
+ | Database Configuration tells the Regent Core where and how to connect to
+ | databases, and which database engine to use.
+ |
+ */
+module.exports.Database = {
+    // MySQL/MariaDB
+    mysql: {
+        // PostgreSQL, MySQL
+        driver: 'MySQL',
+
+        // DB Options
+        options: {
+            database: 'regent',
+            password: 'regent',
+            username: 'regent',
+        },
+
+        // Read-specific overrides (if any)
+        read: {},
+
+        // Write-specific overrides (if any)
+        write: {},
+    },
+
+    // PostgreSQL
+    postgres: {
+        // PostgreSQL, MySQL
+        driver: 'PostgreSQL',
+
+        // DB Options
+        options: {
+            database: 'regent',
+            password: 'regent',
+            username: 'regent',
+        },
+
+        // Read-specific overrides (if any)
+        read: {},
+
+        // Write-specific overrides (if any)
+        write: {},
+    },
+};

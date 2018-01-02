@@ -128,6 +128,63 @@ module.exports = function(testGroup, Connection, config) {
                     })();
                 });
             });
+            describe('(<chunk-size>, <callback>) signature', () => {
+                it('should return a Promise', () => {
+                    const query = connection.table(TABLE_NAME);
+                    const promise = query.orderBy(COL_ID).chunk(1, () => false);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it('should resolve to the Query Builder', () => {
+                    const query   = connection.table(TABLE_NAME);
+                    const promise = query.orderBy(COL_ID).chunk(1, () => false);
+                    return Promise.resolve(promise)
+                        .then((result) => assert.equal(result, query));
+                });
+                it('should pass a Collection into the callback param 1', () => {
+                    const query = connection.table(TABLE_NAME);
+                    return query.orderBy(COL_ID).chunk(1, (res) => {
+                        assert.instanceOf(res, Collection);
+                    });
+                });
+                it('should pass an integer into the callback param 2', () => {
+                    const query = connection.table(TABLE_NAME);
+                    let i = 0;
+                    return query.orderBy(COL_ID).chunk(1, (res, num) => {
+                        assert.equal(i++, num);
+                    });
+                });
+                it('should pass an integer into the callback param 2', () => {
+                    const query = connection.table(TABLE_NAME);
+                    return query.orderBy(COL_ID).chunk(1, (res, num, iter) => {
+                        assert.isGenerator(iter);
+                    });
+                });
+                it('should iterate through the entire result set', () => {
+                    const query = connection.table(TABLE_NAME);
+                    let i = 0;
+                    return query.orderBy(COL_ID).chunk(1, (rows) => {
+                        assert.equal(rows.size(), 1);
+                        assert.equal(
+                            rows.get(0).getAttribute(COL_NAME),
+                            TABLE_VALUES[i++],
+                        );
+                    });
+                });
+                it(
+                    'should not return an empty array in the last result set',
+                    () => {
+                        const query = connection.table(TABLE_NAME);
+                        let i = 0;
+                        const promise = query.orderBy(COL_ID).chunk(
+                            1,
+                            () => ++i
+                        );
+                        return Promise.resolve(promise)
+                            .then(() => assert.equal(i, TABLE_VALUES.length));
+                    }
+                );
+            });
         });
         describe('first method', () => {
             describe('() signature', () => {
@@ -151,6 +208,13 @@ module.exports = function(testGroup, Connection, config) {
                             record.getAttribute(COL_NAME),
                             TABLE_VALUES[0],
                         ));
+                });
+                it('should resolve to null if no records were found', () => {
+                    const query = connection.table(TABLE_NAME);
+                    query.orderBy(COL_ID).whereRaw('false');
+                    const promise = query.first();
+                    return Promise.resolve(promise)
+                        .then((value) => assert.isNull(value));
                 });
             });
         });
@@ -200,6 +264,21 @@ module.exports = function(testGroup, Connection, config) {
                         .then((record) => assert.instanceOf(record, Record));
                 });
             });
+            describe('(<callback>) signature', () => {
+                it('should return promise', () => {
+                    const query   = connection.table(TABLE_NAME);
+                    const promise = query.orderBy(COL_ID).iterator(() => false);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it('should pass Records into the callback', () => {
+                    const query = connection.table(TABLE_NAME);
+                    const promise = query.orderBy(COL_ID).iterator((record) => {
+                        assert.instanceOf(record, Record);
+                    });
+                    return Promise.resolve(promise);
+                });
+            });
         });
         describe('last method', () => {
             describe('(<field>) signature', () => {
@@ -223,6 +302,13 @@ module.exports = function(testGroup, Connection, config) {
                             record.getAttribute(COL_NAME),
                             TABLE_VALUES[TABLE_VALUES.length - 1],
                         ));
+                });
+                it('should resolve to null if no records were found', () => {
+                    const query = connection.table(TABLE_NAME);
+                    query.orderBy(COL_ID).whereRaw('false');
+                    const promise = query.last();
+                    return Promise.resolve(promise)
+                        .then((value) => assert.isNull(value));
                 });
             });
         });
@@ -271,6 +357,13 @@ module.exports = function(testGroup, Connection, config) {
                     const promise = query.orderBy(COL_ID).value(COL_NAME);
                     return Promise.resolve(promise)
                         .then((value) => assert.equal(value, TABLE_VALUES[0]));
+                });
+                it('should resolve to null if no records were found', () => {
+                    const query = connection.table(TABLE_NAME);
+                    query.orderBy(COL_ID).whereRaw('false');
+                    const promise = query.value(COL_NAME);
+                    return Promise.resolve(promise)
+                        .then((value) => assert.isNull(value));
                 });
             });
         });

@@ -31,6 +31,8 @@ module.exports = {
         HttpKernel,
     },
 
+    database: { connection: 'postgres' },
+
     /*
      |--------------------------------------------------------------------------
      | Application Router Configuration
