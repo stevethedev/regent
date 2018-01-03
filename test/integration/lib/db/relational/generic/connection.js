@@ -3,11 +3,11 @@
  */
 'use strict';
 
-const assert          = requireLib('util/assert');
-const QueryBuilder    = requireLib('db/relational/query-builder');
+const assert          = require('regent/lib/util/assert');
+const QueryBuilder    = require('regent/lib/db/relational/query-builder');
 
-const { PART_RAW_TABLE } = requireLib('db/relational/parts');
-const { $protected }   = requireLib('util/scope')();
+const { PART_RAW_TABLE } = require('regent/lib/db/relational/parts');
+const { $protected }   = require('regent/lib/util/scope')();
 
 const connections   = [];
 module.exports = function(testGroup, Connection, Dialect, config) {

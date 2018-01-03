@@ -7,10 +7,13 @@
  */
 'use strict';
 
-const GlobalFunctions = require('./bootstrap/global-functions');
-const DefaultConfig   = require('./etc/default');
-const deepmerge       = require('deepmerge');
-const rootDir         = __dirname;
+require('kraeve');
+
+const directories   = require('regent/bootstrap/directories');
+const DefaultConfig = require('regent/etc/default');
+const Regent        = require('regent/lib/core/regent');
+const deepmerge     = require('deepmerge');
+const rootDir       = __dirname;
 
 // Configure (but do not start) a Regent instance
 function create(appDir = rootDir, LocalConfig = {}) {
@@ -27,10 +30,9 @@ function create(appDir = rootDir, LocalConfig = {}) {
         LocalConfig,
     ]);
 
-    GlobalFunctions.configure(rootDir, SystemConfig.Directories);
+    directories.configure(rootDir, SystemConfig.Directories);
 
-    const AppConfig    = requireApp(SystemConfig.AppConfig.file);
-    const Regent       = requireLib('core/regent');
+    const AppConfig    = directories.requireApp(SystemConfig.AppConfig.file);
     return new Regent(rootDir, SystemConfig, AppConfig);
 }
 

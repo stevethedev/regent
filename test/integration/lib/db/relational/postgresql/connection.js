@@ -4,8 +4,8 @@
 'use strict';
 
 const config          = require('./config');
-const PostgresDb      = requireLib('db/relational/postgresql/connection');
-const PostgresDialect = requireLib('db/relational/postgresql/dialect');
+const PostgresDb      = require('regent/lib/db/relational/postgresql/connection');
+const PostgresDialect = require('regent/lib/db/relational/postgresql/dialect');
 const testSet         = require('../generic/connection');
 
 /*

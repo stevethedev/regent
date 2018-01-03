@@ -4,8 +4,8 @@
 'use strict';
 
 const config       = require('./config');
-const MysqlDb      = requireLib('db/relational/mysql/connection');
-const MysqlDialect = requireLib('db/relational/mysql/dialect');
+const MysqlDb      = require('regent/lib/db/relational/mysql/connection');
+const MysqlDialect = require('regent/lib/db/relational/mysql/dialect');
 const testSet      = require('../generic/connection');
 
 /*

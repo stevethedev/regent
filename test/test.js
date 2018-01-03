@@ -13,8 +13,8 @@ const path  = require('path');
 
 const { rootDir, SystemConfig } = require('../bootstrap/system-config');
 
-const AppConfig = requireApp(SystemConfig.AppConfig.file);
-const Regent    = requireLib('core/regent');
+const AppConfig = require('regent/app/app');
+const Regent    = require('regent/lib/core/regent');
 const LAST_THREE = -3;
 
 global.newRegent = () => new Regent(rootDir, SystemConfig, AppConfig);

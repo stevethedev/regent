@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const HttpKernel      = requireApp('http/kernel');
+const HttpKernel      = require('regent/app/http/kernel');
 
 /*
  |------------------------------------------------------------------------------

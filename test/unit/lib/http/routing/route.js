@@ -3,8 +3,8 @@
  */
 'use strict';
 
-const assert       = requireLib('util/assert');
-const HttpRoute    = requireLib('http/routing/route');
+const assert       = require('regent/lib/util/assert');
+const HttpRoute    = require('regent/lib/http/routing/route');
 const { newRegent } = global;
 
 const regent       = newRegent();

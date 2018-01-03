@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const BaseHttpRouter = requireLib('http/router');
+const BaseHttpRouter = require('regent/lib/http/router');
 
 class HttpRouter extends BaseHttpRouter {
     // Your custom router content

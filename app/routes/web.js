@@ -1,6 +1,8 @@
+
 'use strict';
 
 const { stripIndent } = require('common-tags');
+const index = require('regent/app/http/controllers/index');
 
 /*
  |------------------------------------------------------------------------------
@@ -16,11 +18,7 @@ const { stripIndent } = require('common-tags');
 function loadWebRoutes(router) {
     // Your routes are defined in here
 
-    router.resource(
-        '/',
-        requireApp('http/controllers/index'),
-        { only: ['index'] }
-    );
+    router.resource('/', index, { only: ['index'] });
 
     const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
     router.get('user/{id?}', (request, response, { variables }) => {

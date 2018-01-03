@@ -3,10 +3,10 @@
  */
 'use strict';
 
-const assert       = requireLib('util/assert');
-const Collection   = requireLib('support/collection');
-const QueryBuilder = requireLib('db/relational/query-builder');
-const Record       = requireLib('db/relational/record');
+const assert       = require('regent/lib/util/assert');
+const Collection   = require('regent/lib/support/collection');
+const QueryBuilder = require('regent/lib/db/relational/query-builder');
+const Record       = require('regent/lib/db/relational/record');
 
 const TABLE_NAME   = 'query_builder';
 const CLASS_NAME   = QueryBuilder.name;
