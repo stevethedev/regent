@@ -24,10 +24,11 @@
   "homepage": "https://github.com/stevethedev/regent#readme",
   "dependencies": {
     "chai": "^4.1.2",
-    "common-tags": "^1.5.1",
+    "common-tags": "^1.6.0",
     "dateformat": "^3.0.2",
     "deepmerge": "^2.0.1",
-    "mime": "^2.0.3",
+    "kraeve": "^1.0.0",
+    "mime": "^2.1.0",
     "mysql": "^2.15.0",
     "nunjucks": "^3.0.1",
     "pg": "^7.4.0",
@@ -35,13 +36,13 @@
     "ps-node": "^0.1.6"
   },
   "devDependencies": {
-    "babel-eslint": "^8.0.3",
+    "babel-eslint": "^8.1.2",
     "codacy-coverage": "^2.0.3",
     "docdash": "^0.4.0",
-    "eslint": "^4.13.1",
+    "eslint": "^4.14.0",
     "jsdoc": "^3.5.5",
     "jsinspect": "^0.12.7",
-    "mocha": "^4.0.1",
-    "nyc": "^11.3.0"
+    "mocha": "^4.1.0",
+    "nyc": "^11.4.1"
   }
 }

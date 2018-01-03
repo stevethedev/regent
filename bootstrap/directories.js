@@ -5,15 +5,15 @@
 
 const path = require('path');
 
-class GlobalFunctions {
+class Directories {
     static configure(rootPath, config) {
-        createResolve(rootPath, config, global);
-        createRequire(rootPath, config, global);
-        createReload(rootPath, config, global);
+        createResolve(rootPath, config, Directories);
+        createRequire(rootPath, config, Directories);
+        createReload(rootPath, config, Directories);
     }
 }
 
-function createResolve(rootPath, config, parent = global) {
+function createResolve(rootPath, config, parent) {
     const resolve = (src = '') => {
         return path.resolve(path.resolve(rootPath, src));
     };
@@ -68,7 +68,7 @@ function createResolve(rootPath, config, parent = global) {
     parent.resolveView = (src = '') => resolve(path.join(config.view, src));
 }
 
-function createRequire(rootPath, config, parent = global) {
+function createRequire(rootPath, config, parent) {
     /**
      * This function is used to load application-specific files
      *
@@ -103,7 +103,7 @@ function createRequire(rootPath, config, parent = global) {
     };
 }
 
-function createReload(rootPath, config, parent = global) {
+function createReload(rootPath, config, parent) {
     /**
      * This function is used to reload files
      *
@@ -153,4 +153,4 @@ function createReload(rootPath, config, parent = global) {
     };
 }
 
-module.exports = GlobalFunctions;
+module.exports = Directories;

@@ -1,6 +1,6 @@
 'use strict';
 
-const HttpController = requireApp('http/controller');
+const HttpController = require('regent/app/http/controller');
 
 class IndexHttpController extends HttpController {
     initialize() {

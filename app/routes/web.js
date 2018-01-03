@@ -18,7 +18,7 @@ function loadWebRoutes(router) {
 
     router.resource(
         '/',
-        requireApp('http/controllers/index'),
+        require('regent/app/http/controllers/index'),
         { only: ['index'] }
     );
 

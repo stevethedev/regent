@@ -3,8 +3,8 @@
  */
 'use strict';
 
-const assert       = requireLib('util/assert');
-const QueryBuilder = requireLib('db/relational/query-builder');
+const assert       = require('regent/lib/util/assert');
+const QueryBuilder = require('regent/lib/db/relational/query-builder');
 
 const CLASS_NAME   = QueryBuilder.name;
 const CONNECTION   = {};

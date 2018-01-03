@@ -3,8 +3,8 @@
  */
 'use strict';
 
-const assert       = requireLib('util/assert');
-const RegentSet    = requireLib('support/set');
+const assert       = require('regent/lib/util/assert');
+const RegentSet    = require('regent/lib/support/set');
 
 const CLASS_NAME   = RegentSet.name;
 const NUMBER_ONE   = 1;

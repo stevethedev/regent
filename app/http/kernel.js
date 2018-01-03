@@ -2,11 +2,11 @@
  * @author Steven Jimenez <steven@stevethedev.com>
  */
 
-const BaseHttpKernel = requireLib('http/kernel');
+const BaseHttpKernel = require('regent/lib/http/kernel');
 
 // Middleware
-const HelloWorldMiddleware = requireApp('middleware/hello-world');
-const SessionMiddleware    = requireLib('http/middleware/sessions');
+const HelloWorldMiddleware = require('regent/app/middleware/hello-world');
+const SessionMiddleware    = require('regent/lib/http/middleware/sessions');
 
 class HttpKernel extends BaseHttpKernel {
     /*

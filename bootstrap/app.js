@@ -16,8 +16,8 @@
 
 const { rootDir, SystemConfig } = require('./system-config');
 
-const AppConfig = requireApp(SystemConfig.AppConfig.file);
-const Regent    = requireLib('core/regent');
+const AppConfig = require(SystemConfig.AppConfig.file);
+const Regent    = require('regent/lib/core/regent');
 
 /*
  |------------------------------------------------------------------------------

@@ -3,8 +3,8 @@
  */
 'use strict';
 
-const assert       = requireLib('util/assert');
-const RegentMap    = requireLib('support/map');
+const assert       = require('regent/lib/util/assert');
+const RegentMap    = require('regent/lib/support/map');
 
 const CLASS_NAME   = RegentMap.name;
 

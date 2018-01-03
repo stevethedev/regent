@@ -3,15 +3,16 @@
  */
 'use strict';
 
+require('kraeve');
+
 const path            = require('path');
 const deepmerge       = require('deepmerge');
-
-const GlobalFunctions = require('./global-functions');
-const DefaultConfig   = require('../etc/default');
+const DefaultConfig   = require('regent/etc/default');
+const Directories     = require('regent/bootstrap/directories');
 const LocalConfig     = (() => {
     try {
         // eslint-disable-next-line global-require
-        return require('../etc/local');
+        return require('regent/etc/local');
     } catch (error) {
         return {};
     }
@@ -22,12 +23,12 @@ const SystemConfig    = deepmerge.all([
     LocalConfig,
 ]);
 
-const rootDir = path.resolve(path.join(__dirname, '../'));
-GlobalFunctions.configure(rootDir, SystemConfig.Directories);
+const rootDir = path.dirname(require.resolve('regent'));
+Directories.configure(rootDir, SystemConfig.Directories);
 
 module.exports = {
     DefaultConfig,
-    GlobalFunctions,
+    Directories,
     LocalConfig,
     SystemConfig,
     rootDir,

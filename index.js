@@ -30,7 +30,7 @@ function create(appDir = rootDir, LocalConfig = {}) {
     GlobalFunctions.configure(rootDir, SystemConfig.Directories);
 
     const AppConfig    = requireApp(SystemConfig.AppConfig.file);
-    const Regent       = requireLib('core/regent');
+    const Regent       = require('regent/lib/core/regent');
     return new Regent(rootDir, SystemConfig, AppConfig);
 }
 

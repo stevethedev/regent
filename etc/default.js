@@ -50,7 +50,7 @@ module.exports.Directories = {
     view: './storage/views',
 };
 
-module.exports.AppConfig = { file: 'app.js' };
+module.exports.AppConfig = { file: `${module.exports.Directories.app}/app.js` };
 
 /*
  |------------------------------------------------------------------------------
