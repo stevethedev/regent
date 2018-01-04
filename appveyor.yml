@@ -2,6 +2,7 @@ environment:
   nodejs_version: "8"
   matrix:
     - NODE_ENV: development
+build: off
 services:
   - postgresql96
   - mysql
@@ -14,7 +15,7 @@ init:
 install:
   - ps: Install-Product node $env:nodejs_version
   - npm install
-build:
+before_test:
   - psql -c "CREATE DATABASE regent_test;" -U postgres
   - psql -c "CREATE USER regent WITH PASSWORD 'password123';" -U postgres
   - psql -c "GRANT ALL PRIVILEGES ON DATABASE regent_test TO regent;" -U postgres
