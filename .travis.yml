@@ -26,15 +26,16 @@ branches:
 
 # declare your environment variables
 env:
-  # global will stay the same across all matrix possibilities
-  global:
-    # - SECRET_TOKEN=k399dkkgklsk
   # matrix variables will create a new build for each specified variable
   matrix:
     - NODE_ENV=development
 
 before_script:
   - npm install
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -rf /usr/local/var/postgres; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then initdb /usr/local/var/postgres; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pg_ctl -D /usr/local/var/postgres start; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then createuser -s postgres; fi
   - psql -c "CREATE DATABASE regent_test;" -U postgres
   - psql -c "CREATE USER regent WITH PASSWORD 'password123';" -U postgres
   - psql -c "GRANT ALL PRIVILEGES ON DATABASE regent_test TO regent;" -U postgres
