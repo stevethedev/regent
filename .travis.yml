@@ -30,12 +30,15 @@ env:
   matrix:
     - NODE_ENV=development
 
-before_script:
+install:
   - npm install
+  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then brew update > /dev/null && brew install mariadb && mysql.server start; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -rf /usr/local/var/postgres; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then initdb /usr/local/var/postgres; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pg_ctl -D /usr/local/var/postgres start; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then createuser -s postgres; fi
+
+before_script:
   - psql -c "CREATE DATABASE regent_test;" -U postgres
   - psql -c "CREATE USER regent WITH PASSWORD 'password123';" -U postgres
   - psql -c "GRANT ALL PRIVILEGES ON DATABASE regent_test TO regent;" -U postgres
