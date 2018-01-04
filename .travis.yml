@@ -10,6 +10,7 @@ node_js:
 # Operating Systems
 os:
   - linux
+  - osx
 
 services:
   - postgresql
