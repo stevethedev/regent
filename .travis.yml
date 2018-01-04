@@ -33,12 +33,6 @@ env:
   matrix:
     - NODE_ENV=development
 
-## begin build steps
-####################
-
-before_install:
-  - sudo apt-get -qq update
-
 before_script:
   - npm install
   - psql -c "CREATE DATABASE regent_test;" -U postgres
