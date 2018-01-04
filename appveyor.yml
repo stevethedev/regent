@@ -15,9 +15,9 @@ build: off
 install:
   - ps: Install-Product node $env:nodejs_version
   - npm install
-  - psql -c "CREATE DATABASE regent_test;" --user=postgres
-  - psql -c "CREATE USER regent WITH PASSWORD 'password123';" --user=postgres
-  - psql -c "GRANT ALL PRIVILEGES ON DATABASE regent_test TO regent;" --user=postgres
+  - psql -c "CREATE DATABASE regent_test;" -U postgres
+  - psql -c "CREATE USER regent WITH PASSWORD 'password123';" -U postgres
+  - psql -c "GRANT ALL PRIVILEGES ON DATABASE regent_test TO regent;" -U postgres
   - mysql -e "CREATE DATABASE regent_test;" --user=root
   - mysql -e "GRANT ALL PRIVILEGES ON regent_test.* TO 'regent'@'localhost' IDENTIFIED BY 'password123';" --user=root
 test_script:
