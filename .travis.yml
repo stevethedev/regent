@@ -10,6 +10,7 @@ node_js:
 # Operating Systems
 os:
   - linux
+  - osx
 
 services:
   - postgresql
@@ -25,26 +26,24 @@ branches:
 
 # declare your environment variables
 env:
-  # global will stay the same across all matrix possibilities
-  global:
-    # - SECRET_TOKEN=k399dkkgklsk
   # matrix variables will create a new build for each specified variable
   matrix:
     - NODE_ENV=development
 
-## begin build steps
-####################
-
-before_install:
-  - sudo apt-get -qq update
+install:
+  - npm install
+  - if [[ $TRAVIS_OS_NAME == "osx" ]]; then brew update > /dev/null && brew install mariadb && mysql.server start; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then rm -rf /usr/local/var/postgres; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then initdb /usr/local/var/postgres; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pg_ctl -D /usr/local/var/postgres start; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then createuser -s postgres; fi
 
 before_script:
-  - npm install
   - psql -c "CREATE DATABASE regent_test;" -U postgres
   - psql -c "CREATE USER regent WITH PASSWORD 'password123';" -U postgres
   - psql -c "GRANT ALL PRIVILEGES ON DATABASE regent_test TO regent;" -U postgres
-  - mysql -e "CREATE DATABASE regent_test;"
-  - mysql -e "GRANT ALL PRIVILEGES ON regent_test.* TO 'regent'@'localhost' IDENTIFIED BY 'password123';"
+  - mysql -e "CREATE DATABASE regent_test;" --user=root
+  - mysql -e "GRANT ALL PRIVILEGES ON regent_test.* TO 'regent'@'localhost' IDENTIFIED BY 'password123';" --user=root
 
 script:
   - npm run gen:coverage

@@ -1,5 +1,7 @@
 # Regent
 [![Build Status][build-status-image]][build-status-url]
+[![Build status][appveyor-status-image]][appveyor-status-url]
+
 [![Codacy Badge][codacy-image]][codacy-url]
 [![Codacy Coverage][coverage-image]][coverage-url]
 
@@ -17,6 +19,8 @@ For more information, visit the [Regent Wiki][wiki-url]
 The Regent framework is an open-source software licensed under the 
 [MIT License][license-url]
 
+[appveyor-status-image]: https://ci.appveyor.com/api/projects/status/qg55xbg3cjw3eak0/branch/master?svg=true
+[appveyor-status-url]: https://ci.appveyor.com/project/stevethedev/regent/branch/master
 [build-status-image]: https://travis-ci.org/stevethedev/regent.svg?branch=master
 [build-status-url]: https://travis-ci.org/stevethedev/regent
 [codacy-image]: https://api.codacy.com/project/badge/Grade/1d9972def2334992a30922b030249798

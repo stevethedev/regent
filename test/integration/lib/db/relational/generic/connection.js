@@ -38,7 +38,10 @@ module.exports = function(testGroup, Connection, Dialect, config) {
                         .then(() => connection.disconnect());
                 });
                 it('should resolve to false if connection fails', () => {
-                    const connection = getConnection({});
+                    const settings = { ...config };
+                    // checking for an incorrect username lets us check for mac
+                    settings.username += 'a';
+                    const connection = getConnection(settings);
                     return connection.connect()
                         .then((result) => assert.isFalse(result));
                 });
