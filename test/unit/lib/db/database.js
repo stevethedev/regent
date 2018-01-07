@@ -42,8 +42,19 @@ const EVENT_ENUM = [
 
 const { newRegent } = global;
 
-const regent       = newRegent();
 Database.registerDriver(DB_DRIVER, GenericDb);
+
+const getDatabase  = () => {
+    const localRegent = newRegent();
+    const read        = { bar: 'bar' };
+    const write       = { baz: 'baz' };
+    const settings    = {
+        read,
+        write,
+    };
+    const database    = new Database(localRegent, DB_DRIVER, settings);
+    return database;
+};
 
 describe(`The ${CLASS_NAME} class`, () => {
     describe('static registerDriver', () => {
@@ -273,12 +284,18 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('read method', () => {
         describe('() signature', () => {
-            it('should return a reference to the "read" connection');
+            it('should return a reference to the "read" connection', () => {
+                const database = getDatabase();
+                assert.instanceOf(database.read(), GenericDb);
+            });
         });
     });
     describe('write method', () => {
         describe('() signature', () => {
-            it('should return a reference to the "write" connection');
+            it('should return a reference to the "write" connection', () => {
+                const database = getDatabase();
+                assert.instanceOf(database.write(), GenericDb);
+            });
         });
     });
 });

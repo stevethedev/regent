@@ -3,12 +3,13 @@
  */
 'use strict';
 
-const config          = require('./config');
-const PostgresDb      = require(
-    'regent/lib/db/relational/postgresql/connection'
-);
-const PostgresDialect = require('regent/lib/db/relational/postgresql/dialect');
-const testSet         = require('../generic/connection');
+const config     = require('./config');
+const Database   = require('regent/lib/db/database');
+const PostgresDb = require('regent/lib/db/relational/mysql/connection');
+const testSet    = require('../generic/database');
+
+const DRIVER     = 'MySQL';
+
 
 /*
  |------------------------------------------------------------------------------
@@ -22,4 +23,5 @@ const testSet         = require('../generic/connection');
  |
  */
 
-testSet('PostgreSQL', PostgresDb, PostgresDialect, config);
+Database.registerDriver(DRIVER, PostgresDb);
+testSet(DRIVER, DRIVER, config);
