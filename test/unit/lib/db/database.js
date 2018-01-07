@@ -272,6 +272,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 database.read().query = () => {
                     executed = true;
                 };
+                database.write().query = () => true;
                 database.insert(QUERY);
                 assert.isFalse(executed);
             });
@@ -297,22 +298,23 @@ describe(`The ${CLASS_NAME} class`, () => {
             const BOUND = ['foo'];
             it('should not execute the query on the "read" connection', () => {
                 let executed = false;
+                database.write().query = () => null;
                 database.read().query = () => {
                     executed = true;
                 };
                 database.insert(QUERY, BOUND);
                 assert.isFalse(executed);
             });
-            it('should not execute the query on the "write" connection', () => {
+            it('should execute the query on the "write" connection', () => {
                 let executed = false;
                 database.write().query = () => {
                     executed = true;
                 };
                 database.insert(QUERY, BOUND);
-                assert.isFalse(executed);
+                assert.isTrue(executed);
             });
             it('should forward <bound> to the "write" connection', () => {
-                database.read().query = (query, bound) => {
+                database.write().query = (query, bound) => {
                     assert.equal(query, QUERY);
                     assert.isArray(bound);
                     assert.equal(bound.length, BOUND.length);
