@@ -5,14 +5,59 @@
 
 const assert         = require('regent/lib/util/assert');
 const Database       = require('regent/lib/db/database');
+const { $protected } = require('regent/lib/util/scope')();
 
 const CLASS_NAME     = Database.name;
+
+const {
+    DB_ACQUIRE,
+    DB_CONNECT,
+    DB_CONNECT_NO,
+    DB_CONNECT_TRY,
+    DB_DISCONNECT,
+    DB_DISCONN_NO,
+    DB_DISCONN_TRY,
+    DB_ERROR,
+    DB_QUERY_AFTER,
+    DB_QUERY_BEFORE,
+    DB_REMOVE,
+} = require('regent/lib/event/event-list');
+
+const EVENT_ENUM = [
+    DB_ACQUIRE,
+    DB_CONNECT,
+    DB_CONNECT_NO,
+    DB_CONNECT_TRY,
+    DB_DISCONNECT,
+    DB_DISCONN_NO,
+    DB_DISCONN_TRY,
+    DB_ERROR,
+    DB_QUERY_AFTER,
+    DB_QUERY_BEFORE,
+    DB_REMOVE,
+];
 
 module.exports = function(testGroup, dbDriver, options) {
     const localRegent = global.newRegent();
     const database    = new Database(localRegent, dbDriver, { options });
 
     describe(`${testGroup} ${CLASS_NAME} execution methods`, () => {
+        describe('constructor', () => {
+            describe('any signature', () => {
+                EVENT_ENUM.forEach((eventName) => it(
+                    `should register the ${eventName} event on Regent`,
+                    () => {
+                        const { emitter } = $protected(database.read());
+                        let executed = false;
+                        localRegent.getEmitter().on(eventName, () => {
+                            executed = true;
+                        });
+                        emitter.emit(eventName);
+                        assert.isTrue(executed);
+                    }
+                ));
+            });
+        });
         describe('select method', () => {
             describe('(<query>) signature', () => {
                 it('should return a Promise');

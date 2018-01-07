@@ -12,34 +12,6 @@ const CLASS_NAME     = Database.name;
 
 const DB_DRIVER      = 'GenericDb';
 
-const {
-    DB_ACQUIRE,
-    DB_CONNECT,
-    DB_CONNECT_NO,
-    DB_CONNECT_TRY,
-    DB_DISCONNECT,
-    DB_DISCONN_NO,
-    DB_DISCONN_TRY,
-    DB_ERROR,
-    DB_QUERY_AFTER,
-    DB_QUERY_BEFORE,
-    DB_REMOVE,
-} = require('regent/lib/event/event-list');
-
-const EVENT_ENUM = [
-    DB_ACQUIRE,
-    DB_CONNECT,
-    DB_CONNECT_NO,
-    DB_CONNECT_TRY,
-    DB_DISCONNECT,
-    DB_DISCONN_NO,
-    DB_DISCONN_TRY,
-    DB_ERROR,
-    DB_QUERY_AFTER,
-    DB_QUERY_BEFORE,
-    DB_REMOVE,
-];
-
 const { newRegent } = global;
 
 Database.registerDriver(DB_DRIVER, GenericDb);
@@ -69,11 +41,6 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
     });
     describe('constructor', () => {
-        describe('all signatures', () => {
-            EVENT_ENUM.forEach((eventName) => {
-                it(`should register the ${eventName} event on Regent`);
-            });
-        });
         describe('(regent, driver, { read, write, options }) signature', () => {
             const localRegent = newRegent();
             const options     = {
