@@ -260,18 +260,73 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
     });
     describe('insert method', () => {
+        const localRegent = newRegent();
+        const database = new Database(localRegent, DB_DRIVER, {
+            read : { foo: 'foo' },
+            write: { bar: 'bar' },
+        });
         describe('(<query>) signature', () => {
-            it('should not execute the query on the "read" connection');
-            it('should execute the query on the "write" connection');
-            it('should forward an empty array to the <bound> argument');
+            const QUERY = 'SELECT * FROM table';
+            it('should not execute the query on the "read" connection', () => {
+                let executed = false;
+                database.read().query = () => {
+                    executed = true;
+                };
+                database.insert(QUERY);
+                assert.isFalse(executed);
+            });
+            it('should execute the query on the "write" connection', () => {
+                let executed = false;
+                database.write().query = () => {
+                    executed = true;
+                };
+                database.insert(QUERY);
+                assert.isTrue(executed);
+            });
+            it('should forward an empty array to the <bound> argument', () => {
+                database.write().query = (query, bound) => {
+                    assert.equal(query, QUERY);
+                    assert.isArray(bound);
+                    assert.equal(bound.length, 0);
+                };
+                return database.insert(QUERY);
+            });
         });
         describe('(<query>, <bound>) signature', () => {
-            it('should not execute the query on the "read" connection');
-            it('should execute the query on the "write" connection');
-            it('should forward <bound> to the "write" connection');
+            const QUERY = 'SELECT * FROM table';
+            const BOUND = ['foo'];
+            it('should not execute the query on the "read" connection', () => {
+                let executed = false;
+                database.read().query = () => {
+                    executed = true;
+                };
+                database.insert(QUERY, BOUND);
+                assert.isFalse(executed);
+            });
+            it('should not execute the query on the "write" connection', () => {
+                let executed = false;
+                database.write().query = () => {
+                    executed = true;
+                };
+                database.insert(QUERY, BOUND);
+                assert.isFalse(executed);
+            });
+            it('should forward <bound> to the "write" connection', () => {
+                database.read().query = (query, bound) => {
+                    assert.equal(query, QUERY);
+                    assert.isArray(bound);
+                    assert.equal(bound.length, BOUND.length);
+                };
+                return database.insert(QUERY, BOUND);
+            });
         });
     });
     describe('update method', () => {
+        const localRegent = newRegent();
+        const database = new Database(localRegent, DB_DRIVER, {
+            read : { foo: 'foo' },
+            write: { bar: 'bar' },
+        });
         describe('(<query>) signature', () => {
             it('should not execute the query on the "read" connection');
             it('should execute the query on the "write" connection');
@@ -284,6 +339,11 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
     });
     describe('delete method', () => {
+        const localRegent = newRegent();
+        const database = new Database(localRegent, DB_DRIVER, {
+            read : { foo: 'foo' },
+            write: { bar: 'bar' },
+        });
         describe('(<query>) signature', () => {
             it('should not execute on the "read" connection');
             it('should execute the query on the "write" connection');
@@ -296,6 +356,11 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
     });
     describe('statement method', () => {
+        const localRegent = newRegent();
+        const database = new Database(localRegent, DB_DRIVER, {
+            read : { foo: 'foo' },
+            write: { bar: 'bar' },
+        });
         describe('(<query>) signature', () => {
             it('should not execute on the "read" connection');
             it('should execute the query on the "write" connection');
