@@ -3,7 +3,10 @@
  */
 'use strict';
 
+require('kraeve');
+
 const operatingSystem = require('os');
+const { dirname, join } = require('path');
 
 /*
  |------------------------------------------------------------------------------
@@ -29,25 +32,25 @@ const operatingSystem = require('os');
  */
 module.exports.Directories = {
     // Your application files are stored here
-    app: './app',
+    app: join(dirname(require.resolve('regent')), 'app'),
 
     // Configuration Files
-    etc: './etc',
+    etc: join(dirname(require.resolve('regent')), 'etc'),
 
     // Core Regent Files
-    lib: './lib',
+    lib: join(dirname(require.resolve('regent')), 'lib'),
 
     // Log files
-    log: './storage/log',
+    log: join(dirname(require.resolve('regent')), 'storage/log'),
 
     // Public storage files
-    pub: './storage/pub',
+    pub: join(dirname(require.resolve('regent')), 'storage/pub'),
 
     // Session files
-    session: './storage/session',
+    session: join(dirname(require.resolve('regent')), 'storage/session'),
 
     // View files
-    view: './storage/views',
+    view: join(dirname(require.resolve('regent')), 'storage/views'),
 };
 
 module.exports.AppConfig = { file: `${module.exports.Directories.app}/app.js` };
@@ -64,7 +67,7 @@ module.exports.AppConfig = { file: `${module.exports.Directories.app}/app.js` };
  */
 module.exports.HttpConfig = {
     // TRUE to use clustering, or FALSE to turn it off
-    cluster  : true,
+    cluster  : false,
     host     : 'localhost',
     port     : 8080,
     // Number of clusters to use, if clustering is enabled
