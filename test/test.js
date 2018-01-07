@@ -17,6 +17,9 @@ const AppConfig = require('regent/app/app');
 const Regent    = require('regent/lib/core/regent');
 const LAST_THREE = -3;
 
+// Prevent the system from complaining about max-listeners
+process.setMaxListeners(Infinity);
+
 global.newRegent = () => new Regent(rootDir, SystemConfig, AppConfig);
 
 function readdir(directory, mocha) {
