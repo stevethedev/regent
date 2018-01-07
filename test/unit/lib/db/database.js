@@ -49,10 +49,11 @@ const getDatabase  = () => {
     const read        = { bar: 'bar' };
     const write       = { baz: 'baz' };
     const settings    = {
+        driver: DB_DRIVER,
         read,
         write,
     };
-    const database    = new Database(localRegent, DB_DRIVER, settings);
+    const database    = new Database(localRegent, settings);
     return database;
 };
 
@@ -83,11 +84,12 @@ describe(`The ${CLASS_NAME} class`, () => {
             const read        = { bar: 'bar' };
             const write       = { baz: 'baz' };
             const settings    = {
+                driver: DB_DRIVER,
                 options,
                 read,
                 write,
             };
-            const database    = new Database(localRegent, DB_DRIVER, settings);
+            const database    = new Database(localRegent, settings);
             const $database   = $protected(database);
             it('should use different connections for read and write', () => {
                 assert.notEqual(database.read(), database.write());
@@ -117,10 +119,11 @@ describe(`The ${CLASS_NAME} class`, () => {
             };
             const read        = { bar: 'bar' };
             const settings    = {
+                driver: DB_DRIVER,
                 options,
                 read,
             };
-            const database    = new Database(localRegent, DB_DRIVER, settings);
+            const database    = new Database(localRegent, settings);
             const $database   = $protected(database);
             it('should use different connections for read and write', () => {
                 assert.notEqual(database.read(), database.write());
@@ -146,10 +149,11 @@ describe(`The ${CLASS_NAME} class`, () => {
             };
             const write       = { baz: 'baz' };
             const settings    = {
+                driver: DB_DRIVER,
                 options,
                 write,
             };
-            const database    = new Database(localRegent, DB_DRIVER, settings);
+            const database    = new Database(localRegent, settings);
             const $database   = $protected(database);
             it('should use different connections for read and write', () => {
                 assert.notEqual(database.read(), database.write());
@@ -174,10 +178,11 @@ describe(`The ${CLASS_NAME} class`, () => {
             const read        = { bar: 'bar' };
             const write       = { baz: 'baz' };
             const settings    = {
+                driver: DB_DRIVER,
                 read,
                 write,
             };
-            const database    = new Database(localRegent, DB_DRIVER, settings);
+            const database    = new Database(localRegent, settings);
             it('should use different connections for read and write', () => {
                 assert.notEqual(database.read(), database.write());
             });
@@ -189,8 +194,11 @@ describe(`The ${CLASS_NAME} class`, () => {
                 baz: 'foo',
                 foo: 'foo',
             };
-            const settings    = { options };
-            const database    = new Database(localRegent, DB_DRIVER, settings);
+            const settings    = {
+                driver: DB_DRIVER,
+                options,
+            };
+            const database    = new Database(localRegent, settings);
             it('should use the same connection for read and write', () => {
                 assert.equal(database.read(), database.write());
             });
@@ -198,9 +206,10 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('select method', () => {
         const localRegent = newRegent();
-        const database = new Database(localRegent, DB_DRIVER, {
-            read : { foo: 'foo' },
-            write: { bar: 'bar' },
+        const database = new Database(localRegent, {
+            driver: DB_DRIVER,
+            read  : { foo: 'foo' },
+            write : { bar: 'bar' },
         });
         describe('(<query>) signature', () => {
             const QUERY = 'SELECT * FROM table';
@@ -261,9 +270,10 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('insert method', () => {
         const localRegent = newRegent();
-        const database = new Database(localRegent, DB_DRIVER, {
-            read : { foo: 'foo' },
-            write: { bar: 'bar' },
+        const database = new Database(localRegent, {
+            driver: DB_DRIVER,
+            read  : { foo: 'foo' },
+            write : { bar: 'bar' },
         });
         describe('(<query>) signature', () => {
             const QUERY = 'INSERT INTO table (field) VALUES (\'value\')';
@@ -325,9 +335,10 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('update method', () => {
         const localRegent = newRegent();
-        const database = new Database(localRegent, DB_DRIVER, {
-            read : { foo: 'foo' },
-            write: { bar: 'bar' },
+        const database = new Database(localRegent, {
+            driver: DB_DRIVER,
+            read  : { foo: 'foo' },
+            write : { bar: 'bar' },
         });
         describe('(<query>) signature', () => {
             const QUERY = 'UPDATE table SET field = \'value\'';
@@ -389,9 +400,10 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('delete method', () => {
         const localRegent = newRegent();
-        const database = new Database(localRegent, DB_DRIVER, {
-            read : { foo: 'foo' },
-            write: { bar: 'bar' },
+        const database = new Database(localRegent, {
+            driver: DB_DRIVER,
+            read  : { foo: 'foo' },
+            write : { bar: 'bar' },
         });
         describe('(<query>) signature', () => {
             const QUERY = 'DELETE FROM table';
@@ -453,9 +465,10 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('statement method', () => {
         const localRegent = newRegent();
-        const database = new Database(localRegent, DB_DRIVER, {
-            read : { foo: 'foo' },
-            write: { bar: 'bar' },
+        const database = new Database(localRegent, {
+            driver: DB_DRIVER,
+            read  : { foo: 'foo' },
+            write : { bar: 'bar' },
         });
         describe('(<query>) signature', () => {
             const QUERY = 'CREATE TABLE table (field TEXT)';

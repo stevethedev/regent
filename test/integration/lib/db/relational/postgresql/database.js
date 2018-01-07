@@ -24,4 +24,7 @@ const DRIVER     = 'PostgreSQL';
  */
 
 Database.registerDriver(DRIVER, PostgresDb);
-testSet(DRIVER, DRIVER, config);
+testSet(DRIVER, {
+    ...{ driver: DRIVER },
+    ...config,
+});
