@@ -201,15 +201,11 @@ describe(`The ${CLASS_NAME} class`, () => {
             it('should execute the query on the "read" connection');
             it('should forward an empty array to the <bound> argument');
             it('should not execute the query on the "write" connection');
-            it('should return a Promise');
-            it('should resolve to a Collection of Records');
         });
         describe('(<query>, <bound>) signature', () => {
             it('should execute the query on the "read" connection');
             it('should forward <bound> to the "read" connection');
             it('should not execute the query on the "write" connection');
-            it('should return a Promise');
-            it('should resolve to a Collection of Records');
         });
     });
     describe('insert method', () => {
@@ -217,17 +213,11 @@ describe(`The ${CLASS_NAME} class`, () => {
             it('should not execute the query on the "read" connection');
             it('should execute the query on the "write" connection');
             it('should forward an empty array to the <bound> argument');
-            it('should return a Promise');
-            it('should resolve to Boolean(true) if it succeeds');
-            it('should resolve to Boolean(false) if it fails');
         });
         describe('(<query>, <bound>) signature', () => {
             it('should not execute the query on the "read" connection');
             it('should execute the query on the "write" connection');
             it('should forward <bound> to the "write" connection');
-            it('should return a Promise');
-            it('should resolve to Boolean(true) if it succeeds');
-            it('should resolve to Boolean(false) if it fails');
         });
     });
     describe('update method', () => {
@@ -235,17 +225,11 @@ describe(`The ${CLASS_NAME} class`, () => {
             it('should not execute the query on the "read" connection');
             it('should execute the query on the "write" connection');
             it('should forward an empty array to the <bound> argument');
-            it('should return a Promise');
-            it('should resolve to an integer of the number of updates');
-            it('should resolve to 0 if the query fails');
         });
         describe('(<query>, <bound>) signature', () => {
             it('should not execute the query on the "read" connection');
             it('should execute the query on the "write" connection');
             it('should forward <bound> to the "write" connection');
-            it('should return a Promise');
-            it('should resolve to an integer of the number of updates');
-            it('should resolve to 0 if the query fails');
         });
     });
     describe('delete method', () => {
@@ -253,17 +237,11 @@ describe(`The ${CLASS_NAME} class`, () => {
             it('should not execute on the "read" connection');
             it('should execute the query on the "write" connection');
             it('should forward an empty array to the <bound> argument');
-            it('should return a Promise');
-            it('should resolve to an integer of the number of deletions');
-            it('should resolve to 0 if the query fails');
         });
         describe('(<query>, <bound>) signature', () => {
             it('should not execute the query on the "read" connection');
             it('should execute the query on the "write" connection');
             it('should forward <bound> to the "write" connection');
-            it('should return a Promise');
-            it('should resolve to an integer of the number of deletions');
-            it('should resolve to 0 if the query fails');
         });
     });
     describe('statement method', () => {
@@ -271,15 +249,11 @@ describe(`The ${CLASS_NAME} class`, () => {
             it('should not execute on the "read" connection');
             it('should execute the query on the "write" connection');
             it('should forward an empty array to the <bound> argument');
-            it('should return a Promise');
-            it('should resolve to the Database object');
         });
         describe('(<query>, <bound>) signature', () => {
             it('should not execute the query on the "read" connection');
             it('should execute the query on the "write" connection');
             it('should forward <bound> to the "write" connection');
-            it('should return a Promise');
-            it('should resolve to the Database object');
         });
     });
     describe('read method', () => {
