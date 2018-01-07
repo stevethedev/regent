@@ -14,7 +14,8 @@
  |
  */
 
-const { rootDir, SystemConfig } = require('./system-config');
+require('kraeve');
+const { rootDir, SystemConfig } = require('regent/bootstrap/system-config');
 
 const AppConfig = require(SystemConfig.AppConfig.file);
 const Regent    = require('regent/lib/core/regent');

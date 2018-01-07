@@ -15,7 +15,7 @@ class Directories {
 
 function createResolve(rootPath, config, parent) {
     const resolve = (src = '') => {
-        return path.resolve(path.resolve(rootPath, src));
+        return path.resolve(rootPath, src);
     };
 
     parent.resolve = resolve;
@@ -69,16 +69,20 @@ function createResolve(rootPath, config, parent) {
 }
 
 function createRequire(rootPath, config, parent) {
+    const requireFactory = (base) => {
+        return (target) => {
+            // eslint-disable-next-line global-require
+            return require(path.join(base, target));
+        };
+    };
+
     /**
      * This function is used to load application-specific files
      *
      * @param {String} src - The file path to load from the app folder.
      * @return {mixed}
      */
-    parent.requireApp = (src) => {
-        // eslint-disable-next-line global-require
-        return require(path.resolve(rootPath, config.app, src));
-    };
+    parent.requireApp = requireFactory(config.app);
 
     /**
      * This function is used to load application-specific files
@@ -86,10 +90,7 @@ function createRequire(rootPath, config, parent) {
      * @param {String} src - The file path to load from the etc folder.
      * @return {mixed}
      */
-    parent.requireEtc = (src) => {
-        // eslint-disable-next-line global-require
-        return require(path.resolve(rootPath, config.etc, src));
-    };
+    parent.requireEtc = requireFactory(config.etc);
 
     /**
      * This function is used to load application-specific files
@@ -97,24 +98,25 @@ function createRequire(rootPath, config, parent) {
      * @param {String} src - The file path to load from the lib folder.
      * @return {mixed}
      */
-    parent.requireLib = (src) => {
-        // eslint-disable-next-line global-require
-        return require(path.resolve(rootPath, config.lib, src));
-    };
+    parent.requireLib = requireFactory(config.lib);
 }
 
 function createReload(rootPath, config, parent) {
+    const reloadFactory = (base, requireFn) => {
+        return (target) => {
+            const filePath = require.resolve(path.join(base, target));
+            delete require.cache[filePath];
+            return requireFn(target);
+        };
+    };
+
     /**
      * This function is used to reload files
      *
      * @param {String} src - The file path to reload
      * @return {mixed}
      */
-    parent.reload     = (src) => {
-        delete require.cache[require.resolve(src)];
-        // eslint-disable-next-line global-require
-        return require(src);
-    };
+    parent.reload     = reloadFactory('', require);
 
     /**
      * This function is used to reload application-specific files
@@ -122,11 +124,7 @@ function createReload(rootPath, config, parent) {
      * @param {String} src - The file path to load from the app folder.
      * @return {mixed}
      */
-    parent.reloadApp  = (src) => {
-        const filePath = path.resolve(rootPath, config.app, src);
-        delete require.cache[require.resolve(filePath)];
-        return requireApp(src);
-    };
+    parent.reloadApp  = reloadFactory(config.app, parent.requireApp);
 
     /**
      * This function is used to reload application-specific files
@@ -134,11 +132,7 @@ function createReload(rootPath, config, parent) {
      * @param {String} src - The file path to load from the etc folder.
      * @return {mixed}
      */
-    parent.reloadEtc  = (src) => {
-        const filePath = path.resolve(rootPath, config.etc, src);
-        delete require.cache[require.resolve(filePath)];
-        return requireEtc(src);
-    };
+    parent.reloadEtc  = reloadFactory(config.etc, parent.requireEtc);
 
     /**
      * This function is used to reload application-specific files
@@ -146,11 +140,7 @@ function createReload(rootPath, config, parent) {
      * @param {String} src - The file path to load from the lib folder.
      * @return {mixed}
      */
-    parent.reloadLib  = (src) => {
-        const filePath = path.resolve(rootPath, config.lib, src);
-        delete require.cache[require.resolve(filePath)];
-        return requireLib(src);
-    };
+    parent.reloadLib  = reloadFactory(config.lib, parent.requireLib);
 }
 
 module.exports = Directories;
