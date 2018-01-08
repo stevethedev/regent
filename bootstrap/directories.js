@@ -6,19 +6,19 @@
 const path = require('path');
 
 class Directories {
-    static configure(rootPath, config) {
-        createResolve(rootPath, config, Directories);
-        createRequire(rootPath, config, Directories);
-        createReload(rootPath, config, Directories);
+    static configure(config) {
+        createResolve(config, Directories);
+        createRequire(config, Directories);
+        createReload(config, Directories);
     }
 }
 
-function createResolve(rootPath, config, parent) {
-    const resolve = (src = '') => {
-        return path.resolve(rootPath, src);
+function createResolve(config, parent) {
+    const resolveFactory = (base) => {
+        return (src = '') => path.resolve(path.join(base, src));
     };
 
-    parent.resolve = resolve;
+    parent.resolve = resolveFactory('');
 
     /**
      * Resolve a path to the base Pub folder
@@ -27,7 +27,7 @@ function createResolve(rootPath, config, parent) {
      *
      * @return {String}
      */
-    parent.resolvePub = (src = '') => resolve(path.join(config.pub, src));
+    parent.resolvePub = resolveFactory(config.pub);
 
     /**
      * Resolve a path to the base config folder
@@ -36,7 +36,7 @@ function createResolve(rootPath, config, parent) {
      *
      * @return {String}
      */
-    parent.resolveEtc = (src = '') => resolve(path.join(config.etc, src));
+    parent.resolveEtc = resolveFactory(config.etc);
 
     /**
      * Resolve a path to the base lib folder
@@ -45,7 +45,7 @@ function createResolve(rootPath, config, parent) {
      *
      * @return {String}
      */
-    parent.resolveLib = (src = '') => resolve(path.join(config.lib, src));
+    parent.resolveLib = resolveFactory(config.lib);
 
     /**
      * Resolve a path to the session folder
@@ -54,9 +54,7 @@ function createResolve(rootPath, config, parent) {
      *
      * @return {String}
      */
-    parent.resolveSession = (src = '') => {
-        return resolve(path.join(config.session, src));
-    };
+    parent.resolveSession = resolveFactory(config.session);
 
     /**
      * Resolve a path to the base view folder
@@ -65,10 +63,10 @@ function createResolve(rootPath, config, parent) {
      *
      * @return {String}
      */
-    parent.resolveView = (src = '') => resolve(path.join(config.view, src));
+    parent.resolveView = resolveFactory(config.view);
 }
 
-function createRequire(rootPath, config, parent) {
+function createRequire(config, parent) {
     const requireFactory = (base) => {
         return (target) => {
             // eslint-disable-next-line global-require
@@ -101,7 +99,7 @@ function createRequire(rootPath, config, parent) {
     parent.requireLib = requireFactory(config.lib);
 }
 
-function createReload(rootPath, config, parent) {
+function createReload(config, parent) {
     const reloadFactory = (base, requireFn) => {
         return (target) => {
             const filePath = require.resolve(path.join(base, target));

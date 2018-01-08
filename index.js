@@ -30,10 +30,10 @@ function create(appDir = rootDir, LocalConfig = {}) {
         LocalConfig,
     ]);
 
-    directories.configure(rootDir, SystemConfig.Directories);
+    directories.configure(SystemConfig.Directories);
 
     const AppConfig    = directories.requireApp(SystemConfig.AppConfig.file);
-    return new Regent(rootDir, SystemConfig, AppConfig);
+    return new Regent(SystemConfig, AppConfig);
 }
 
 // Configure and start Regent as a dependency
