@@ -4,39 +4,14 @@
 'use strict';
 
 const assert        = require('regent/lib/util/assert');
-const RegentEmitter = require('regent/lib/util/regent-emitter');
+const RegentEmitter = require('regent/lib/event/emitter');
 
 const CLASS_NAME   = RegentEmitter.name;
 const EVENT        = 'foo';
 
-const regent       = global.newRegent();
-
 describe(`The ${CLASS_NAME} class`, () => {
-    describe('constructor', () => {
-        describe('(regent) signature', () => {
-            const emitter = new RegentEmitter(regent);
-            regent.getLogger().error = () => false;
-            regent.getLogger().warn  = () => false;
-            it('should register an "error" listener', () => {
-                let executed = false;
-                regent.getLogger().error = () => {
-                    executed = true;
-                };
-                emitter.emit('error');
-                assert.isTrue(executed);
-            });
-            it('should register a "warning" listener', () => {
-                let executed = false;
-                regent.getLogger().warn = () => {
-                    executed = true;
-                };
-                emitter.emit('warning');
-                assert.isTrue(executed);
-            });
-        });
-    });
     describe('onAny method', () => {
-        const emitter = new RegentEmitter(regent);
+        const emitter = new RegentEmitter();
         describe('(listener) signature', () => {
             it('should add a listener that triggers on any event', () => {
                 let executed = false;
@@ -65,7 +40,7 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
     });
     describe('on method', () => {
-        const emitter = new RegentEmitter(regent);
+        const emitter = new RegentEmitter();
         describe('(eventName, listener) signature', () => {
             it('should add a listener to the given eventName', () => {
                 let executed = false;
@@ -81,7 +56,7 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
     });
     describe('off method', () => {
-        const emitter = new RegentEmitter(regent);
+        const emitter = new RegentEmitter();
         describe('() signature', () => {
             it('should remove all event listeners', () => {
                 let executed = false;
@@ -163,7 +138,7 @@ describe(`The ${CLASS_NAME} class`, () => {
     describe('emit method', () => {
         describe('(eventName, [...args]) signature', () => {
             it('should trigger the eventName event', () => {
-                const emitter = new RegentEmitter(regent);
+                const emitter = new RegentEmitter();
                 let executed = true;
 
                 emitter.on(EVENT, () => {
@@ -174,7 +149,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 assert.isTrue(executed);
             });
             it('should emit the given arguments', () => {
-                const emitter = new RegentEmitter(regent);
+                const emitter = new RegentEmitter();
                 const ARGS  = [ 0, 1 ];
 
                 emitter.on(EVENT, (...args) => {
@@ -186,18 +161,18 @@ describe(`The ${CLASS_NAME} class`, () => {
                 emitter.emit(EVENT, ...ARGS);
             });
             it('should return true if the event had listeners', () => {
-                const emitter = new RegentEmitter(regent);
+                const emitter = new RegentEmitter();
                 emitter.on(EVENT, () => true);
                 assert.isTrue(emitter.emit(EVENT));
             });
             it('should return false if the event had no listeners', () => {
-                const emitter = new RegentEmitter(regent);
+                const emitter = new RegentEmitter();
                 assert.isFalse(emitter.emit(`${EVENT}-`));
             });
         });
     });
     describe('eventNames method', () => {
-        const emitter = new RegentEmitter(regent);
+        const emitter = new RegentEmitter();
         it('should return an array of the registered event names', () => {
             emitter.on(EVENT, () => true);
             const eventNames = emitter.eventNames();

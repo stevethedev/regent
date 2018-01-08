@@ -6,7 +6,7 @@
 const assert = require('regent/lib/util/assert');
 const Regent = require('regent/lib/core/regent');
 
-const RegentEmitter = require('regent/lib/util/regent-emitter');
+const RegentEmitter = require('regent/lib/event/emitter');
 const HttpKernel    = require('regent/lib/http/kernel');
 const HttpRouter    = require('regent/lib/http/routing/router');
 const RegentLogger  = require('regent/lib/log/logger');
@@ -18,6 +18,8 @@ const ROUTER_TYPES  = ['http'];
 const { SystemConfig } = require('regent/bootstrap/system-config');
 
 const { newRegent } = global;
+
+const inlineRequire = require;
 
 const CLASS_NAME   = Regent.name;
 
@@ -170,6 +172,30 @@ describe(`The ${CLASS_NAME} class`, () => {
         describe('() signature', () => {
             it('should return the Template Manager', () => {
                 assert.instanceOf(regent.getTemplater(), NunjucksMgr);
+            });
+        });
+    });
+    describe('db method', () => {
+        const PostgreSQL = inlineRequire(
+            'regent/lib/db/relational/postgresql/connection'
+        );
+        const MySQL = inlineRequire(
+            'regent/lib/db/relational/mysql/connection'
+        );
+        const regent = newRegent({}, {
+            database: {
+                connections: ['mariadb'],
+                default    : 'postgres',
+            },
+        });
+        describe('() signature', () => {
+            it('should return the default Database object', () => {
+                assert.instanceOf(regent.db(), PostgreSQL);
+            });
+        });
+        describe('(<name>) signature', () => {
+            it('should return the named Database object', () => {
+                assert.instanceOf(regent.db('mysql'), MySQL);
             });
         });
     });

@@ -20,7 +20,16 @@ const LAST_THREE = -3;
 // Prevent the system from complaining about max-listeners
 process.setMaxListeners(Infinity);
 
-global.newRegent = () => new Regent(SystemConfig, AppConfig);
+global.newRegent = (sysConfig = {}, appConfig = {}) => new Regent(
+    {
+        ...SystemConfig,
+        ...sysConfig,
+    },
+    {
+        ...appConfig,
+        ...AppConfig,
+    },
+);
 
 function readdir(directory, mocha) {
     fs.readdirSync(directory).forEach((file) => {
