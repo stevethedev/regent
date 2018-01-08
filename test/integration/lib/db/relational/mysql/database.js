@@ -25,6 +25,6 @@ const DRIVER     = 'MySQL';
 
 Database.registerDriver(DRIVER, PostgresDb);
 testSet(DRIVER, {
-    ...{ driver: DRIVER },
-    ...config,
+    driver : DRIVER,
+    options: { ...config },
 });

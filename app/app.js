@@ -31,7 +31,13 @@ module.exports = {
         HttpKernel,
     },
 
-    database: { connection: 'postgres' },
+    database: {
+        // List of named connections available to the application
+        connections: [ 'postgresql', 'mysql' ],
+
+        // The name of the connection to use by default
+        default: 'postgresql',
+    },
 
     /*
      |--------------------------------------------------------------------------

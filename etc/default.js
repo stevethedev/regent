@@ -121,7 +121,7 @@ module.exports.Database = {
     },
 
     // PostgreSQL
-    postgres: {
+    postgresql: {
         // PostgreSQL, MySQL
         driver: 'PostgreSQL',
 

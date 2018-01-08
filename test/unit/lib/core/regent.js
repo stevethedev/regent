@@ -175,7 +175,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
     });
-    describe('db method', () => {
+    describe('getDb method', () => {
         const PostgreSQL = inlineRequire(
             'regent/lib/db/relational/postgresql/connection'
         );
@@ -190,12 +190,12 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
         describe('() signature', () => {
             it('should return the default Database object', () => {
-                assert.instanceOf(regent.db(), PostgreSQL);
+                assert.instanceOf(regent.getDb().read(), PostgreSQL);
             });
         });
         describe('(<name>) signature', () => {
             it('should return the named Database object', () => {
-                assert.instanceOf(regent.db('mysql'), MySQL);
+                assert.instanceOf(regent.getDb('mysql').read(), MySQL);
             });
         });
     });

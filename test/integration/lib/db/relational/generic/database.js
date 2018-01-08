@@ -37,9 +37,9 @@ const EVENT_ENUM = [
     DB_REMOVE,
 ];
 
-module.exports = function(testGroup, dbDriver, options) {
+module.exports = function(testGroup, options) {
     const localRegent = global.newRegent();
-    const database    = new Database(localRegent, dbDriver, { options });
+    const database    = new Database(localRegent, options);
 
     describe(`${testGroup} ${CLASS_NAME} execution methods`, () => {
         describe('constructor', () => {
