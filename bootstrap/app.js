@@ -15,7 +15,7 @@
  */
 
 require('kraeve');
-const { rootDir, SystemConfig } = require('regent/bootstrap/system-config');
+const { SystemConfig } = require('regent/bootstrap/system-config');
 
 const AppConfig = require(SystemConfig.AppConfig.file);
 const Regent    = require('regent/lib/core/regent');
@@ -30,7 +30,7 @@ const Regent    = require('regent/lib/core/regent');
  | low-level routing and function of Regent's HTTP and Console kernels.
  |
  */
-const app = new Regent(rootDir, SystemConfig, AppConfig);
+const app = new Regent(SystemConfig, AppConfig);
 
 /*
  |------------------------------------------------------------------------------
