@@ -70,7 +70,7 @@ function createRequire(config, parent) {
     const requireFactory = (base) => {
         return (target) => {
             // eslint-disable-next-line global-require
-            return require(path.join(base, target));
+            return require(path.resolve(base, target));
         };
     };
 
