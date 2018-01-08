@@ -139,3 +139,18 @@ module.exports.Database = {
         write: {},
     },
 };
+
+/*
+ |------------------------------------------------------------------------------
+ | Database Drivers
+ |------------------------------------------------------------------------------
+ |
+ | Register Database Drivers by adding strings with the driver-names in the
+ | following Object.
+ |
+ */
+module.exports.DbDrivers = {
+    MariaDB   : 'regent/lib/db/relational/mysql/connection',
+    MySQL     : 'regent/lib/db/relational/mysql/connection',
+    PostgreSQL: 'regent/lib/db/relational/postgresql/connection',
+};
