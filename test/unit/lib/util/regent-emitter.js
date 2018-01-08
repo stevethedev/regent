@@ -12,6 +12,29 @@ const EVENT        = 'foo';
 const regent       = global.newRegent();
 
 describe(`The ${CLASS_NAME} class`, () => {
+    describe('constructor', () => {
+        describe('(regent) signature', () => {
+            const emitter = new RegentEmitter(regent);
+            regent.getLogger().error = () => false;
+            regent.getLogger().warn  = () => false;
+            it('should register an "error" listener', () => {
+                let executed = false;
+                regent.getLogger().error = () => {
+                    executed = true;
+                };
+                emitter.emit('error');
+                assert.isTrue(executed);
+            });
+            it('should register a "warning" listener', () => {
+                let executed = false;
+                regent.getLogger().warn = () => {
+                    executed = true;
+                };
+                emitter.emit('warning');
+                assert.isTrue(executed);
+            });
+        });
+    });
     describe('onAny method', () => {
         const emitter = new RegentEmitter(regent);
         describe('(listener) signature', () => {
