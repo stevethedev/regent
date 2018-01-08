@@ -24,7 +24,7 @@ const SystemConfig    = deepmerge.all([
 ]);
 
 const rootDir = path.dirname(require.resolve('regent'));
-Directories.configure(rootDir, SystemConfig.Directories);
+Directories.configure(SystemConfig.Directories);
 
 module.exports = {
     DefaultConfig,

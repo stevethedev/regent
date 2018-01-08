@@ -11,13 +11,16 @@ const Mocha = require('mocha');
 const fs    = require('fs');
 const path  = require('path');
 
-const { rootDir, SystemConfig } = require('../bootstrap/system-config');
+const { SystemConfig } = require('../bootstrap/system-config');
 
 const AppConfig = require('regent/app/app');
 const Regent    = require('regent/lib/core/regent');
 const LAST_THREE = -3;
 
-global.newRegent = () => new Regent(rootDir, SystemConfig, AppConfig);
+// Prevent the system from complaining about max-listeners
+process.setMaxListeners(Infinity);
+
+global.newRegent = () => new Regent(SystemConfig, AppConfig);
 
 function readdir(directory, mocha) {
     fs.readdirSync(directory).forEach((file) => {

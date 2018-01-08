@@ -13,14 +13,15 @@ const directories   = require('regent/bootstrap/directories');
 const DefaultConfig = require('regent/etc/default');
 const Regent        = require('regent/lib/core/regent');
 const deepmerge     = require('deepmerge');
+const { resolve }   = require('path');
 const rootDir       = __dirname;
 
 // Configure (but do not start) a Regent instance
 function create(appDir = rootDir, LocalConfig = {}) {
     const interimConfig = {
         Directories: {
-            app: `${appDir}/app`,
-            log: `${appDir}/storage/log`,
+            app: resolve(`${appDir}/app`),
+            log: resolve(`${appDir}/storage/log`),
         },
     };
     const SystemConfig = deepmerge.all([
@@ -30,10 +31,10 @@ function create(appDir = rootDir, LocalConfig = {}) {
         LocalConfig,
     ]);
 
-    directories.configure(rootDir, SystemConfig.Directories);
+    directories.configure(SystemConfig.Directories);
 
     const AppConfig    = directories.requireApp(SystemConfig.AppConfig.file);
-    return new Regent(rootDir, SystemConfig, AppConfig);
+    return new Regent(SystemConfig, AppConfig);
 }
 
 // Configure and start Regent as a dependency
