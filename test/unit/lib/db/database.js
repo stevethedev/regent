@@ -182,7 +182,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             const QUERY = 'SELECT * FROM table';
             it('should execute the query on the "read" connection', () => {
                 let executed = false;
-                database.read().query = (query) => {
+                database.read().send = (query) => {
                     executed = true;
                     assert.equal(query, QUERY);
                 };
@@ -190,7 +190,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 assert.isTrue(executed);
             });
             it('should forward an empty array to the <bound> argument', () => {
-                database.read().query = (query, bound) => {
+                database.read().send = (query, bound) => {
                     assert.isArray(bound);
                     assert.equal(bound.length, 0);
                 };
@@ -198,7 +198,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
             it('should not execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.select(QUERY);
@@ -210,7 +210,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             const BOUND = ['foo'];
             it('should execute the query on the "read" connection', () => {
                 let executed = false;
-                database.read().query = (query, bound) => {
+                database.read().send = (query, bound) => {
                     executed = true;
                     assert.equal(query, QUERY);
                     assert.equal(bound, BOUND);
@@ -219,7 +219,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 assert.isTrue(executed);
             });
             it('should forward <bound> to the "read" connection', () => {
-                database.read().query = (query, bound) => {
+                database.read().send = (query, bound) => {
                     assert.isArray(bound);
                     assert.equal(bound.length, BOUND.length);
                 };
@@ -227,7 +227,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
             it('should not execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.select(QUERY, BOUND);
@@ -246,23 +246,23 @@ describe(`The ${CLASS_NAME} class`, () => {
             const QUERY = 'INSERT INTO table (field) VALUES (\'value\')';
             it('should not execute the query on the "read" connection', () => {
                 let executed = false;
-                database.read().query = () => {
+                database.read().send = () => {
                     executed = true;
                 };
-                database.write().query = () => true;
+                database.write().send = () => true;
                 database.insert(QUERY);
                 assert.isFalse(executed);
             });
             it('should execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.insert(QUERY);
                 assert.isTrue(executed);
             });
             it('should forward an empty array to the <bound> argument', () => {
-                database.write().query = (query, bound) => {
+                database.write().send = (query, bound) => {
                     assert.equal(query, QUERY);
                     assert.isArray(bound);
                     assert.equal(bound.length, 0);
@@ -275,8 +275,8 @@ describe(`The ${CLASS_NAME} class`, () => {
             const BOUND = ['foo'];
             it('should not execute the query on the "read" connection', () => {
                 let executed = false;
-                database.write().query = () => null;
-                database.read().query = () => {
+                database.write().send = () => null;
+                database.read().send = () => {
                     executed = true;
                 };
                 database.insert(QUERY, BOUND);
@@ -284,14 +284,14 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
             it('should execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.insert(QUERY, BOUND);
                 assert.isTrue(executed);
             });
             it('should forward <bound> to the "write" connection', () => {
-                database.write().query = (query, bound) => {
+                database.write().send = (query, bound) => {
                     assert.equal(query, QUERY);
                     assert.isArray(bound);
                     assert.equal(bound.length, BOUND.length);
@@ -311,23 +311,23 @@ describe(`The ${CLASS_NAME} class`, () => {
             const QUERY = 'UPDATE table SET field = \'value\'';
             it('should not execute the query on the "read" connection', () => {
                 let executed = false;
-                database.read().query = () => {
+                database.read().send = () => {
                     executed = true;
                 };
-                database.write().query = () => true;
+                database.write().send = () => true;
                 database.update(QUERY);
                 assert.isFalse(executed);
             });
             it('should execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.update(QUERY);
                 assert.isTrue(executed);
             });
             it('should forward an empty array to the <bound> argument', () => {
-                database.write().query = (query, bound) => {
+                database.write().send = (query, bound) => {
                     assert.equal(query, QUERY);
                     assert.isArray(bound);
                     assert.equal(bound.length, 0);
@@ -340,8 +340,8 @@ describe(`The ${CLASS_NAME} class`, () => {
             const BOUND = ['foo'];
             it('should not execute the query on the "read" connection', () => {
                 let executed = false;
-                database.write().query = () => null;
-                database.read().query = () => {
+                database.write().send = () => null;
+                database.read().send = () => {
                     executed = true;
                 };
                 database.update(QUERY, BOUND);
@@ -349,14 +349,14 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
             it('should execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.update(QUERY, BOUND);
                 assert.isTrue(executed);
             });
             it('should forward <bound> to the "write" connection', () => {
-                database.write().query = (query, bound) => {
+                database.write().send = (query, bound) => {
                     assert.equal(query, QUERY);
                     assert.isArray(bound);
                     assert.equal(bound.length, BOUND.length);
@@ -376,23 +376,23 @@ describe(`The ${CLASS_NAME} class`, () => {
             const QUERY = 'DELETE FROM table';
             it('should not execute the query on the "read" connection', () => {
                 let executed = false;
-                database.read().query = () => {
+                database.read().send = () => {
                     executed = true;
                 };
-                database.write().query = () => true;
+                database.write().send = () => true;
                 database.delete(QUERY);
                 assert.isFalse(executed);
             });
             it('should execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.delete(QUERY);
                 assert.isTrue(executed);
             });
             it('should forward an empty array to the <bound> argument', () => {
-                database.write().query = (query, bound) => {
+                database.write().send = (query, bound) => {
                     assert.equal(query, QUERY);
                     assert.isArray(bound);
                     assert.equal(bound.length, 0);
@@ -405,8 +405,8 @@ describe(`The ${CLASS_NAME} class`, () => {
             const BOUND = ['foo'];
             it('should not execute the query on the "read" connection', () => {
                 let executed = false;
-                database.write().query = () => null;
-                database.read().query = () => {
+                database.write().send = () => null;
+                database.read().send = () => {
                     executed = true;
                 };
                 database.delete(QUERY, BOUND);
@@ -414,14 +414,14 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
             it('should execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.delete(QUERY, BOUND);
                 assert.isTrue(executed);
             });
             it('should forward <bound> to the "write" connection', () => {
-                database.write().query = (query, bound) => {
+                database.write().send = (query, bound) => {
                     assert.equal(query, QUERY);
                     assert.isArray(bound);
                     assert.equal(bound.length, BOUND.length);
@@ -441,23 +441,23 @@ describe(`The ${CLASS_NAME} class`, () => {
             const QUERY = 'CREATE TABLE table (field TEXT)';
             it('should not execute the query on the "read" connection', () => {
                 let executed = false;
-                database.read().query = () => {
+                database.read().send = () => {
                     executed = true;
                 };
-                database.write().query = () => true;
+                database.write().send = () => true;
                 database.statement(QUERY);
                 assert.isFalse(executed);
             });
             it('should execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.statement(QUERY);
                 assert.isTrue(executed);
             });
             it('should forward an empty array to the <bound> argument', () => {
-                database.write().query = (query, bound) => {
+                database.write().send = (query, bound) => {
                     assert.equal(query, QUERY);
                     assert.isArray(bound);
                     assert.equal(bound.length, 0);
@@ -470,8 +470,8 @@ describe(`The ${CLASS_NAME} class`, () => {
             const BOUND = ['foo'];
             it('should not execute the query on the "read" connection', () => {
                 let executed = false;
-                database.write().query = () => null;
-                database.read().query = () => {
+                database.write().send = () => null;
+                database.read().send = () => {
                     executed = true;
                 };
                 database.statement(QUERY, BOUND);
@@ -479,14 +479,14 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
             it('should execute the query on the "write" connection', () => {
                 let executed = false;
-                database.write().query = () => {
+                database.write().send = () => {
                     executed = true;
                 };
                 database.statement(QUERY, BOUND);
                 assert.isTrue(executed);
             });
             it('should forward <bound> to the "write" connection', () => {
-                database.write().query = (query, bound) => {
+                database.write().send = (query, bound) => {
                     assert.equal(query, QUERY);
                     assert.isArray(bound);
                     assert.equal(bound.length, BOUND.length);

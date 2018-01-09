@@ -9,8 +9,12 @@ const PostgresDb = require('regent/lib/db/relational/postgresql/connection');
 const testSet    = require('../generic/database');
 
 const DRIVER     = 'PostgreSQL';
+const VALUE_FUNC = (value, bound) => `$${bound.push(value)}`;
 
-
+const OPTIONS    = {
+    driver : DRIVER,
+    options: { ...config },
+};
 /*
  |------------------------------------------------------------------------------
  | Unified Interface
@@ -24,7 +28,4 @@ const DRIVER     = 'PostgreSQL';
  */
 
 Database.registerDriver(DRIVER, PostgresDb);
-testSet(DRIVER, {
-    driver : DRIVER,
-    options: { ...config },
-});
+testSet(DRIVER, OPTIONS, VALUE_FUNC);

@@ -9,7 +9,15 @@ const PostgresDb = require('regent/lib/db/relational/mysql/connection');
 const testSet    = require('../generic/database');
 
 const DRIVER     = 'MySQL';
+const VALUE_FUNC = (value, bound) => {
+    bound.push(value);
+    return '?';
+};
 
+const OPTIONS = {
+    driver : DRIVER,
+    options: { ...config },
+};
 
 /*
  |------------------------------------------------------------------------------
@@ -24,7 +32,4 @@ const DRIVER     = 'MySQL';
  */
 
 Database.registerDriver(DRIVER, PostgresDb);
-testSet(DRIVER, {
-    driver : DRIVER,
-    options: { ...config },
-});
+testSet(DRIVER, OPTIONS, VALUE_FUNC);

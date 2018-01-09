@@ -4,6 +4,7 @@
 'use strict';
 
 const assert         = require('regent/lib/util/assert');
+const Collection     = require('regent/lib/support/collection');
 const Database       = require('regent/lib/db/database');
 const { $protected } = require('regent/lib/util/scope')();
 
@@ -37,9 +38,34 @@ const EVENT_ENUM = [
     DB_REMOVE,
 ];
 
-module.exports = function(testGroup, options) {
+const TABLE  = 'database_table';
+const COLUMN = 'database_column';
+const VALUES = [ 'foo', 'bar' ];
+
+module.exports = function(testGroup, options, bindVariable) {
     const localRegent = global.newRegent();
     const database    = new Database(localRegent, options);
+
+    const setupTable = async () => {
+        const connection = database.write();
+        await connection.connect();
+        const bound = [];
+        await connection.send(
+            `CREATE TABLE IF NOT EXISTS ${TABLE} (${COLUMN} TEXT)`
+        );
+        await connection.send(
+            `INSERT INTO ${TABLE} (${COLUMN}) VALUES (${
+                VALUES.map((value) => bindVariable(value, bound)).join('),(')
+            })`,
+            bound,
+        );
+    };
+
+    const teardownTable = async () => {
+        const connection = database.write();
+        await connection.send(`DROP TABLE ${TABLE}`);
+        await connection.disconnect();
+    };
 
     describe(`${testGroup} ${CLASS_NAME} execution methods`, () => {
         describe('constructor', () => {
@@ -59,13 +85,48 @@ module.exports = function(testGroup, options) {
             });
         });
         describe('select method', () => {
+            before(setupTable);
+            after(teardownTable);
             describe('(<query>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to a Collection of Records');
+                const QUERY = `SELECT * FROM ${TABLE}`;
+                it('should return a Promise', () => {
+                    const promise = database.select(QUERY);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it('should resolve to a Collection of Objects', () => {
+                    const promise = database.select(QUERY);
+                    return Promise.resolve(promise)
+                        .then((collection) => {
+                            assert.instanceOf(collection, Collection);
+                            collection.forEach((record, i) => {
+                                assert.isObject(record);
+                                assert.equal(record[COLUMN], VALUES[i]);
+                            });
+                        });
+                });
             });
             describe('(<query>, <bound>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to a Collection of Records');
+                const VALUE = [];
+                const QUERY = `SELECT * FROM ${TABLE} WHERE ${COLUMN} = ${
+                    bindVariable(VALUES[0], VALUE)
+                }`;
+                it('should return a Promise', () => {
+                    const promise = database.select(QUERY, VALUE);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it('should resolve to a Collection of Objects', () => {
+                    const promise = database.select(QUERY, VALUE);
+                    return Promise.resolve(promise)
+                        .then((collection) => {
+                            assert.instanceOf(collection, Collection);
+                            collection.forEach((record, i) => {
+                                assert.isObject(record);
+                                assert.equal(record[COLUMN], VALUE[i]);
+                            });
+                        });
+                });
             });
         });
         describe('insert method', () => {
