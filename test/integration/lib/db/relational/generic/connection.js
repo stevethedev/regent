@@ -3,8 +3,9 @@
  */
 'use strict';
 
-const assert          = require('regent/lib/util/assert');
-const QueryBuilder    = require('regent/lib/db/relational/query-builder');
+const assert           = require('regent/lib/util/assert');
+const RecordCollection = require('regent/lib/db/relational/record-collection');
+const QueryBuilder     = require('regent/lib/db/relational/query-builder');
 
 const { PART_RAW_TABLE } = require('regent/lib/db/relational/parts');
 const { $protected }   = require('regent/lib/util/scope')();
@@ -144,7 +145,10 @@ module.exports = function(testGroup, Connection, Dialect, config) {
                     return connection.connect()
                         .then(() => connection.send('SELECT NOW()'))
                         .then((rows) => connection.disconnect()
-                            .then(() => assert.isArray(rows))
+                            .then(() => assert.instanceOf(
+                                rows,
+                                RecordCollection
+                            ))
                         );
                 });
             });

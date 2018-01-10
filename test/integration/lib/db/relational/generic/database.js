@@ -130,15 +130,36 @@ module.exports = function(testGroup, options, bindVariable) {
             });
         });
         describe('insert method', () => {
+            before(setupTable);
+            after(teardownTable);
             describe('(<query>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to Boolean(true) if it succeeds');
-                it('should resolve to Boolean(false) if it fails');
+                const QUERY = `INSERT INTO ${TABLE} (${COLUMN}) VALUES ('BAZ')`;
+                it('should return a Promise', () => {
+                    const promise = database.insert(QUERY);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it('should resolve to the number of inserts', () => {
+                    const promise = database.insert(QUERY);
+                    return Promise.resolve(promise)
+                        .then((success) => assert.equal(success, 1));
+                });
             });
             describe('(<query>, <bound>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to Boolean(true) if it succeeds');
-                it('should resolve to Boolean(false) if it fails');
+                const VALUE = [];
+                const QUERY = `INSERT INTO ${TABLE} (${COLUMN}) VALUES (${
+                    bindVariable('BAZ', VALUE)
+                })`;
+                it('should return a Promise', () => {
+                    const promise = database.insert(QUERY, VALUE);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it('should resolve to the number of inserts', () => {
+                    const promise = database.insert(QUERY, VALUE);
+                    return Promise.resolve(promise)
+                        .then((success) => assert.equal(success, 1));
+                });
             });
         });
         describe('update method', () => {
