@@ -63,7 +63,7 @@ module.exports = function(testGroup, options, bindVariable) {
 
     const teardownTable = async () => {
         const connection = database.write();
-        await connection.send(`DROP TABLE ${TABLE}`);
+        await connection.send(`DROP TABLE IF EXISTS ${TABLE}`);
         await connection.disconnect();
     };
 
@@ -175,15 +175,49 @@ module.exports = function(testGroup, options, bindVariable) {
             });
         });
         describe('delete method', () => {
+            beforeEach(() => {
+                return Promise.resolve()
+                    .then(teardownTable)
+                    .then(setupTable);
+            });
+            after(teardownTable);
             describe('(<query>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to an integer of the number of deletions');
-                it('should resolve to 0 if the query fails');
+                const QUERY = `DELETE FROM ${TABLE}`;
+                it('should return a Promise', () => {
+                    const promise = database.delete(QUERY);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it(
+                    'should resolve to an integer of the number of deletions',
+                    () => {
+                        const promise = database.delete(QUERY);
+                        return Promise.resolve(promise)
+                            .then((result) => assert.equal(
+                                result,
+                                VALUES.length
+                            ));
+                    }
+                );
             });
             describe('(<query>, <bound>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to an integer of the number of deletions');
-                it('should resolve to 0 if the query fails');
+                const DELETE_VALUES = [];
+                const QUERY = `DELETE FROM ${TABLE} WHERE ${COLUMN} = ${
+                    bindVariable(VALUES[0], DELETE_VALUES)
+                }`;
+                it('should return a Promise', () => {
+                    const promise = database.delete(QUERY, DELETE_VALUES);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it(
+                    'should resolve to an integer of the number of deletions',
+                    () => {
+                        const promise = database.delete(QUERY, DELETE_VALUES);
+                        return Promise.resolve(promise)
+                            .then((result) => assert.equal(result, 1));
+                    }
+                );
             });
         });
         describe('statement method', () => {
