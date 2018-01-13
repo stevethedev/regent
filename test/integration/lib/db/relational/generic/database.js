@@ -277,13 +277,44 @@ module.exports = function(testGroup, options, bindVariable) {
         });
         describe('statement method', () => {
             describe('(<query>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to the Database object');
+                const VALUE = 'foobar';
+                const QUERY = `CREATE TABLE ${TABLE} (
+                    ${COLUMN} VARCHAR(6) DEFAULT '${VALUE}'
+                )`;
+                beforeEach(teardownTable);
+                after(teardownTable);
+                it('should return a Promise', () => {
+                    const promise = database.statement(QUERY);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it('should resolve to the Database object', () => {
+                    const promise = database.statement(QUERY);
+                    return Promise.resolve(promise)
+                        .then((result) => assert.equal(result, database));
+                });
             });
-            describe('(<query>, <bound>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to the Database object');
-            });
+            // NOTE: PostgreSQL does not support this syntax
+            if ('MySQL' === testGroup) {
+                describe('(<query>, <bound>) signature', () => {
+                    const VALUE = 'foobar';
+                    const QUERY = `CREATE TABLE ${TABLE} (
+                        ${COLUMN} VARCHAR(6) DEFAULT ${bindVariable(VALUE, [])}
+                    )`;
+                    beforeEach(teardownTable);
+                    after(teardownTable);
+                    it('should return a Promise', () => {
+                        const promise = database.statement(QUERY, [VALUE]);
+                        assert.isPromise(promise);
+                        return promise;
+                    });
+                    it('should resolve to the Database object', () => {
+                        const promise = database.statement(QUERY, [VALUE]);
+                        return Promise.resolve(promise)
+                            .then((result) => assert.equal(result, database));
+                    });
+                });
+            }
         });
     });
 };
