@@ -163,15 +163,70 @@ module.exports = function(testGroup, options, bindVariable) {
             });
         });
         describe('update method', () => {
+            beforeEach(() => {
+                return Promise.resolve()
+                    .then(teardownTable)
+                    .then(setupTable);
+            });
+            after(teardownTable);
             describe('(<query>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to an integer of the number of updates');
-                it('should resolve to 0 if the query fails');
+                const VALUE = `${Math.random()}`;
+                const QUERY = `UPDATE ${TABLE} SET ${COLUMN} = '${VALUE}'`;
+                it('should return a Promise', () => {
+                    const promise = database.update(QUERY);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it(
+                    'should resolve to an integer of the number of updates',
+                    () => {
+                        const promise = database.update(QUERY);
+                        return Promise.resolve(promise)
+                            .then((success) => assert.equal(
+                                success,
+                                VALUES.length,
+                            ));
+                    }
+                );
+                it('should resolve to 0 if the query fails', () => {
+                    const promise = database.update(
+                        `UPDATE ${TABLE} SET ${COLUMN} = 'foo' WHERE false`
+                    );
+                    return Promise.resolve(promise)
+                        .then((success) => assert.equal(success, 0));
+                });
             });
             describe('(<query>, <bound>) signature', () => {
-                it('should return a Promise');
-                it('should resolve to an integer of the number of updates');
-                it('should resolve to 0 if the query fails');
+                const VALUE = [];
+                const QUERY = `UPDATE ${TABLE} SET ${COLUMN} = ${
+                    bindVariable(Math.random(), VALUE)
+                }`;
+                it('should return a Promise', () => {
+                    const promise = database.update(QUERY, VALUE);
+                    assert.isPromise(promise);
+                    return promise;
+                });
+                it(
+                    'should resolve to an integer of the number of updates',
+                    () => {
+                        const promise = database.update(QUERY, VALUE);
+                        return Promise.resolve(promise)
+                            .then((success) => assert.equal(
+                                success,
+                                VALUES.length,
+                            ));
+                    }
+                );
+                it('should resolve to 0 if the query fails', () => {
+                    const promise = database.update(
+                        `UPDATE ${TABLE} SET ${COLUMN} = ${
+                            bindVariable('foo', [])
+                        } WHERE false`,
+                        ['foo'],
+                    );
+                    return Promise.resolve(promise)
+                        .then((success) => assert.equal(success, 0));
+                });
             });
         });
         describe('delete method', () => {
