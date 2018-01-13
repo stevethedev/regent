@@ -26,8 +26,8 @@ global.newRegent = (sysConfig = {}, appConfig = {}) => new Regent(
         ...sysConfig,
     },
     {
-        ...appConfig,
         ...AppConfig,
+        ...appConfig,
     },
 );
 

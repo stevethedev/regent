@@ -184,8 +184,8 @@ describe(`The ${CLASS_NAME} class`, () => {
         );
         const regent = newRegent({}, {
             database: {
-                connections: ['mariadb'],
-                default    : 'postgres',
+                connections: ['mysql'],
+                default    : 'postgresql',
             },
         });
         describe('() signature', () => {

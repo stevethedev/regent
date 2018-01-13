@@ -114,16 +114,16 @@ module.exports = function(testGroup, Connection, Dialect, config) {
                 });
             });
         });
-        describe('connected', () => {
+        describe('isConnected', () => {
             describe('() signature', () => {
                 it('should return false if the connection is closed', () => {
                     const connection = getConnection();
-                    assert.isFalse(connection.connected());
+                    assert.isFalse(connection.isConnected());
                 });
                 it('should return true if the connection is open', () => {
                     const connection = getConnection();
                     return connection.connect()
-                        .then(() => assert.isTrue(connection.connected()))
+                        .then(() => assert.isTrue(connection.isConnected()))
                         .then(() => connection.disconnect());
                 });
             });
