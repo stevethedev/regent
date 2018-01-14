@@ -23,7 +23,7 @@ class HttpKernel extends BaseHttpKernel {
         return [
 
             // Include middleware classes in the order they should be executed
-            HelloWorldMiddleware,
+            // HelloWorldMiddleware,
 
         ];
     }

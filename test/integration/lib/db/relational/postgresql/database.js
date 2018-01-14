@@ -3,13 +3,18 @@
  */
 'use strict';
 
-const config          = require('./config');
-const PostgresDb      = require(
-    'regent/lib/db/relational/postgresql/connection'
-);
-const PostgresDialect = require('regent/lib/db/relational/postgresql/dialect');
-const testSet         = require('../generic/connection');
+const config     = require('./config');
+const Database   = require('regent/lib/db/database');
+const PostgresDb = require('regent/lib/db/relational/postgresql/connection');
+const testSet    = require('../generic/database');
 
+const DRIVER     = 'PostgreSQL';
+const VALUE_FUNC = (value, bound) => `$${bound.push(value)}`;
+
+const OPTIONS    = {
+    driver : DRIVER,
+    options: { ...config },
+};
 /*
  |------------------------------------------------------------------------------
  | Unified Interface
@@ -22,4 +27,5 @@ const testSet         = require('../generic/connection');
  |
  */
 
-testSet('PostgreSQL', PostgresDb, PostgresDialect, config);
+Database.registerDriver(DRIVER, PostgresDb);
+testSet(DRIVER, OPTIONS, VALUE_FUNC);

@@ -383,4 +383,26 @@ describe(`The ${CLASS_NAME} class`, () => {
             }
         );
     });
+    describe('getOr method', () => {
+        describe('(<key>) signature', () => {
+            it('should return the value if it is present', () => {
+                const collection = getMap({ foo: 'foo' });
+                assert.equal(collection.getOr('foo'), 'foo');
+            });
+            it('should return null if the value is not present', () => {
+                const collection = getMap();
+                assert.isNull(collection.getOr(0));
+            });
+        });
+        describe('(<key>, <default>) signature', () => {
+            it('should return the value if it is present', () => {
+                const collection = getMap({ foo: 'foo' });
+                assert.equal(collection.getOr('foo', 'bar'), 'foo');
+            });
+            it('should return the default if the value is not present', () => {
+                const collection = getMap();
+                assert.equal(collection.getOr(0, 'bar'), 'bar');
+            });
+        });
+    });
 });

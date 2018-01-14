@@ -7,7 +7,6 @@ const BaseMiddleware = require('regent/lib/core/middleware/middleware');
 
 class MiddlewareHelloWorld extends BaseMiddleware {
     run(request, response, next) {
-        response.setBody('Hello, World');
         next();
     }
 

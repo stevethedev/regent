@@ -121,7 +121,7 @@ module.exports.Database = {
     },
 
     // PostgreSQL
-    postgres: {
+    postgresql: {
         // PostgreSQL, MySQL
         driver: 'PostgreSQL',
 
@@ -138,4 +138,19 @@ module.exports.Database = {
         // Write-specific overrides (if any)
         write: {},
     },
+};
+
+/*
+ |------------------------------------------------------------------------------
+ | Database Drivers
+ |------------------------------------------------------------------------------
+ |
+ | Register Database Drivers by adding strings with the driver-names in the
+ | following Object.
+ |
+ */
+module.exports.DbDrivers = {
+    MariaDB   : 'regent/lib/db/relational/mysql/connection',
+    MySQL     : 'regent/lib/db/relational/mysql/connection',
+    PostgreSQL: 'regent/lib/db/relational/postgresql/connection',
 };

@@ -3,8 +3,9 @@
  */
 'use strict';
 
-const assert          = require('regent/lib/util/assert');
-const QueryBuilder    = require('regent/lib/db/relational/query-builder');
+const assert           = require('regent/lib/util/assert');
+const RecordCollection = require('regent/lib/db/relational/record-collection');
+const QueryBuilder     = require('regent/lib/db/relational/query-builder');
 
 const { PART_RAW_TABLE } = require('regent/lib/db/relational/parts');
 const { $protected }   = require('regent/lib/util/scope')();
@@ -39,7 +40,7 @@ module.exports = function(testGroup, Connection, Dialect, config) {
                 });
                 it('should resolve to false if connection fails', () => {
                     const settings = { ...config };
-                    // checking for an incorrect username lets us check for mac
+                    // Checking for an incorrect username lets us check for mac
                     settings.username += 'a';
                     const connection = getConnection(settings);
                     return connection.connect()
@@ -113,16 +114,16 @@ module.exports = function(testGroup, Connection, Dialect, config) {
                 });
             });
         });
-        describe('connected', () => {
+        describe('isConnected', () => {
             describe('() signature', () => {
                 it('should return false if the connection is closed', () => {
                     const connection = getConnection();
-                    assert.isFalse(connection.connected());
+                    assert.isFalse(connection.isConnected());
                 });
                 it('should return true if the connection is open', () => {
                     const connection = getConnection();
                     return connection.connect()
-                        .then(() => assert.isTrue(connection.connected()))
+                        .then(() => assert.isTrue(connection.isConnected()))
                         .then(() => connection.disconnect());
                 });
             });
@@ -144,7 +145,10 @@ module.exports = function(testGroup, Connection, Dialect, config) {
                     return connection.connect()
                         .then(() => connection.send('SELECT NOW()'))
                         .then((rows) => connection.disconnect()
-                            .then(() => assert.isArray(rows))
+                            .then(() => assert.instanceOf(
+                                rows,
+                                RecordCollection
+                            ))
                         );
                 });
             });
