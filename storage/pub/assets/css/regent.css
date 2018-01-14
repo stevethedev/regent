@@ -1,0 +1,80 @@
+@import url('http://fonts.googleapis.com/css?family=Tangerine');
+@import url('http://fonts.googleapis.com/css?family=Vollkorn');
+
+body {
+  align-items: center;
+  display: flex;
+  flex: 1 1 0px;
+  flex-direction: column;
+  font-family: Vollkorn, serif;
+  font-size: 1rem;
+  justify-content: center;
+  margin: 0;
+}
+
+nav {
+  display : flex;
+  justify-content: center;
+}
+
+nav > a {
+  color: rgba(0, 0, 0, 1);
+  flex: 1 1 0px;
+  font-weight: 100;
+  opacity: 0.7;
+  padding: 0 0.4rem;
+  text-decoration: none;
+  transition: opacity 0.3s;
+  white-space: nowrap;
+}
+
+nav > a:hover {
+  opacity: 1;
+}
+
+nav > a::before,
+nav > a::after {
+  opacity: 0.15;
+  padding: 0.7rem;
+  transition: opacity 0.3s;
+}
+
+nav > a:hover::before,
+nav > a:hover::after {
+  opacity: 1;
+}
+
+nav > a::before {
+  content: '{{';
+}
+
+nav > a::after {
+  content: '}}';
+}
+
+h1 {
+  background-color: rgba(0, 0, 0, 0.05);
+  font-family: Tangerine;
+  font-size: 3.5rem;
+  font-weight: 100;
+  line-height: 2;
+  margin-top: 8rem;
+  opacity: 0.6;
+  text-align: center;
+  width: 100%;
+}
+
+h1::before,
+h1::after {
+  font-family: Vollkorn;
+  opacity: 0.15;
+  padding: 2rem;
+}
+
+h1::after {
+  content: '}}';
+}
+
+h1::before {
+  content: '{{';
+}
