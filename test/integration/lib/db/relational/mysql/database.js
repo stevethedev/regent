@@ -4,8 +4,8 @@
 'use strict';
 
 const config     = require('./config');
-const Database   = require('regent/lib/db/database');
-const MySQL      = require('regent/lib/db/relational/mysql/connection');
+const Database   = require('regent-js/lib/db/database');
+const MySQL      = require('regent-js/lib/db/relational/mysql/connection');
 const testSet    = require('../generic/database');
 
 const DRIVER     = 'MySQL';

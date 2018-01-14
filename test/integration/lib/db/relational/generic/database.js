@@ -3,10 +3,10 @@
  */
 'use strict';
 
-const assert         = require('regent/lib/util/assert');
-const Collection     = require('regent/lib/support/collection');
-const Database       = require('regent/lib/db/database');
-const { $protected } = require('regent/lib/util/scope')();
+const assert         = require('regent-js/lib/util/assert');
+const Collection     = require('regent-js/lib/support/collection');
+const Database       = require('regent-js/lib/db/database');
+const { $protected } = require('regent-js/lib/util/scope')();
 
 const CLASS_NAME     = Database.name;
 
@@ -22,7 +22,7 @@ const {
     DB_QUERY_AFTER,
     DB_QUERY_BEFORE,
     DB_REMOVE,
-} = require('regent/lib/event/event-list');
+} = require('regent-js/lib/event/event-list');
 
 const EVENT_ENUM = [
     DB_ACQUIRE,

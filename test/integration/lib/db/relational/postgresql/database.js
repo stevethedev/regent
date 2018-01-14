@@ -4,8 +4,8 @@
 'use strict';
 
 const config     = require('./config');
-const Database   = require('regent/lib/db/database');
-const PostgresDb = require('regent/lib/db/relational/postgresql/connection');
+const Database   = require('regent-js/lib/db/database');
+const PostgresDb = require('regent-js/lib/db/relational/postgresql/connection');
 const testSet    = require('../generic/database');
 
 const DRIVER     = 'PostgreSQL';

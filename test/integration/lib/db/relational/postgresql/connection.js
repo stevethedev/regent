@@ -5,9 +5,11 @@
 
 const config          = require('./config');
 const PostgresDb      = require(
-    'regent/lib/db/relational/postgresql/connection'
+    'regent-js/lib/db/relational/postgresql/connection'
 );
-const PostgresDialect = require('regent/lib/db/relational/postgresql/dialect');
+const PostgresDialect = require(
+    'regent-js/lib/db/relational/postgresql/dialect'
+);
 const testSet         = require('../generic/connection');
 
 /*

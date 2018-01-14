@@ -2,7 +2,7 @@
 'use strict';
 
 const { stripIndent } = require('common-tags');
-const index = require('regent/app/http/controllers/index');
+const index = require('regent-js/app/http/controllers/index');
 
 /*
  |------------------------------------------------------------------------------

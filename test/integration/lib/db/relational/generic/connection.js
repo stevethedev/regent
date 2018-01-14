@@ -3,12 +3,12 @@
  */
 'use strict';
 
-const assert           = require('regent/lib/util/assert');
-const RecordCollection = require('regent/lib/db/relational/record-collection');
-const QueryBuilder     = require('regent/lib/db/relational/query-builder');
+const assert           = require('regent-js/lib/util/assert');
+const RecordCollection = require('regent-js/lib/db/relational/record-collection');
+const QueryBuilder     = require('regent-js/lib/db/relational/query-builder');
 
-const { PART_RAW_TABLE } = require('regent/lib/db/relational/parts');
-const { $protected }   = require('regent/lib/util/scope')();
+const { PART_RAW_TABLE } = require('regent-js/lib/db/relational/parts');
+const { $protected }   = require('regent-js/lib/util/scope')();
 
 const connections   = [];
 module.exports = function(testGroup, Connection, Dialect, config) {

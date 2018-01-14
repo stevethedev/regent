@@ -1,6 +1,6 @@
 'use strict';
 
-const BaseHttpController = require('regent/lib/http/controllers/abstract');
+const BaseHttpController = require('regent-js/lib/http/controllers/abstract');
 
 class HttpController extends BaseHttpController {
     /*

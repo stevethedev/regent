@@ -13,8 +13,8 @@ const path  = require('path');
 
 const { SystemConfig } = require('../bootstrap/system-config');
 
-const AppConfig = require('regent/app/app');
-const Regent    = require('regent/lib/core/regent');
+const AppConfig = require('regent-js/app/app');
+const Regent    = require('regent-js/lib/core/regent');
 const LAST_THREE = -3;
 
 // Prevent the system from complaining about max-listeners

@@ -9,9 +9,9 @@
 
 require('kraeve');
 
-const directories   = require('regent/bootstrap/directories');
-const DefaultConfig = require('regent/etc/default');
-const Regent        = require('regent/lib/core/regent');
+const directories   = require('regent-js/bootstrap/directories');
+const DefaultConfig = require('regent-js/etc/default');
+const Regent        = require('regent-js/lib/core/regent');
 const deepmerge     = require('deepmerge');
 const { resolve }   = require('path');
 const rootDir       = __dirname;

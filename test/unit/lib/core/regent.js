@@ -3,19 +3,19 @@
  */
 'use strict';
 
-const assert = require('regent/lib/util/assert');
-const Regent = require('regent/lib/core/regent');
+const assert = require('regent-js/lib/util/assert');
+const Regent = require('regent-js/lib/core/regent');
 
-const RegentEmitter = require('regent/lib/event/emitter');
-const HttpKernel    = require('regent/lib/http/kernel');
-const HttpRouter    = require('regent/lib/http/routing/router');
-const RegentLogger  = require('regent/lib/log/logger');
-const NunjucksMgr   = require('regent/lib/http/view/nunjucks-manager');
+const RegentEmitter = require('regent-js/lib/event/emitter');
+const HttpKernel    = require('regent-js/lib/http/kernel');
+const HttpRouter    = require('regent-js/lib/http/routing/router');
+const RegentLogger  = require('regent-js/lib/log/logger');
+const NunjucksMgr   = require('regent-js/lib/http/view/nunjucks-manager');
 
 const KERNEL_TYPES  = ['http'];
 const ROUTER_TYPES  = ['http'];
 
-const { SystemConfig } = require('regent/bootstrap/system-config');
+const { SystemConfig } = require('regent-js/bootstrap/system-config');
 
 const { newRegent } = global;
 
@@ -177,10 +177,10 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('getDb method', () => {
         const PostgreSQL = inlineRequire(
-            'regent/lib/db/relational/postgresql/connection'
+            'regent-js/lib/db/relational/postgresql/connection'
         );
         const MySQL = inlineRequire(
-            'regent/lib/db/relational/mysql/connection'
+            'regent-js/lib/db/relational/mysql/connection'
         );
         const regent = newRegent({}, {
             database: {
