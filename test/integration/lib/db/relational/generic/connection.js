@@ -40,7 +40,7 @@ module.exports = function(testGroup, Connection, Dialect, config) {
                 });
                 it('should resolve to false if connection fails', () => {
                     const settings = { ...config };
-                    // checking for an incorrect username lets us check for mac
+                    // Checking for an incorrect username lets us check for mac
                     settings.username += 'a';
                     const connection = getConnection(settings);
                     return connection.connect()
