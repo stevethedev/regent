@@ -12,20 +12,24 @@ const rootDir = dirname(require.resolve('regent-js'));
 
 describe('The require("regent") response', () => {
     describe('create method', () => {
-        it('should return a Regent instance', () => {
-            assert.instanceOf(create(rootDir), Regent);
+        describe('(<dir>) signature', () => {
+            it('should return a Regent instance', () => {
+                assert.instanceOf(create(rootDir), Regent);
+            });
         });
     });
     describe('start method', () => {
-        it('should call the Regent::start method', () => {
-            const oldStart = Regent.prototype.start;
-            let executed = true;
-            Regent.prototype.start = () => {
-                executed = true;
-            };
-            start(rootDir);
-            Regent.prototype.start = oldStart;
-            assert.isTrue(executed);
+        describe('(<dir>) signature', () => {
+            it('should call the Regent::start method', () => {
+                const oldStart = Regent.prototype.start;
+                let executed = true;
+                Regent.prototype.start = () => {
+                    executed = true;
+                };
+                start(rootDir);
+                Regent.prototype.start = oldStart;
+                assert.isTrue(executed);
+            });
         });
     });
 });

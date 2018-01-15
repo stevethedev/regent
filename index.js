@@ -17,29 +17,31 @@ const { resolve }   = require('path');
 const rootDir       = __dirname;
 
 // Configure (but do not start) a Regent instance
-function create(appDir = rootDir, LocalConfig = {}) {
+function create(appDir = rootDir, SystemConfig = {}, AppConfig = {}) {
     const interimConfig = {
         Directories: {
             app: resolve(`${appDir}/app`),
             log: resolve(`${appDir}/storage/log`),
         },
     };
-    const SystemConfig = deepmerge.all([
+    SystemConfig = deepmerge.all([
         {},
         DefaultConfig,
         interimConfig,
-        LocalConfig,
-    ]);
+        SystemConfig,
+    ], {
+        arrayMerge(destination, source) {
+            return source;
+        },
+    });
 
     directories.configure(SystemConfig.Directories);
-
-    const AppConfig    = directories.requireApp(SystemConfig.AppConfig.file);
     return new Regent(SystemConfig, AppConfig);
 }
 
 // Configure and start Regent as a dependency
-function start(appDir = rootDir, LocalConfig = {}) {
-    return create(appDir, LocalConfig).start();
+function start(appDir = rootDir, SystemConfig = {}, LocalConfig = {}) {
+    return create(appDir, SystemConfig, LocalConfig).start();
 }
 
 module.exports = {
