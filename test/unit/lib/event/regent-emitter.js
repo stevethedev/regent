@@ -3,8 +3,8 @@
  */
 'use strict';
 
-const assert        = require('regent/lib/util/assert');
-const RegentEmitter = require('regent/lib/event/emitter');
+const assert        = require('regent-js/lib/util/assert');
+const RegentEmitter = require('regent-js/lib/event/emitter');
 
 const CLASS_NAME   = RegentEmitter.name;
 const EVENT        = 'foo';

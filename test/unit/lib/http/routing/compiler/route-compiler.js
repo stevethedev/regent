@@ -3,14 +3,16 @@
  */
 'use strict';
 
-const assert            = require('regent/lib/util/assert');
-const HttpRouteCompiler = require('regent/lib/http/routing/compiler/route-compiler');
-const HttpRoute         = require('regent/lib/http/routing/route');
+const assert            = require('regent-js/lib/util/assert');
+const HttpRoute         = require('regent-js/lib/http/routing/route');
+const HttpRouteCompiler = require(
+    'regent-js/lib/http/routing/compiler/route-compiler'
+);
 const SimpleCompiledHttpRoute = require(
-    'regent/lib/http/routing/compiler/simple-compiled-route'
+    'regent-js/lib/http/routing/compiler/simple-compiled-route'
 );
 const RegexpCompiledHttpRoute = require(
-    'regent/lib/http/routing/compiler/regexp-compiled-route'
+    'regent-js/lib/http/routing/compiler/regexp-compiled-route'
 );
 const { newRegent }     = global;
 

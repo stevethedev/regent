@@ -542,17 +542,5 @@
             }
         ]
     },
-    "globals": {
-        "reload": true,
-        "reloadApp": true,
-        "reloadEtc": true,
-        "reloadLib": true,
-        "requireApp": true,
-        "requireEtc": true,
-        "requireLib": true,
-        "resolve": true,
-        "resolvePub": true,
-        "resolveSession": true,
-        "resolveView": true
-    }
+    "globals": {}
 }

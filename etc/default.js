@@ -32,25 +32,25 @@ const { dirname, join } = require('path');
  */
 module.exports.Directories = {
     // Your application files are stored here
-    app: join(dirname(require.resolve('regent')), 'app'),
+    app: join(dirname(require.resolve('regent-js')), 'app'),
 
     // Configuration Files
-    etc: join(dirname(require.resolve('regent')), 'etc'),
+    etc: join(dirname(require.resolve('regent-js')), 'etc'),
 
     // Core Regent Files
-    lib: join(dirname(require.resolve('regent')), 'lib'),
+    lib: join(dirname(require.resolve('regent-js')), 'lib'),
 
     // Log files
-    log: join(dirname(require.resolve('regent')), 'storage/log'),
+    log: join(dirname(require.resolve('regent-js')), 'storage/log'),
 
     // Public storage files
-    pub: join(dirname(require.resolve('regent')), 'storage/pub'),
+    pub: join(dirname(require.resolve('regent-js')), 'storage/pub'),
 
     // Session files
-    session: join(dirname(require.resolve('regent')), 'storage/session'),
+    session: join(dirname(require.resolve('regent-js')), 'storage/session'),
 
     // View files
-    view: join(dirname(require.resolve('regent')), 'storage/views'),
+    view: join(dirname(require.resolve('regent-js')), 'storage/views'),
 };
 
 module.exports.AppConfig = { file: `${module.exports.Directories.app}/app.js` };
@@ -150,7 +150,7 @@ module.exports.Database = {
  |
  */
 module.exports.DbDrivers = {
-    MariaDB   : 'regent/lib/db/relational/mysql/connection',
-    MySQL     : 'regent/lib/db/relational/mysql/connection',
-    PostgreSQL: 'regent/lib/db/relational/postgresql/connection',
+    MariaDB   : 'regent-js/lib/db/relational/mysql/connection',
+    MySQL     : 'regent-js/lib/db/relational/mysql/connection',
+    PostgreSQL: 'regent-js/lib/db/relational/postgresql/connection',
 };

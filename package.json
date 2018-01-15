@@ -1,5 +1,5 @@
 {
-  "name": "regent",
+  "name": "regent-js",
   "version": "1.0.0",
   "description": "A free, open-source framework for the development of web applications following the model-view-controller (MVC) architectural pattern.",
   "main": "index.js",

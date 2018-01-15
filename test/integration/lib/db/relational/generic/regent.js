@@ -3,9 +3,9 @@
  */
 'use strict';
 
-const assert        = require('regent/lib/util/assert');
-const Regent        = require('regent/lib/core/regent');
-const DatabaseClass = require('regent/lib/db/database');
+const assert        = require('regent-js/lib/util/assert');
+const DatabaseClass = require('regent-js/lib/db/database');
+const Regent        = require('regent-js/lib/core/regent');
 const { newRegent } = global;
 
 const CLASS_NAME    = Regent.name;

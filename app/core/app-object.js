@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const RegentObject = require('regent/lib/util/regent-object');
+const RegentObject = require('regent-js/lib/util/regent-object');
 
 /*
  |------------------------------------------------------------------------------

@@ -3,10 +3,10 @@
  */
 'use strict';
 
-const assert         = require('regent/lib/util/assert');
-const Database       = require('regent/lib/db/database');
-const GenericDb      = require('regent/lib/db/relational/connection');
-const { $protected } = require('regent/lib/util/scope')();
+const assert         = require('regent-js/lib/util/assert');
+const Database       = require('regent-js/lib/db/database');
+const GenericDb      = require('regent-js/lib/db/relational/connection');
+const { $protected } = require('regent-js/lib/util/scope')();
 
 const CLASS_NAME     = Database.name;
 

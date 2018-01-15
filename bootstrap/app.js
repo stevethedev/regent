@@ -15,10 +15,10 @@
  */
 
 require('kraeve');
-const { SystemConfig } = require('regent/bootstrap/system-config');
+const { SystemConfig } = require('regent-js/bootstrap/system-config');
 
 const AppConfig = require(SystemConfig.AppConfig.file);
-const Regent    = require('regent/lib/core/regent');
+const Regent    = require('regent-js/lib/core/regent');
 
 /*
  |------------------------------------------------------------------------------

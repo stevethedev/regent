@@ -3,8 +3,8 @@
  */
 'use strict';
 
-const assert        = require('regent/lib/util/assert');
-const Collection    = require('regent/lib/support/collection');
+const assert        = require('regent-js/lib/util/assert');
+const Collection    = require('regent-js/lib/support/collection');
 
 const CLASS_NAME    = Collection.name;
 
