@@ -232,30 +232,19 @@ describe(`The ${CLASS_NAME} class`, () => {
             it(
                 'should add <fileContent> to <filePath>/<fileName> if '
                     + 'it exists',
-                () => {
-                    const promise = fileSystem.appendFile(
-                        FILE_NAME,
-                        FILE_CONTENT,
-                    );
+                async () => {
                     fillFile();
-                    return Promise.resolve(promise)
-                        .then(() => assert.equal(
-                            readFile(),
-                            `${FILE_CONTENT}${FILE_CONTENT}`,
-                        ));
+                    await fileSystem.appendFile(FILE_NAME, FILE_CONTENT);
+                    assert.equal(readFile(), `${FILE_CONTENT}${FILE_CONTENT}`);
                 }
             );
             it(
                 'should create <filePath>/<fileName> with content '
                     + '<fileContent> if it does not exist',
-                () => {
+                async () => {
                     deleteFile();
-                    const promise = fileSystem.appendFile(
-                        FILE_NAME,
-                        FILE_CONTENT,
-                    );
-                    return Promise.resolve(promise)
-                        .then(() => assert.equal(readFile(), FILE_CONTENT));
+                    await fileSystem.appendFile(FILE_NAME, FILE_CONTENT);
+                    assert.equal(readFile(), FILE_CONTENT);
                 }
             );
             it(
@@ -269,14 +258,69 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('writeFile method', () => {
         describe('(<fileName>, <fileContent>) signature', () => {
-            it('should throw an error if <fileName> is not a string');
-            it('should throw an error if <fileContent> is not a string');
-            it('should reset <filePath>/<fileName> to <fileContent> if it exists');
-            it('should create <filePath>/<fileName> with content <fileContent> if it does not exist');
-            it('should return a Promise');
-            it('should not allow navigation out of <filePath>');
-            it('should resolve to true if <fileContent> is appended successfully');
-            it('should resolve to false if <fileContent> fails to append');
+            const fileSystem = newFileSystem();
+
+            const FILE_NAME  = 'appendFile';
+            const FILE_CONTENT = 'append file content';
+
+            const createFile = (fileName = FILE_NAME) => fs.writeFileSync(
+                path.join(TEST_FOLDER, fileName),
+                '',
+            );
+            const fillFile   = (fileName = FILE_NAME) => fs.appendFileSync(
+                path.join(TEST_FOLDER, fileName),
+                FILE_CONTENT,
+            );
+            const deleteFile = (fileName = FILE_NAME) => fs.unlinkSync(
+                path.join(TEST_FOLDER, fileName)
+            );
+            const readFile   = (fileName = FILE_NAME) => fs.readFileSync(
+                path.join(TEST_FOLDER, fileName)
+            );
+
+            beforeEach(createFile);
+            afterEach(deleteFile);
+
+            it('should throw an error if <fileName> is not a string', () => {
+                return assert.rejects(() => {
+                    fileSystem.writeFile(null, FILE_CONTENT);
+                });
+            });
+            it('should throw an error if <fileContent> is not a string', () => {
+                return assert.rejects(() => {
+                    fileSystem.writeFile(FILE_NAME, null);
+                });
+            });
+            it('should return a Promise', () => {
+                const promise = fileSystem.writeFile(FILE_NAME, FILE_CONTENT);
+                assert.isPromise(promise);
+                return Promise.resolve(promise);
+            });
+            it(
+                'should reset <filePath>/<fileName> to <fileContent> if '
+                    + 'it exists',
+                async () => {
+                    fillFile();
+                    await fileSystem.writeFile(FILE_NAME, FILE_CONTENT);
+                    assert.equal(readFile(), FILE_CONTENT);
+                }
+            );
+            it(
+                'should create <filePath>/<fileName> with content '
+                    + '<fileContent> if it does not exist',
+                async () => {
+                    deleteFile();
+                    await fileSystem.writeFile(FILE_NAME, FILE_CONTENT);
+                    assert.equal(readFile(), FILE_CONTENT);
+                }
+            );
+            it(
+                'should resolve to true if <fileContent> is created '
+                    + 'successfully',
+                async () => assert.isTrue(
+                    await fileSystem.writeFile(FILE_NAME, FILE_CONTENT)
+                )
+            );
         });
     });
     describe('removeFile method', () => {
