@@ -8,6 +8,8 @@ const FileSystem = require('regent-js/lib/file/file-system');
 const fs         = require('fs');
 const path       = require('path');
 
+const { Readable, Writable } = require('stream');
+
 const CLASS_NAME = FileSystem.name;
 const FOLDER_NAME = 'test-folder';
 const TEST_FOLDER = path.join(__dirname, FOLDER_NAME);
@@ -486,11 +488,49 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('readStream method', () => {
         describe('(<fileName>, <writeStream>) signature', () => {
-            it('should throw an error if <fileName> is not a string');
-            it('should return a Promise');
-            it('should not allow navigation out of <filePath>');
-            it('should throw an error if <filePath>/<fileName> does not exist');
-            it('should resolve to the number of bytes read');
+            const fileSystem = newFileSystem();
+            function getStream() {
+                const reader = new Writable();
+                const data = [];
+                reader._write = (content) => data.push(content.toString());
+                reader.on('error', (err) => {
+                    throw err;
+                });
+                reader.on('data', (chunk) => data.push(chunk));
+                return {
+                    data,
+                    reader,
+                };
+            }
+
+            it('should throw an error if <fileName> is not a string', () => {
+                const { reader } = getStream();
+                return assert.rejects(() => {
+                    return fileSystem.readStream(null, reader);
+                });
+            });
+            it('should return a Promise', () => {
+                const { reader } = getStream();
+                const promise = fileSystem.readStream(TEST_FILE, reader);
+                assert.isPromise(promise);
+                return promise;
+            });
+            it(
+                'should throw an error if <filePath>/<fileName> does not exist',
+                () => {
+                    const { reader } = getStream();
+                    return assert.rejects(() => {
+                        return fileSystem.readStream(`${TEST_FILE}-`, reader);
+                    });
+                }
+            );
+            it('should resolve to the number of bytes read', async () => {
+                const { data, reader } = getStream();
+                assert.equal(
+                    await fileSystem.readStream(TEST_FILE, reader),
+                    data.join('').length,
+                );
+            });
         });
     });
     describe('writeStream method', () => {
