@@ -455,11 +455,33 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('readFile method', () => {
         describe('(<fileName>) signature', () => {
-            it('should throw an error if <fileName> is not a string');
-            it('should return a Promise');
-            it('should not allow navigation out of <filePath>');
-            it('should resolve to null if <filePath>/<fileName> does not exist');
-            it('should resolve to a string if <filePath>/<fileName> exists');
+            const fileSystem = newFileSystem();
+            it('should throw an error if <fileName> is not a string', () => {
+                return assert.rejects(() => fileSystem.readFile(null));
+            });
+            it('should return a Promise', () => {
+                const promise = fileSystem.readFile(TEST_FILE);
+                assert.isPromise(promise);
+                return promise;
+            });
+            it(
+                'should throw an error if <filePath>/<fileName> does '
+                    + 'not exist',
+                () => {
+                    return assert.rejects(() => {
+                        return fileSystem.readFile(`${TEST_FILE}-`);
+                    });
+                }
+            );
+            it(
+                'should resolve to a string if <filePath>/<fileName> exists',
+                async () => {
+                    assert.equal(
+                        await fileSystem.readFile(TEST_FILE),
+                        fs.readFileSync(path.join(TEST_FOLDER, TEST_FILE)),
+                    );
+                }
+            );
         });
     });
     describe('readStream method', () => {
