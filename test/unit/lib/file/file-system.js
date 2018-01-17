@@ -396,7 +396,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             it(
                 'should throw an error if <filePath>/<fromFile> does not exist',
                 () => {
-                    assert.rejects(() => fileSystem.copyFile(
+                    return assert.rejects(() => fileSystem.copyFile(
                         `${TEST_FILE}-`,
                         FILE_NAME,
                     ));
@@ -424,11 +424,33 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('getFileSize method', () => {
         describe('(<fileName>) method', () => {
-            it('should throw an error if <fileName> is not a string');
-            it('should return a Promise');
-            it('should not allow navigation out of <filePath>');
-            it('should resolve to 0 <filePath>/<fileName> does not exist');
-            it('should resolve to the file-size of <filePath>/<fileName>');
+            const fileSystem = newFileSystem();
+            it('should throw an error if <fileName> is not a string', () => {
+                return assert.rejects(() => fileSystem.getFileSize(null));
+            });
+            it('should return a Promise', () => {
+                const promise = fileSystem.getFileSize(TEST_FILE);
+                assert.isPromise(promise);
+                return promise;
+            });
+            it(
+                'should resolve to 0 <filePath>/<fileName> does not exist',
+                async () => {
+                    assert.equal(
+                        await fileSystem.getFileSize(`${TEST_FILE}-`),
+                        0,
+                    );
+                }
+            );
+            it(
+                'should resolve to the file-size of <filePath>/<fileName>',
+                async () => {
+                    assert.equal(
+                        await fileSystem.getFileSize(TEST_FILE),
+                        fs.statSync(path.join(TEST_FOLDER, TEST_FILE)).size,
+                    );
+                }
+            );
         });
     });
     describe('readFile method', () => {
