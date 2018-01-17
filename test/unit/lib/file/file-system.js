@@ -260,8 +260,8 @@ describe(`The ${CLASS_NAME} class`, () => {
         describe('(<fileName>, <fileContent>) signature', () => {
             const fileSystem = newFileSystem();
 
-            const FILE_NAME  = 'appendFile';
-            const FILE_CONTENT = 'append file content';
+            const FILE_NAME  = 'writeFile';
+            const FILE_CONTENT = 'write file content';
 
             const createFile = (fileName = FILE_NAME) => fs.writeFileSync(
                 path.join(TEST_FOLDER, fileName),
@@ -325,12 +325,47 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('removeFile method', () => {
         describe('(<fileName>) signature', () => {
-            it('should throw an error if <fileName> is not a string');
-            it('should return a Promise');
-            it('should not allow navigation out of <filePath>');
-            it('should remove the file at <filePath>/<fileName>');
-            it('should resolve to true if <filePath>/<fileName> is removed');
-            it('should resolve to false if <filePath>/<fileName> is not removed');
+            const fileSystem = newFileSystem();
+
+            const FILE_NAME  = 'writeFile';
+
+            const createFile = (fileName = FILE_NAME) => fs.writeFileSync(
+                path.join(TEST_FOLDER, fileName),
+                '',
+            );
+            const deleteFile = (fileName = FILE_NAME) => {
+                const filePath = path.join(TEST_FOLDER, fileName);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            };
+            beforeEach(createFile);
+            afterEach(deleteFile);
+
+            it('should throw an error if <fileName> is not a string', () => {
+                return assert.rejects(() => {
+                    return fileSystem.removeFile(null);
+                });
+            });
+            it('should return a Promise', () => {
+                const promise = fileSystem.removeFile(FILE_NAME);
+                assert.isPromise(promise);
+                return promise;
+            });
+            it('should remove the file at <filePath>/<fileName>', async () => {
+                await fileSystem.removeFile(FILE_NAME);
+                assert.isFalse(
+                    fs.existsSync(
+                        path.join(TEST_FOLDER, FILE_NAME)
+                    )
+                );
+            });
+            it(
+                'should resolve to true if <filePath>/<fileName> is removed',
+                async () => {
+                    assert.isTrue(await fileSystem.removeFile(FILE_NAME));
+                }
+            );
         });
     });
     describe('copyFile method', () => {
