@@ -490,9 +490,67 @@ describe(`The ${CLASS_NAME} class`, () => {
         describe('(<fileName>, <writeStream>) signature', () => {
             const fileSystem = newFileSystem();
             function getStream() {
-                const reader = new Writable();
+                const writer = new Writable();
                 const data = [];
-                reader._write = (content) => data.push(content.toString());
+                // eslint-disable-next-line no-underscore-dangle
+                writer._write = (content) => data.push(content.toString());
+                writer.on('error', (err) => {
+                    throw err;
+                });
+                return {
+                    data,
+                    writer,
+                };
+            }
+
+            it('should throw an error if <fileName> is not a string', () => {
+                const { writer } = getStream();
+                return assert.rejects(() => {
+                    return fileSystem.readStream(null, writer);
+                });
+            });
+            it('should return a Promise', () => {
+                const { writer } = getStream();
+                const promise = fileSystem.readStream(TEST_FILE, writer);
+                assert.isPromise(promise);
+                return promise;
+            });
+            it(
+                'should throw an error if <filePath>/<fileName> does not exist',
+                () => {
+                    const { writer } = getStream();
+                    return assert.rejects(() => {
+                        return fileSystem.readStream(`${TEST_FILE}-`, writer);
+                    });
+                }
+            );
+            it('should resolve to the number of bytes read', async () => {
+                const { data, writer } = getStream();
+                assert.equal(
+                    await fileSystem.readStream(TEST_FILE, writer),
+                    data.join('').length,
+                );
+            });
+        });
+    });
+    describe('writeStream method', () => {
+        describe('(<fileName>, <readStream>) signature', () => {
+            const fileSystem = newFileSystem();
+            const fakeFile = 'writeStream';
+
+            afterEach(() => {
+                const fileName = path.join(TEST_FOLDER, fakeFile);
+                if (fs.existsSync(fileName)) {
+                    fs.unlinkSync(fileName);
+                }
+            });
+
+            function getStream() {
+                const reader = fs.createReadStream(
+                    path.join(TEST_FOLDER, TEST_FILE)
+                );
+                const data = [];
+                // eslint-disable-next-line no-underscore-dangle
                 reader.on('error', (err) => {
                     throw err;
                 });
@@ -506,39 +564,32 @@ describe(`The ${CLASS_NAME} class`, () => {
             it('should throw an error if <fileName> is not a string', () => {
                 const { reader } = getStream();
                 return assert.rejects(() => {
-                    return fileSystem.readStream(null, reader);
+                    return fileSystem.writeStream(null, reader);
                 });
             });
             it('should return a Promise', () => {
                 const { reader } = getStream();
-                const promise = fileSystem.readStream(TEST_FILE, reader);
+                const promise = fileSystem.writeStream(fakeFile, reader);
                 assert.isPromise(promise);
                 return promise;
             });
             it(
-                'should throw an error if <filePath>/<fileName> does not exist',
+                'should throw an error if <filePath>/<fileName> exists',
                 () => {
                     const { reader } = getStream();
+                    fs.writeFileSync(path.join(TEST_FOLDER, fakeFile));
                     return assert.rejects(() => {
-                        return fileSystem.readStream(`${TEST_FILE}-`, reader);
+                        return fileSystem.writeStream(fakeFile, reader);
                     });
                 }
             );
-            it('should resolve to the number of bytes read', async () => {
+            it('should resolve to the number of bytes written', async () => {
                 const { data, reader } = getStream();
                 assert.equal(
-                    await fileSystem.readStream(TEST_FILE, reader),
+                    await fileSystem.writeStream(fakeFile, reader),
                     data.join('').length,
                 );
             });
-        });
-    });
-    describe('writeStream method', () => {
-        describe('(<fileName>, <readStream>) signature', () => {
-            it('should throw an error if <fileName> is not a string');
-            it('should return a Promise');
-            it('should not allow navigation out of <filePath>');
-            it('should resolve to the number of bytes written');
         });
     });
 });
