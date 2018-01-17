@@ -191,11 +191,65 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('appendFile method', () => {
         describe('(<fileName>, <fileContent>) signature', () => {
-            it('should throw an error if <fileName> is not a string');
-            it('should throw an error if <fileContent> is not a string');
-            it('should add <fileContent> to <filePath>/<fileName> if it exists');
-            it('should create <filePath>/<fileName> with content <fileContent> if it does not exist');
-            it('should return a Promise');
+            const fileSystem = newFileSystem();
+
+            const FILE_NAME  = 'appendFile';
+            const FILE_CONTENT = 'append file content';
+            const FILE_PATH = path.join(TEST_FOLDER, FILE_NAME);
+
+            const createFile = () => fs.writeFileSync(FILE_PATH, '');
+            const fillFile   = () => fs.appendFileSync(FILE_PATH, FILE_CONTENT);
+            const deleteFile = () => fs.unlinkSync(FILE_PATH);
+            const readFile   = () => fs.readFileSync(FILE_PATH);
+
+            beforeEach(createFile);
+            afterEach(deleteFile);
+
+            it('should throw an error if <fileName> is not a string', () => {
+                return assert.rejects(
+                    fileSystem.appendFile(null, FILE_CONTENT)
+                );
+            });
+            it('should throw an error if <fileContent> is not a string', () => {
+                return assert.rejects(
+                    fileSystem.appendFile(FILE_NAME, null)
+                );
+            });
+            it('should return a Promise', () => {
+                const promise = fileSystem.appendFile(FILE_NAME, FILE_CONTENT);
+                assert.isPromise(promise);
+                return Promise.resolve(promise);
+            });
+            it(
+                'should add <fileContent> to <filePath>/<fileName> if '
+                    + 'it exists',
+                () => {
+                    const promise = fileSystem.appendFile(
+                        FILE_NAME,
+                        FILE_CONTENT,
+                    );
+                    fillFile();
+                    return Promise.resolve(promise)
+                        .then(() => assert.equal(
+                            readFile(),
+                            `${FILE_CONTENT}${FILE_CONTENT}`,
+                        ));
+                }
+            );
+            it(
+                'should create <filePath>/<fileName> with content '
+                    + '<fileContent> if it does not exist',
+                () => {
+                    deleteFile();
+                    const promise = fileSystem.appendFile(
+                        FILE_NAME,
+                        FILE_CONTENT,
+                    );
+                    return Promise.resolve(promise)
+                        .then(() => assert.equal(readFile(), FILE_CONTENT));
+                }
+            );
+            it('should create directories to the file path if necessary');
             it('should not allow navigation out of <filePath>');
             it('should resolve to true if <fileContent> is appended successfully');
             it('should resolve to false if <fileContent> fails to append');
