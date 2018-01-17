@@ -13,7 +13,7 @@ const FOLDER_NAME = 'test-folder';
 const TEST_FOLDER = path.join(__dirname, FOLDER_NAME);
 const TEST_FILE   = 'test-file.txt';
 
-const removeSync  = (target) => fs.unlinkSync(target);
+// const removeSync  = (target) => fs.unlinkSync(target);
 
 const { newRegent } = global;
 const regent        = newRegent();
@@ -195,25 +195,34 @@ describe(`The ${CLASS_NAME} class`, () => {
 
             const FILE_NAME  = 'appendFile';
             const FILE_CONTENT = 'append file content';
-            const FILE_PATH = path.join(TEST_FOLDER, FILE_NAME);
 
-            const createFile = () => fs.writeFileSync(FILE_PATH, '');
-            const fillFile   = () => fs.appendFileSync(FILE_PATH, FILE_CONTENT);
-            const deleteFile = () => fs.unlinkSync(FILE_PATH);
-            const readFile   = () => fs.readFileSync(FILE_PATH);
+            const createFile = (fileName = FILE_NAME) => fs.writeFileSync(
+                path.join(TEST_FOLDER, fileName),
+                '',
+            );
+            const fillFile   = (fileName = FILE_NAME) => fs.appendFileSync(
+                path.join(TEST_FOLDER, fileName),
+                FILE_CONTENT,
+            );
+            const deleteFile = (fileName = FILE_NAME) => fs.unlinkSync(
+                path.join(TEST_FOLDER, fileName)
+            );
+            const readFile   = (fileName = FILE_NAME) => fs.readFileSync(
+                path.join(TEST_FOLDER, fileName)
+            );
 
             beforeEach(createFile);
             afterEach(deleteFile);
 
             it('should throw an error if <fileName> is not a string', () => {
-                return assert.rejects(
-                    fileSystem.appendFile(null, FILE_CONTENT)
-                );
+                return assert.rejects(() => {
+                    fileSystem.appendFile(null, FILE_CONTENT);
+                });
             });
             it('should throw an error if <fileContent> is not a string', () => {
-                return assert.rejects(
-                    fileSystem.appendFile(FILE_NAME, null)
-                );
+                return assert.rejects(() => {
+                    fileSystem.appendFile(FILE_NAME, null);
+                });
             });
             it('should return a Promise', () => {
                 const promise = fileSystem.appendFile(FILE_NAME, FILE_CONTENT);
@@ -249,10 +258,13 @@ describe(`The ${CLASS_NAME} class`, () => {
                         .then(() => assert.equal(readFile(), FILE_CONTENT));
                 }
             );
-            it('should create directories to the file path if necessary');
-            it('should not allow navigation out of <filePath>');
-            it('should resolve to true if <fileContent> is appended successfully');
-            it('should resolve to false if <fileContent> fails to append');
+            it(
+                'should resolve to true if <fileContent> is appended '
+                    + 'successfully',
+                async () => assert.isTrue(
+                    await fileSystem.appendFile(FILE_NAME, FILE_CONTENT)
+                )
+            );
         });
     });
     describe('writeFile method', () => {
