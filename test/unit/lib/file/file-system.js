@@ -370,13 +370,56 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('copyFile method', () => {
         describe('(<fromFile>, <toFile>) signature', () => {
-            it('should throw an error if <fromFile> is not a string');
-            it('should throw an error if <toFile> is not a string');
-            it('should throw an error if <filePath>/<fromFile> does not exist');
-            it('should throw an error if <filePath>/<toFile> already exists');
-            it('should return a Promise');
-            it('should not allow navigation out of <filePath>');
-            it('should resolve to true');
+            const fileSystem = newFileSystem();
+
+            const FILE_NAME  = 'copyFile';
+
+            const createFile = (fileName = FILE_NAME) => fs.writeFileSync(
+                path.join(TEST_FOLDER, fileName),
+                '',
+            );
+            const deleteFile = (fileName = FILE_NAME) => {
+                const filePath = path.join(TEST_FOLDER, fileName);
+                if (fs.existsSync(filePath)) {
+                    fs.unlinkSync(filePath);
+                }
+            };
+            beforeEach(deleteFile);
+            afterEach(deleteFile);
+
+            it('should throw an error if <fromFile> is not a string', () => {
+                assert.rejects(() => fileSystem.copyFile(null, FILE_NAME));
+            });
+            it('should throw an error if <toFile> is not a string', () => {
+                assert.rejects(() => fileSystem.copyFile(TEST_FILE, null));
+            });
+            it(
+                'should throw an error if <filePath>/<fromFile> does not exist',
+                () => {
+                    assert.rejects(() => fileSystem.copyFile(
+                        `${TEST_FILE}-`,
+                        FILE_NAME,
+                    ));
+                }
+            );
+            it(
+                'should throw an error if <filePath>/<toFile> already exists',
+                () => {
+                    createFile();
+                    assert.rejects(() => fileSystem.copyFile(
+                        TEST_FILE,
+                        FILE_NAME,
+                    ));
+                }
+            );
+            it('should return a Promise', () => {
+                const promise = fileSystem.copyFile(TEST_FILE, FILE_NAME);
+                assert.isPromise(promise);
+                return promise;
+            });
+            it('should resolve to true', async () => {
+                assert.isTrue(await fileSystem.copyFile(TEST_FILE, FILE_NAME));
+            });
         });
     });
     describe('getFileSize method', () => {
