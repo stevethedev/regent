@@ -8,7 +8,7 @@ const RecordCollection = require('regent-js/lib/db/relational/record-collection'
 const QueryBuilder     = require('regent-js/lib/db/relational/query-builder');
 
 const { PART_RAW_TABLE } = require('regent-js/lib/db/relational/parts');
-const { $protected }   = require('regent-js/lib/util/scope')();
+const { $protected }   = require('regent-js/lib/util/scope').create();
 
 const connections   = [];
 module.exports = function(testGroup, Connection, Dialect, config) {

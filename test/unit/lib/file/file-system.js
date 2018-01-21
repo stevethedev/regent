@@ -20,7 +20,7 @@ const TEST_FILE   = 'test-file.txt';
 const { newRegent } = global;
 const regent        = newRegent();
 
-const { $protected } = require('regent-js/lib/util/scope')();
+const { $protected } = require('regent-js/lib/util/scope').create();
 
 const newFileSystem = (filePath = TEST_FOLDER) => {
     return new FileSystem(regent, filePath);
