@@ -147,26 +147,86 @@ describe(`The ${CLASS_NAME} class`, () => {
     });
     describe('reload method', () => {
         describe('() signature', () => {
-            it('should return a Promise');
-            it(`should resolve to the ${CLASS_NAME} object`);
-            it('should reload session data from the latest saved version');
+            const test = buildBefore();
+            it('should return a Promise', async () => {
+                await test.session.save();
+                test.session.remove('foo');
+                test.session.set('apple', 'orange');
+                test.promise = test.session.reload();
+                assert.isPromise(test.promise);
+                test.result  = await test.promise;
+            });
+            it(`should resolve to the ${CLASS_NAME} object`, () => {
+                assert.equal(test.result, test.session);
+            });
+            it(
+                'should reload session data from the latest saved version',
+                () => {
+                    assert.equal(test.session.get('foo'), test.data.foo);
+                    assert.isNull(test.session.get('apple'));
+                }
+            );
         });
     });
     describe('clone method', () => {
         describe('() signature', () => {
-            it('should clone the session data into a new session id');
-            it(`should return the newly created ${CLASS_NAME} object`);
+            const test = buildBefore();
+            it('should return a Promise', async () => {
+                test.session.set('apple', 'orange');
+                await test.session.save();
+                test.promise = test.session.clone();
+                assert.isPromise(test.promise);
+            });
+            it(`should resolve to a new ${CLASS_NAME} object`, async () => {
+                test.newSession = await test.promise;
+                assert.instanceOf(test.newSession, Session);
+            });
+            it('should clone the session data into a new session', () => {
+                assert.equal(test.newSession.get('apple'), 'orange');
+            });
+            it('should generate a new session ID on the new session', () => {
+                assert.isString(test.newSession.getId());
+                assert.notEqual(test.newSession.getId(), test.session.getId());
+            });
         });
         describe('(<intoId>) signature', () => {
-            it('should clone the session into session id <intoId>');
-            it(`should return the newly created ${CLASS_NAME} object`);
+            const test = buildBefore();
+            test.newSessionId = newSessionId();
+            it('should return a Promise', async () => {
+                test.session.set('apple', 'orange');
+                await test.session.save();
+                test.promise = test.session.clone(test.newSessionId);
+                assert.isPromise(test.promise);
+            });
+            it(`should resolve to a new ${CLASS_NAME} object`, async () => {
+                test.newSession = await test.promise;
+                assert.instanceOf(test.newSession, Session);
+            });
+            it('should clone the session data into a new session', () => {
+                assert.equal(test.newSession.get('apple'), 'orange');
+            });
+            it('should clone the session into session id <intoId>', () => {
+                assert.equal(test.newSession.getId(), test.newSessionId);
+            });
         });
     });
     describe('drop method', () => {
         describe('() signature', () => {
-            it('should return a Promise');
-            it(`should resolve to the ${CLASS_NAME} object`);
-            it('should destroy the session');
+            const test = buildBefore();
+            it('should return a Promise', async () => {
+                test.session.set('apple', 'orange');
+                await test.session.save();
+                test.promise = test.session.drop();
+                assert.isPromise(test.promise);
+            });
+            it(`should resolve to the ${CLASS_NAME} object`, async () => {
+                test.result = await test.promise;
+                assert.equal(test.result, test.session);
+            });
+            it('should destroy the session', async () => {
+                await test.session.reload();
+                assert.isNull(test.session.get('apple'));
+            });
         });
     });
 });
