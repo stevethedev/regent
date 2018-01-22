@@ -5,7 +5,7 @@
 
 const assert = require('regent-js/lib/util/assert');
 const MiddlewareHandler = require('regent-js/lib/core/middleware/handler');
-const BaseMiddleware = require('regent-js/lib/core/middleware/middleware');
+const BaseMiddleware = require('regent-js/lib/core/middleware');
 
 const Response = {
     setMiddlewareHandler() {

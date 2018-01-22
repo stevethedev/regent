@@ -4,7 +4,7 @@
 'use strict';
 
 const assert = require('regent-js/lib/util/assert');
-const Middleware = require('regent-js/lib/core/middleware/middleware');
+const Middleware = require('regent-js/lib/core/middleware');
 
 const regent = global.newRegent();
 const CLASS_NAME = Middleware.name;
