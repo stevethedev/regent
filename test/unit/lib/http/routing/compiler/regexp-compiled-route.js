@@ -3,546 +3,259 @@
  */
 'use strict';
 
+const R_COMPILER = 'regent-js/lib/http/routing/compiler';
+
 const assert                  = require('regent-js/lib/util/assert');
 const http                    = require('http');
 const HttpRequest             = require('regent-js/lib/http/request');
 const HttpResponse            = require('regent-js/lib/http/response');
+const RegentMap               = require('regent-js/lib/support/map');
+const RegentSet               = require('regent-js/lib/support/set');
 const { newRegent }           = global;
 const regent                  = newRegent();
-const RegexpCompiledHttpRoute = require(
-    'regent-js/lib/http/routing/compiler/regexp-compiled-route'
-);
+const RegexpCompiledHttpRoute = require(`${R_COMPILER}/regexp-compiled-route`);
 
 const CLASS_NAME              = RegexpCompiledHttpRoute.name;
-const ROUTE_TYPE              = 'web';
+
+const newRoute = ({
+    regexp = /^.*\/([a-z0-9]+)/,
+    handler = () => true,
+    caseSensitive,
+    group = 'web',
+    middleware,
+    prefix = 'foo/',
+    variableSet = new RegentSet(['foo']),
+} = {}) => new RegexpCompiledHttpRoute(regent, prefix, handler, {
+    caseSensitive,
+    group,
+    middleware,
+    regexp,
+    variableSet,
+});
+
+const runBefore = ({
+    callback = () => true,
+    regexp = /^.*\/([a-z0-9]+)/,
+    handler = () => true,
+    caseSensitive,
+    group = 'web',
+    middleware,
+    prefix = 'foo/',
+    variableSet = new RegentSet(['foo']),
+} = {}) => {
+    const test = {
+        caseSensitive,
+        group,
+        handler,
+        middleware,
+        prefix,
+        regexp,
+        variableSet,
+    };
+    before(() => {
+        test.route = newRoute({
+            caseSensitive,
+            group,
+            handler,
+            middleware,
+            prefix,
+            regexp,
+            variableSet,
+        });
+        return callback();
+    });
+    return test;
+};
 
 describe(`The ${CLASS_NAME} class`, () => {
     describe('constructor', () => {
-        /*
-         |----------------------------------------------------------------------
-         | new RegexpCompiledHttpRoute(...);
-         |----------------------------------------------------------------------
-         |
-         | constructor (regent, routeType, handler, middleware, variableSet,
-         | prefix, caseSensitive, regexp);
-         |
-         */
-        it(
-            'should throw an error if an invalid regent object is provided',
+        describe(
+            '(<regent>, <regexp>, <handler>, { <caseSensitive>, <group>, '
+                + '<middleware>, <prefix>, <variableSet> }) signature',
             () => {
-                assert.throws(() => {
-                    new RegexpCompiledHttpRoute(
-                        null,
-                        ROUTE_TYPE,
-                        () => {
-                            //
-                        },
-                        [],
-                        new Set(),
-                        'foo',
-                        true,
-                        /foo/
-                    );
+                it('should throw if <regexp> is not a RegExp', () => {
+                    assert.throws(() => newRoute({ regexp: null }));
                 });
-            }
-        );
-        it('should throw an error if an invalid handler is provided', () => {
-            assert.throws(() => {
-                new RegexpCompiledHttpRoute(
-                    regent,
-                    ROUTE_TYPE,
-                    null,
-                    [],
-                    new Set(),
-                    'foo',
-                    true,
-                    /foo/
-                );
-            });
-        });
-        it(
-            'should throw an error if an invalid variable set is provided',
-            () => {
-                assert.throws(() => {
-                    new RegexpCompiledHttpRoute(
-                        regent,
-                        ROUTE_TYPE,
-                        () => {
-                            //
-                        },
-                        [],
-                        null,
-                        'foo',
-                        true,
-                        /foo/
-                    );
+                it('should throw if <handler> is not a Function', () => {
+                    assert.throws(() => newRoute({ handler: null }));
                 });
-            }
+                it(
+                    'should throw if <caseSensitive> is defined and not a '
+                        + 'Boolean',
+                    () => assert.throws(() => newRoute({ caseSensitive: null }))
+                );
+                it(
+                    'should throw if <group> is defined and not a String',
+                    () => assert.throws(() => newRoute({ group: null }))
+                );
+                it(
+                    'should throw if <middleware> is defined and not an Array',
+                    () => assert.throws(() => newRoute({ middleware: null }))
+                );
+                it(
+                    'should throw if <prefix> is defined and not a String',
+                    () => assert.throws(() => newRoute({ prefix: null }))
+                );
+                it(
+                    'should throw if <variableSet> is defined and not a '
+                        + 'RegentSet',
+                    () => assert.throws(() => newRoute({ variableSet: null }))
+                );
+                it(`should return a ${CLASS_NAME} instance`, () => {
+                    assert.instanceOf(newRoute(), RegexpCompiledHttpRoute);
+                });
+            },
         );
-        it('should throw an error if an invalid prefix is provided', () => {
-            assert.throws(() => {
-                new RegexpCompiledHttpRoute(
-                    regent,
-                    ROUTE_TYPE,
-                    () => {
-                        //
-                    },
-                    [],
-                    new Set(),
-                    true,
-                    true,
-                    /foo/
-                );
-            });
-        });
-        // eslint-disable-next-line max-len
-        it('should throw an error if an invalid case-sensitivity is provided', () => {
-            assert.throws(() => {
-                new RegexpCompiledHttpRoute(
-                    regent,
-                    ROUTE_TYPE,
-                    () => {
-                        //
-                    },
-                    [],
-                    new Set(),
-                    'foo',
-                    null,
-                    /foo/
-                );
-            });
-        });
-        it('should throw an error if an invalid regexp is provided', () => {
-            assert.throws(() => {
-                new RegexpCompiledHttpRoute(
-                    regent,
-                    ROUTE_TYPE,
-                    () => {
-                        //
-                    },
-                    [],
-                    new Set(),
-                    'foo',
-                    true,
-                    null
-                );
-            });
-        });
-        it('should create a new instance if all inputs are valid', () => {
-            new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(),
-                'foo',
-                true,
-                /foo/
-            );
-        });
     });
-
-    describe('matches() method', () => {
-        it('should return false if a non-string value is provided', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            assert.isFalse(route.matches(null));
-        });
-        // eslint-disable-next-line max-len
-        it('should return false if a non-matching string value is provided', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            assert.isFalse(route.matches('foo'));
-        });
-        it('should return true if a matching string value is provided', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            assert.isTrue(route.matches('foo/bar'));
-        });
-        // eslint-disable-next-line max-len
-        it('should return false if case-sensitivity is on and mismatched', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            assert.isFalse(route.matches('FOO/BAR'));
-        });
-        // eslint-disable-next-line max-len
-        it('should return true if case-sensitivity is off and mismatched', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(),
-                'foo',
-                false,
-                /foo\/(\w+)/i
-            );
-            assert.isTrue(route.matches('FOO/BAR'));
-        });
-    });
-
-    describe('getHandler() method', () => {
-        it('should return the contained handler function', () => {
-            const fn = () => {
-                //
-            };
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                fn,
-                [],
-                new Set(),
-                'foo',
-                true,
-                /foo/
-            );
-            assert.equal(route.getHandler(), fn);
-        });
-    });
-    describe('checkPrefix() method', () => {
-        it('should return false if a non-string value is provided', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            assert.isFalse(route.checkPrefix(null));
-        });
-        // eslint-disable-next-line max-len
-        it('should return false if a non-matching string value is provided', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            assert.isFalse(route.checkPrefix('a/b'));
-        });
-        it('should return true if a matching string value is provided', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            assert.isTrue(route.checkPrefix('foo/bar'));
-        });
-        // eslint-disable-next-line max-len
-        it('should return false if case-sensitivity is on and mismatched', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            assert.isFalse(route.checkPrefix('FOO/BAR'));
-        });
-        // eslint-disable-next-line max-len
-        it('should return true if case-sensitivity is off and mismatched', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                false,
-                /foo\/(\w+)/i
-            );
-            assert.isTrue(route.checkPrefix('FOO/BAR'));
-        });
-    });
-    describe('getVariables() method', () => {
-        it('should return a populated Map', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            const variables = route.getVariables('foo/bar');
-            assert.instanceOf(variables, Map);
-            assert.equal(variables.size, 1);
-        });
-        it('should return the variable names as the map keys', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            const variables = route.getVariables('foo/bar');
-            variables.forEach((value, name) => {
-                assert.equal(name, 'foo');
+    describe('matches method', () => {
+        describe('(<testUri>) signature', () => {
+            const test = runBefore();
+            it('should throw if <testUri> is not a string', () => {
+                assert.throws(() => test.route.matches(null));
             });
-        });
-        it('should return the variable values as the map values', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            const variables = route.getVariables('foo/bar');
-            variables.forEach((value) => {
-                assert.equal(value, 'bar');
+            it('should return false if <testUri> matches', () => {
+                assert.isFalse(test.route.matches('bar'));
             });
-        });
-    });
-    describe('run() method', () => {
-        // eslint-disable-next-line max-len
-        it(`should throw an error if the first parameter is not a ${HttpRequest.name} object`, () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            assert.throws(() => route.run(null));
-        });
-        // eslint-disable-next-line max-len
-        it(`should throw an error if the second parameter is not a ${HttpResponse.name} object`, () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            const request = new HttpRequest(
-                regent.getKernel('http'),
-                new http.IncomingMessage()
-            );
-            assert.throws(() => route.run(request, null));
-        });
-        it('should succeed if all parameters pass checks', () => {
-            const route = new RegexpCompiledHttpRoute(
-                regent,
-                ROUTE_TYPE,
-                () => {
-                    //
-                },
-                [],
-                new Set(['foo']),
-                'foo',
-                true,
-                /foo\/(\w+)/
-            );
-            const req = new http.IncomingMessage();
-            req.url = '/foo/bar';
-            const request = new HttpRequest(regent.getKernel('http'), req);
-            const response = new HttpResponse(
-                regent.getKernel('http'),
-                new http.ServerResponse(req)
-            );
-            route.run(request, response);
-        });
-        describe('success', () => {
-            // eslint-disable-next-line max-len
-            it('should pass the request into the handler as the first parameter', () => {
-                const req = new http.IncomingMessage();
-                req.url = '/foo/bar';
-                const request = new HttpRequest(regent.getKernel('http'), req);
-                const response = new HttpResponse(
-                    regent.getKernel('http'),
-                    new http.ServerResponse(req)
-                );
-                const callback = (paramReq) => assert.equal(paramReq, request);
-
-                const route = new RegexpCompiledHttpRoute(
-                    regent,
-                    ROUTE_TYPE,
-                    callback,
-                    [],
-                    new Set(['foo']),
-                    'foo',
-                    true,
-                    /foo\/(\w+)/
-                );
-
-                route.run(request, response);
-            });
-            // eslint-disable-next-line max-len
-            it('should pass the response into the handler as the second parameter', () => {
-                const req = new http.IncomingMessage();
-                req.url = '/foo/bar';
-                const request = new HttpRequest(regent.getKernel('http'), req);
-                const response = new HttpResponse(
-                    regent.getKernel('http'),
-                    new http.ServerResponse(req)
-                );
-                const callback = (paramReq, paramRes) => {
-                    assert.equal(paramRes, response);
-                };
-
-                const route = new RegexpCompiledHttpRoute(
-                    regent,
-                    ROUTE_TYPE,
-                    callback,
-                    [],
-                    new Set(['foo']),
-                    'foo',
-                    true,
-                    /foo\/(\w+)/
-                );
-
-                route.run(request, response);
-            });
-            // eslint-disable-next-line max-len
-            it('should pass a context object into the handler as the third parameter', () => {
-                // eslint-disable-next-line max-len
-                const callback = (req, res, context) => assert.isObject(context);
-
-                const route = new RegexpCompiledHttpRoute(
-                    regent,
-                    ROUTE_TYPE,
-                    callback,
-                    [],
-                    new Set(['foo']),
-                    'foo',
-                    true,
-                    /foo\/(\w+)/
-                );
-                const req = new http.IncomingMessage();
-                req.url = '/foo/bar';
-                const request = new HttpRequest(regent.getKernel('http'), req);
-                const response = new HttpResponse(
-                    regent.getKernel('http'),
-                    new http.ServerResponse(req)
-                );
-
-                route.run(request, response);
+            it('should return false if <testUri> does not match', () => {
+                assert.isTrue(test.route.matches('foo/abc'));
             });
             it(
-                'should make variables available in the map passed to the '
-                + 'handler',
+                'should return true if case-sensitivity is off and mismatched',
                 () => {
-                    const callback = (req, res, context) => {
-                        assert.equal(context.variables.get('foo'), 'bar');
-                    };
+                    const route = newRoute({ caseSensitive: false });
+                    assert.isTrue(route.matches('FOO/abc'));
+                }
+            );
+        });
+    });
+    describe('checkPrefix method', () => {
+        describe('(<testUri>) signature', () => {
+            const test = runBefore();
+            it('should throw if <testUri> is not a string', () => {
+                assert.throws(() => test.route.checkPrefix({}));
+            });
+            it(
+                'should return false if case-sensitive <testPrefix> does not '
+                    + 'match',
+                () => {
+                    const route = newRoute({ caseSensitive: true });
+                    assert.isFalse(route.checkPrefix('FOO/'));
+                }
+            );
+            it(
+                'should return true if case-insensitive <testPrefix> matches',
+                () => {
+                    const route = newRoute({ caseSensitive: false });
+                    assert.isTrue(route.checkPrefix('FOO/bar'));
+                }
+            );
+            it(
+                'should return true if case-sensitive <testPrefix> matches',
+                () => assert.isTrue(test.route.checkPrefix('foo/'))
+            );
+        });
+    });
+    describe('getVariables method', () => {
+        describe('(<uri>) signature', () => {
+            const test = runBefore({
+                callback() {
+                    const varVal = 'abc123';
+                    test.varName = 'foo';
+                    test.varVal  = varVal;
+                    test.variables = test.route.getVariables(`foo/${varVal}`);
+                },
+            });
+            it('should return a populated RegentMap', () => {
+                assert.instanceOf(test.variables, RegentMap);
+            });
+            it('should return the variable names as the map keys', () => {
+                assert.equal(test.variables.keys()[0], test.varName);
+            });
+            it('should return the variable values as the map vales', () => {
+                assert.equal(test.variables.get(test.varName), test.varVal);
+            });
+        });
+    });
+    describe('run method', () => {
+        const test = runBefore({
+            handler(...args) {
+                test.ran = true;
+                test.args = args;
+            },
+        });
+        beforeEach(() => {
+            test.ran = false;
+            test.args = null;
 
-                    const route = new RegexpCompiledHttpRoute(
-                        regent,
-                        ROUTE_TYPE,
-                        callback,
-                        [],
-                        new Set(['foo']),
-                        'foo',
-                        true,
-                        /foo\/(\w+)/
-                    );
-                    const req = new http.IncomingMessage();
-                    req.url = '/foo/bar';
-                    const request = new HttpRequest(
-                        regent.getKernel('http'),
-                        req
-                    );
-                    const response = new HttpResponse(
-                        regent.getKernel('http'),
-                        new http.ServerResponse(req)
-                    );
+            const kernel = regent.getKernel('http');
+            const req = new http.IncomingMessage();
+            req.url = 'foo/bar';
 
-                    route.run(request, response);
+            const request = new HttpRequest(kernel, req);
+            const res = new http.ServerResponse(req);
+            const response = new HttpResponse(kernel, res);
+
+            test.kernel = kernel;
+            test.req = req;
+            test.request = request;
+            test.res = res;
+            test.response = response;
+        });
+
+        describe('(<request>, <response>, <context>) signature', () => {
+            it('should throw if <context> is not an object', () => {
+                assert.throws(() => test.route.run({}, {}, null));
+            });
+            it(
+                'should pass <context> into the handler as the third arg',
+                async () => {
+                    const context = { foo: 'foo' };
+                    await test.route.run(test.request, test.response, context);
+                    assert.isTrue(test.ran);
+                    // eslint-disable-next-line no-magic-numbers
+                    assert.equal(test.args[2].foo, context.foo);
+                }
+            );
+        });
+        describe('(<request>, <response>) signature', () => {
+            it(
+                'should throw an error if the first parameter is not a '
+                    + `${HttpRequest.name} object`,
+                () => assert.rejects(() => test.route.run(null))
+            );
+            it(
+                'should throw an error if the second parameter is not a '
+                    + `${HttpResponse.name} object`,
+                () => assert.rejects(() => test.route.run(test.request, null))
+            );
+            it('should succeed if all parameters pass checks', () => {
+                test.route.run(test.request, test.response);
+            });
+            it(
+                'should pass the request into the handler as the first arg',
+                async () => {
+                    await test.route.run(test.request, test.response);
+                    assert.isTrue(test.ran);
+                    assert.equal(test.args[0], test.request);
+                }
+            );
+            it(
+                'should pass the response into the handler as the second arg',
+                async () => {
+                    await test.route.run(test.request, test.response);
+                    assert.isTrue(test.ran);
+                    assert.equal(test.args[1], test.response);
+                }
+            );
+
+            it(
+                'should make variables available in the map passed to the '
+                    + 'handler',
+                async () => {
+                    await test.route.run(test.request, test.response);
+                    assert.isTrue(test.ran);
+                    // eslint-disable-next-line no-magic-numbers
+                    assert.equal(test.args[2].variables.get('foo'), 'bar');
                 }
             );
         });

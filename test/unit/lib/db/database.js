@@ -6,7 +6,7 @@
 const assert         = require('regent-js/lib/util/assert');
 const Database       = require('regent-js/lib/db/database');
 const GenericDb      = require('regent-js/lib/db/relational/connection');
-const { $protected } = require('regent-js/lib/util/scope')();
+const { $protected } = require('regent-js/lib/util/scope').create();
 
 const CLASS_NAME     = Database.name;
 

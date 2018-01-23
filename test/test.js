@@ -12,6 +12,7 @@ const fs    = require('fs');
 const path  = require('path');
 
 const { SystemConfig } = require('../bootstrap/system-config');
+const ObjectMerger = require('regent-js/lib/util/object-merger');
 
 const AppConfig = require('regent-js/app/app');
 const Regent    = require('regent-js/lib/core/regent');
@@ -21,14 +22,15 @@ const LAST_THREE = -3;
 process.setMaxListeners(Infinity);
 
 global.newRegent = (sysConfig = {}, appConfig = {}) => new Regent(
-    {
-        ...SystemConfig,
-        ...sysConfig,
-    },
-    {
-        ...AppConfig,
-        ...appConfig,
-    },
+    ObjectMerger.create().merge(
+        { testing: true },
+        SystemConfig,
+        sysConfig,
+    ),
+    ObjectMerger.create().merge(
+        AppConfig,
+        appConfig,
+    ),
 );
 
 function readdir(directory, mocha) {

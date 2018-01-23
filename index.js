@@ -9,7 +9,6 @@
 
 require('kraeve');
 
-const directories   = require('regent-js/bootstrap/directories');
 const DefaultConfig = require('regent-js/etc/default');
 const Regent        = require('regent-js/lib/core/regent');
 const deepmerge     = require('deepmerge');
@@ -35,7 +34,6 @@ function create(appDir = rootDir, SystemConfig = {}, AppConfig = {}) {
         },
     });
 
-    directories.configure(SystemConfig.Directories);
     return new Regent(SystemConfig, AppConfig);
 }
 

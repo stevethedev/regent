@@ -23,7 +23,7 @@ function loadWebRoutes(router) {
     const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
     router.get('user/{id?}', (request, response, { variables }) => {
         return `User ID: ${variables.get('id')}`;
-    }).where({ 'id': uuid });
+    }).setPattern({ 'id': uuid });
 
     router.get(
         '/variable/{variable}/{optional?}',
@@ -32,7 +32,7 @@ function loadWebRoutes(router) {
                 Variable: ${variables.get('variable')}
                 Optional: ${variables.get('optional')}
             `).send();
-        }).where('optional', '[a-f0-9]+');
+        }).setPattern('optional', '[a-f0-9]+');
 }
 
 module.exports = loadWebRoutes;

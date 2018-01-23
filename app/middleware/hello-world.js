@@ -3,7 +3,7 @@
  */
 'use strict';
 
-const BaseMiddleware = require('regent-js/lib/core/middleware/middleware');
+const BaseMiddleware = require('regent-js/lib/core/middleware');
 
 class MiddlewareHelloWorld extends BaseMiddleware {
     run(request, response, next) {
