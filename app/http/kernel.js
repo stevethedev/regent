@@ -5,8 +5,9 @@
 const BaseHttpKernel = require('regent-js/lib/http/kernel');
 
 // Middleware
-const HelloWorldMiddleware = require('regent-js/app/middleware/hello-world');
+// const HelloWorldMiddleware = require('regent-js/app/middleware/hello-world');
 const SessionMiddleware    = require('regent-js/lib/http/middleware/sessions');
+const CsrfMiddleware       = require('regent-js/lib/http/middleware/csrf');
 
 class HttpKernel extends BaseHttpKernel {
     /*
@@ -20,20 +21,12 @@ class HttpKernel extends BaseHttpKernel {
      |
      */
     getMiddleware() {
-        return [
-
-            // Include middleware classes in the order they should be executed
-            // HelloWorldMiddleware,
-
-        ];
+        return [ /* HelloWorldMiddleware */ ];
     }
 
     getMiddlewareGroup(groupName) {
         if ('web' === groupName) {
-            return [
-                // Enable sessions on web-routes but not api-routes
-                SessionMiddleware,
-            ];
+            return [ SessionMiddleware, CsrfMiddleware ];
         }
         if ('api' === groupName) {
             return [];
