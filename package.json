@@ -27,7 +27,6 @@
     "common-tags": "^1.6.0",
     "dateformat": "^3.0.2",
     "deepmerge": "^2.0.1",
-    "kraeve": "^1.0.4",
     "mime": "^2.2.0",
     "mysql": "^2.15.0",
     "nunjucks": "^3.0.1",
@@ -42,6 +41,7 @@
     "eslint": "^4.14.0",
     "jsdoc": "^3.5.5",
     "jsinspect": "^0.12.7",
+    "kraeve": "^1.0.4",
     "mocha": "^4.1.0",
     "nyc": "^11.4.1"
   }
