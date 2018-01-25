@@ -10,6 +10,10 @@ class IndexHttpController extends HttpController {
     index() {
         return this.view('index.njk');
     }
+
+    store() {
+        return this.view('index.njk');
+    }
 }
 
 module.exports = IndexHttpController;

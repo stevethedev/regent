@@ -5,9 +5,10 @@
 const BaseHttpKernel = require('regent-js/lib/http/kernel');
 
 // Middleware
-// const HelloWorldMiddleware = require('regent-js/app/middleware/hello-world');
-const SessionMiddleware    = require('regent-js/lib/http/middleware/sessions');
-const CsrfMiddleware       = require('regent-js/lib/http/middleware/csrf');
+const ErrorMiddleware    = require('regent-js/lib/http/middleware/error-listener');
+const FormBodyMiddleware = require('regent-js/lib/http/middleware/form-body');
+const SessionMiddleware  = require('regent-js/lib/http/middleware/sessions');
+const CsrfMiddleware     = require('regent-js/lib/http/middleware/csrf');
 
 class HttpKernel extends BaseHttpKernel {
     /*
@@ -21,12 +22,17 @@ class HttpKernel extends BaseHttpKernel {
      |
      */
     getMiddleware() {
-        return [ /* HelloWorldMiddleware */ ];
+        return [];
     }
 
     getMiddlewareGroup(groupName) {
         if ('web' === groupName) {
-            return [ SessionMiddleware, CsrfMiddleware ];
+            return [
+                ErrorMiddleware,
+                FormBodyMiddleware,
+                SessionMiddleware,
+                CsrfMiddleware,
+            ];
         }
         if ('api' === groupName) {
             return [];
