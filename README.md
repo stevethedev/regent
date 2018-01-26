@@ -1,9 +1,9 @@
 # Regent
 [![Build Status][build-status-image]][build-status-url]
 [![Build status][appveyor-status-image]][appveyor-status-url]
-
 [![Codacy Badge][codacy-image]][codacy-url]
 [![Codacy Coverage][coverage-image]][coverage-url]
+[![Known Vulnerabilities][snyk-image]][snyk-url]
 
 Regent is a web application framework written in Node.js (v8.9.0 LTS). Drawing
 inspiration from the immensely popular Laravel framework, Regent is intended as
@@ -28,4 +28,6 @@ The Regent framework is an open-source software licensed under the
 [coverage-image]: https://api.codacy.com/project/badge/Coverage/1d9972def2334992a30922b030249798
 [coverage-url]: https://www.codacy.com/app/stevethedev/regent?utm_source=github.com&utm_medium=referral&utm_content=stevethedev/regent&utm_campaign=Badge_Coverage
 [license-url]: http://opensource.org/licenses/MIT
+[snyk-image]: https://snyk.io/test/github/stevethedev/regent/badge.svg?targetFile=package.json
+[snyk-url]: https://snyk.io/test/github/stevethedev/regent?targetFile=package.json
 [wiki-url]: https://github.com/stevethedev/regent/wiki
