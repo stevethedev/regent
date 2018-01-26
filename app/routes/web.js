@@ -18,7 +18,7 @@ const index = require('regent-js/app/http/controllers/index');
 function loadWebRoutes(router) {
     // Your routes are defined in here
 
-    router.resource('/', index, { only: ['index'] });
+    router.resource('/', index, { only: [ 'index', 'store' ] });
 
     const uuid = '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}';
     router.get('user/{id?}', (request, response, { variables }) => {

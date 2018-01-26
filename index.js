@@ -7,8 +7,6 @@
  */
 'use strict';
 
-require('kraeve');
-
 const DefaultConfig = require('regent-js/etc/default');
 const Regent        = require('regent-js/lib/core/regent');
 const deepmerge     = require('deepmerge');

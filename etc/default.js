@@ -5,7 +5,7 @@
 
 require('kraeve');
 
-const operatingSystem = require('os');
+const operatingSystem   = require('os');
 const { dirname, join } = require('path');
 
 /*
@@ -48,6 +48,9 @@ module.exports.Directories = {
 
     // Session files
     session: join(dirname(require.resolve('regent-js')), 'storage/session'),
+
+    // Temporary files
+    tmp: join(dirname(require.resolve('regent-js')), 'storage/var'),
 
     // View files
     view: join(dirname(require.resolve('regent-js')), 'storage/views'),
