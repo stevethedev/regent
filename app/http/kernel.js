@@ -4,11 +4,13 @@
 
 const BaseHttpKernel = require('regent-js/lib/http/kernel');
 
+const MIDDLEWARE = 'regent-js/lib/http/middleware';
+
 // Middleware
-const ErrorMiddleware    = require('regent-js/lib/http/middleware/error-listener');
-const FormBodyMiddleware = require('regent-js/lib/http/middleware/form-body');
-const SessionMiddleware  = require('regent-js/lib/http/middleware/sessions');
-const CsrfMiddleware     = require('regent-js/lib/http/middleware/csrf');
+const CsrfMiddleware     = require(`${MIDDLEWARE}/csrf`);
+const ErrorMiddleware    = require(`${MIDDLEWARE}/error-listener`);
+const FormBodyMiddleware = require(`${MIDDLEWARE}/form-body`);
+const SessionMiddleware  = require(`${MIDDLEWARE}/sessions`);
 
 class HttpKernel extends BaseHttpKernel {
     /*
