@@ -8,7 +8,6 @@ const MIDDLEWARE = 'regent-js/lib/http/middleware';
 
 // Middleware
 const CsrfMiddleware     = require(`${MIDDLEWARE}/csrf`);
-const ErrorMiddleware    = require(`${MIDDLEWARE}/error-listener`);
 const FormBodyMiddleware = require(`${MIDDLEWARE}/form-body`);
 const SessionMiddleware  = require(`${MIDDLEWARE}/sessions`);
 
@@ -30,7 +29,6 @@ class HttpKernel extends BaseHttpKernel {
     getMiddlewareGroup(groupName) {
         if ('web' === groupName) {
             return [
-                ErrorMiddleware,
                 FormBodyMiddleware,
                 SessionMiddleware,
                 CsrfMiddleware,

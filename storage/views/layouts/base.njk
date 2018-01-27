@@ -3,7 +3,7 @@
 <head>
     <title>{% block title %}Regent{% endblock %}</title>
     <link type="text/css" rel="stylesheet" href="/assets/css/regent.css">
-    {{ csrf_meta() | safe }}
+    {$ csrf_meta() | safe $}
 </head>
 <body>
     {% block body %}{% endblock %}
