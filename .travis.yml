@@ -47,7 +47,4 @@ before_script:
   - mysql -e "GRANT ALL PRIVILEGES ON regent_test.* TO 'regent'@'localhost' IDENTIFIED BY 'password123';" --user=root
 
 script:
-  - npm run gen:coverage
-
-after_success:
-  - if [[ "$TRAVIS_EVENT_TYPE" == "cron" ]] && [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run pub:coverage; fi
+  - npm run gen:coverage && npm run pub:coverage:coveralls && npm run pub:coverage:codacy
