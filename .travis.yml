@@ -50,5 +50,5 @@ script:
   - npm run gen:coverage
 
 after_success:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run pub:coverage:coveralls; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run pub:coverage:codacy; fi
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then npm run pub:coverage:coveralls; fi
+  - if [[ "$TRAVIS_OS_NAME" != "osx" ]]; then npm run pub:coverage:codacy; fi
