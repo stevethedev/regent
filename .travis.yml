@@ -47,8 +47,4 @@ before_script:
   - mysql -e "GRANT ALL PRIVILEGES ON regent_test.* TO 'regent'@'localhost' IDENTIFIED BY 'password123';" --user=root
 
 script:
-  - npm run gen:coverage
-
-after_success:
-  - npm run pub:coverage:coveralls
-  - npm run pub:coverage:codacy
+  - npm run gen:coverage && npm run pub:coverage:coveralls && npm run pub:coverage:codacy
