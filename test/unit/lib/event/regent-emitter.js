@@ -55,6 +55,62 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
     });
+    describe('unique method', () => {
+        describe('(eventName, listener) signature', () => {
+            it(
+                'should add a listener to the given eventName if it has not '
+                    + 'been added',
+                () => {
+                    const emitter = new RegentEmitter();
+                    let i = 0;
+                    emitter.unique('foo', () => ++i);
+                    emitter.emit('foo');
+                    assert.equal(i, 1);
+                }
+            );
+            it(
+                'should not add a listener to the given eventName if it has '
+                    + 'been added',
+                () => {
+                    const emitter = new RegentEmitter();
+                    let i = 0;
+                    const listener = () => ++i;
+                    emitter.unique('foo', listener);
+                    emitter.unique('foo', listener);
+                    emitter.emit('foo');
+                    assert.equal(i, 1);
+                }
+            );
+            it('should return the emitter', () => {
+                const emitter = new RegentEmitter();
+                assert.equal(emitter.once('foo', () => true), emitter);
+            });
+        });
+    });
+    describe('has method', () => {
+        const emitter  = new RegentEmitter();
+        const IS_FALSE = 'foo';
+        const IS_TRUE  = 'bar';
+        const LISTENER = () => true;
+        emitter.on(IS_TRUE, LISTENER);
+        describe('(eventName) signature', () => {
+            it('should return <false> if <eventName> has no listeners', () => {
+                assert.isFalse(emitter.has(IS_FALSE));
+            });
+            it('should return <true> if <eventName> has any listeners', () => {
+                assert.isTrue(emitter.has(IS_TRUE));
+            });
+        });
+        describe('(eventName, listener) signature', () => {
+            it(
+                'should return <false> if <eventName> does not have <listener>',
+                () => assert.isFalse(emitter.has(IS_FALSE, LISTENER)),
+            );
+            it('should return <true> if <eventName> has <listener>', () => {
+                assert.isTrue(emitter.has(IS_TRUE, LISTENER));
+            });
+        });
+    });
     describe('off method', () => {
         const emitter = new RegentEmitter();
         describe('() signature', () => {
