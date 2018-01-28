@@ -154,7 +154,6 @@ describe(`The ${CLASS_NAME} class`, () => {
                 assert.isPromise(promise);
                 return promise;
             });
-            it('should not allow navigation out of <filePath>');
             it(
                 'should resolve to true if <dirName> exists in <filePath>',
                 () => {

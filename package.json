@@ -12,6 +12,7 @@
     "run:linter": "node_modules/.bin/eslint ./app/** ./bootstrap/** ./etc/** ./lib/** ./test/**",
     "run:server": "node ./bootstrap/app.js",
     "run:duplication": "./node_modules/.bin/jsinspect --ignore ./test",
+    "clean:test": "rm `git ls-files --others test`",
     "test": "node ./test/test.js"
   },
   "author": "Steven Jimenez <steven@stevethedev.com>",
@@ -26,7 +27,7 @@
   "homepage": "https://github.com/stevethedev/regent#readme",
   "dependencies": {
     "chai": "^4.1.2",
-    "common-tags": "^1.6.0",
+    "common-tags": "^1.7.2",
     "dateformat": "^3.0.2",
     "deepmerge": "^2.0.1",
     "mime": "^2.2.0",
@@ -37,11 +38,11 @@
     "ps-node": "^0.1.6"
   },
   "devDependencies": {
-    "babel-eslint": "^8.1.2",
+    "babel-eslint": "^8.2.1",
     "codacy-coverage": "^2.0.3",
     "coveralls": "^3.0.0",
     "docdash": "^0.4.0",
-    "eslint": "^4.14.0",
+    "eslint": "^4.16.0",
     "jsdoc": "^3.5.5",
     "jsinspect": "^0.12.7",
     "kraeve": "^1.0.4",
