@@ -23,8 +23,15 @@ process.setMaxListeners(Infinity);
 
 global.newRegent = (sysConfig = {}, appConfig = {}) => new Regent(
     ObjectMerger.create().merge(
-        { testing: true },
         SystemConfig,
+        {
+            Directories: {
+                session: path.join(__dirname, 'storage/session'),
+                var    : path.join(__dirname, 'storage/var'),
+            },
+            LoggerConfig: { logLevel: 0 },
+            testing     : true,
+        },
         sysConfig,
     ),
     ObjectMerger.create().merge(
