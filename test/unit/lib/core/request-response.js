@@ -9,6 +9,7 @@ const Middleware = require('regent-js/lib/core/middleware');
 const MwHandler  = require('regent-js/lib/core/middleware/handler');
 const path       = require('path');
 const ReqRes     = require('regent-js/lib/core/request-response');
+const Session    = require('regent-js/lib/http/session');
 const SessionMgr = require('regent-js/lib/http/session/manager');
 
 const SESSION_PATH = path.join(__dirname, 'storage');
@@ -152,7 +153,7 @@ describe(`The ${CLASS_NAME} class`, () => {
         });
     });
     describe('setSession method', () => {
-        describe('(<session>) signature', () => {
+        describe('(<session:Session>) signature', () => {
             const test = {};
             before(async () => {
                 test.session = await SessionMgr.create(regent).get();
@@ -164,6 +165,35 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
             it('should resolve to the set session', async () => {
                 assert.equal(await test.result, test.session);
+            });
+        });
+        describe('(<session:String>) signature', () => {
+            const test = {};
+            before(async () => {
+                test.sessionId = '12345';
+                test.session = await SessionMgr.create(regent)
+                    .get(test.sessionId);
+                test.reqres = newReqRes();
+                test.result = test.reqres.setSession('12345');
+            });
+            it('should return a Promise', () => {
+                assert.isPromise(test.result);
+            });
+            it('should resolve to the set session', async () => {
+                assert.equal((await test.result).getId(), test.session.getId());
+            });
+        });
+        describe('() signature', () => {
+            const test = {};
+            before(() => {
+                test.reqres = newReqRes();
+                test.result = test.reqres.setSession();
+            });
+            it('should return a Promise', () => {
+                assert.isPromise(test.result);
+            });
+            it('should resolve to the set session', async () => {
+                assert.instanceOf(await test.result, Session);
             });
         });
     });
