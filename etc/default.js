@@ -3,8 +3,6 @@
  */
 'use strict';
 
-require('kraeve');
-
 const operatingSystem   = require('os');
 const { dirname, join } = require('path');
 
