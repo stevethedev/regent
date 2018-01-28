@@ -12,6 +12,7 @@
     "run:linter": "node_modules/.bin/eslint ./app/** ./bootstrap/** ./etc/** ./lib/** ./test/**",
     "run:server": "node ./bootstrap/app.js",
     "run:duplication": "./node_modules/.bin/jsinspect --ignore ./test",
+    "clean:test": "rm `git ls-files --others test`",
     "test": "node ./test/test.js"
   },
   "author": "Steven Jimenez <steven@stevethedev.com>",
