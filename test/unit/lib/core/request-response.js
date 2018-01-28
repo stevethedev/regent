@@ -118,7 +118,7 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
     });
-    describe('cookie method', () => {
+    describe('getCookie method', () => {
         describe('(<name>) signature', () => {
             const test = {};
             before(() => {
@@ -126,13 +126,13 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
             it(
                 `should return a new ${Cookie.name} if no cookie is present`,
-                () => assert.instanceOf(test.reqres.cookie('foo'), Cookie)
+                () => assert.instanceOf(test.reqres.getCookie('foo'), Cookie)
             );
             it(
                 `should return an existing ${Cookie.name} if the cookie exists`,
                 () => {
-                    const fooCookie = test.reqres.cookie('foo');
-                    assert.equal(test.reqres.cookie('foo'), fooCookie);
+                    const fooCookie = test.reqres.getCookie('foo');
+                    assert.equal(test.reqres.getCookie('foo'), fooCookie);
                 }
             );
         });
@@ -147,7 +147,7 @@ describe(`The ${CLASS_NAME} class`, () => {
                 assert.isFalse(test.reqres.hasCookie('foo'));
             });
             it('should return <true> if the cookie is present', () => {
-                test.reqres.cookie('foo');
+                test.reqres.getCookie('foo');
                 assert.isTrue(test.reqres.hasCookie('foo'));
             });
         });
