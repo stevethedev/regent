@@ -223,6 +223,14 @@ describe(`The ${CLASS_NAME} class`, () => {
             it(`should return the ${CLASS_NAME}`, () => {
                 assert.equal(test.result, test.response);
             });
+            it(
+                'should short-circuit if the response was already sent',
+                async () => {
+                    test.sent = false;
+                    await test.response.send();
+                    assert.isFalse(test.sent);
+                }
+            );
         });
         describe('(<statusCode>) signature', () => {
             const test = runBefore({
@@ -250,17 +258,6 @@ describe(`The ${CLASS_NAME} class`, () => {
             });
         });
     });
-    describe('stream method', () => {
-        describe('(<filePath>) signature', () => {
-            it('should send the <filePath> file');
-            it(`should return the ${CLASS_NAME}`);
-        });
-        describe('(<filePath>, <statusCode>) signature', () => {
-            it('should send the <filePath> file');
-            it('should set the status-code to <statusCode>');
-            it(`should return the ${CLASS_NAME}`);
-        });
-    });
     describe('isSent method', () => {
         describe('() signature', () => {
             const test = runBefore({
@@ -280,19 +277,6 @@ describe(`The ${CLASS_NAME} class`, () => {
                     assert.isTrue(test.response.isSent());
                 }
             );
-        });
-    });
-    describe('render method', () => {
-        describe('(<template>) signature', () => {
-            it('should load the <template> template');
-            it('should return a string');
-            it('should return the value of the <template>');
-        });
-        describe('(<template>, <options>) signature', () => {
-            it('should load the <template> template');
-            it('should return a string');
-            it('should return the value of the <template>');
-            it('should send the <options> context');
         });
     });
 });
