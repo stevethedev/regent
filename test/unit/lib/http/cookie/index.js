@@ -109,8 +109,9 @@ describe(`The ${CLASS_NAME} class`, () => {
                 assert.equal(test.cookie.setTimer(1), test.cookie);
             });
             it('should set the expiry time', () => {
-                test.cookie.setTimer(1);
-                assert.equal(test.cookie.getTimer(), 1);
+                const TIMER = 1000;
+                test.cookie.setTimer(TIMER);
+                assert.isWithin(test.cookie.getTimer(), TIMER, 1);
             });
         });
     });
@@ -118,8 +119,9 @@ describe(`The ${CLASS_NAME} class`, () => {
         describe('() signature', () => {
             const test = runBefore({ name: 'foo' });
             it('should return the expiry seconds', () => {
-                test.cookie.setTimer(1);
-                assert.equal(test.cookie.getTimer(), 1);
+                const TIMER = 1000;
+                test.cookie.setTimer(TIMER);
+                assert.isWithin(test.cookie.getTimer(), TIMER, 1);
             });
         });
     });
