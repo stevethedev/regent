@@ -12,6 +12,11 @@
     "run:linter": "node_modules/.bin/eslint ./app/** ./bootstrap/** ./etc/** ./lib/** ./test/**",
     "run:server": "node ./bootstrap/app.js",
     "run:duplication": "./node_modules/.bin/jsinspect --ignore ./test",
+    "clean": "npm run clean:storage; npm run clean:test",
+    "clean:storage": "rm `git ls-files --others storage`",
+    "clean:storage:log": "rm `git ls-files --others storage/log`",
+    "clean:storage:session": "rm `git ls-files --others storage/session`",
+    "clean:storage:var": "rm `git ls-files --others storage/var`",
     "clean:test": "rm `git ls-files --others test`",
     "test": "node ./test/test.js"
   },
