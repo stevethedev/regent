@@ -126,11 +126,11 @@ describe(`The ${CLASS_NAME} class`, () => {
         describe('(<field>) signature', () => {
             const test = runBefore({
                 body: JSON.stringify({ foo: 'bar' }),
-                contentType: 'application/json',
                 async callback() {
                     test.promise = test.request.getBody('foo');
                     test.result = await test.promise;
                 },
+                contentType: 'application/json',
             });
             it('should return a Promise', () => {
                 assert.isPromise(test.promise);
@@ -148,11 +148,11 @@ describe(`The ${CLASS_NAME} class`, () => {
         describe('(<field>, <default>) signature', () => {
             const test = runBefore({
                 body: JSON.stringify({ foo: 'bar' }),
-                contentType: 'application/json',
                 async callback() {
                     test.promise = test.request.getBody('foo', 'baz');
                     test.result = await test.promise;
                 },
+                contentType: 'application/json',
             });
             it('should return a Promise', () => {
                 assert.isPromise(test.promise);
@@ -178,6 +178,140 @@ describe(`The ${CLASS_NAME} class`, () => {
             it('should return a BodyParser', () => {
                 assert.instanceOf(test.request.getBodyParser(), BodyParser);
             });
+        });
+    });
+    describe('getParam method', () => {
+        describe('() signature', () => {
+            const test = runBefore({
+                callback() {
+                    test.query = 'foo=bar&baz=gab';
+                    test.clientRequest.url = `/?${test.query}`;
+                    test.result = test.request.getParam();
+                },
+            });
+            it('should return all of the query parameters', () => {
+                assert.isObject(test.result);
+                assert.equal(test.result.foo, 'bar');
+                assert.equal(test.result.baz, 'gab');
+            });
+        });
+        describe('(<key>) signature', () => {
+            const test = runBefore({
+                callback() {
+                    test.query = 'foo=bar&baz=gab';
+                    test.clientRequest.url = `/?${test.query}`;
+                },
+            });
+            it('should return the query parameter <key> if it exists', () => {
+                assert.equal(test.request.getParam('foo'), 'bar');
+            });
+            it('should return null if no parameter <key> exists', () => {
+                assert.isNull(test.request.getParam('hello'));
+            });
+        });
+        describe('(<key>, <fallback>) signature', () => {
+            const test = runBefore({
+                callback() {
+                    test.query = 'foo=bar&baz=gab';
+                    test.clientRequest.url = `/?${test.query}`;
+                    test.result = test.request.getParam('foo', null);
+                },
+            });
+            it('should return the query parameter <key> if it exists', () => {
+                assert.equal(test.request.getParam('foo', 'hello'), 'bar');
+            });
+            it('should return <fallback> if no parameter <key> exists', () => {
+                assert.equal(test.request.getParam('hello', 'world'), 'world');
+            });
+        });
+    });
+    describe('getInput method', () => {
+        describe('(<key>) signature', () => {
+            const test = runBefore({
+                body: JSON.stringify({
+                    bar: 'bar',
+                    foo: 'foo',
+                }),
+                async callback() {
+                    test.query = 'foo=FOO';
+                    test.clientRequest.url = `/?${test.query}`;
+                    test.promise = {
+                        bar: test.request.getInput('bar'),
+                        baz: test.request.getInput('baz'),
+                        foo: test.request.getInput('foo'),
+                    };
+                    test.result = {
+                        bar: await test.promise.bar,
+                        baz: await test.promise.baz,
+                        foo: await test.promise.foo,
+                    };
+                },
+                contentType: 'application/json',
+            });
+            it('should return a Promise', () => {
+                assert.isPromise(test.promise.foo);
+                assert.isPromise(test.promise.bar);
+                assert.isPromise(test.promise.baz);
+            });
+            it('should resolve to <key> if it is in the query', () => {
+                assert.equal(test.result.foo, 'FOO');
+            });
+            it(
+                'should resolve to <key> in the body if it is not in the query',
+                () => {
+                    assert.equal(test.result.bar, 'bar');
+                }
+            );
+            it(
+                'should resolve to null if <key> is not in the query or body',
+                () => {
+                    assert.equal(test.result.baz, null);
+                }
+            );
+        });
+        describe('(<key>, <fallback>) signature', () => {
+            const test = runBefore({
+                body: JSON.stringify({
+                    bar: 'bar',
+                    foo: 'foo',
+                }),
+                async callback() {
+                    test.query = 'foo=FOO';
+                    test.clientRequest.url = `/?${test.query}`;
+                    test.promise = {
+                        bar: test.request.getInput('bar', 'hello'),
+                        baz: test.request.getInput('baz', 'hello'),
+                        foo: test.request.getInput('foo', 'hello'),
+                    };
+                    test.result = {
+                        bar: await test.promise.bar,
+                        baz: await test.promise.baz,
+                        foo: await test.promise.foo,
+                    };
+                },
+                contentType: 'application/json',
+            });
+            it('should return a Promise', () => {
+                assert.isPromise(test.promise.foo);
+                assert.isPromise(test.promise.bar);
+                assert.isPromise(test.promise.baz);
+            });
+            it('should resolve to <key> if it is in the query', () => {
+                assert.equal(test.result.foo, 'FOO');
+            });
+            it(
+                'should resolve to <key> in the body if it is not in the query',
+                () => {
+                    assert.equal(test.result.bar, 'bar');
+                }
+            );
+            it(
+                'should resolve to <fallback> if <key> is not in the query '
+                    + 'or body',
+                () => {
+                    assert.equal(test.result.baz, 'hello');
+                }
+            );
         });
     });
 });
