@@ -12,23 +12,20 @@ const rootDir  = path.resolve(path.join(__dirname, '..'));
 
 function main(argc, argv) {
     const firstMeaningful = 2;
-    const command = argv[firstMeaningful].split('.');
+    const command = argv[firstMeaningful];
 
-    let route = commands;
-    for (let i = 0; i < command.length; ++i) {
-        if (route.has && route.has(command[i])) {
-            route = route.get(command[i]);
-        } else {
-            print();
-            print(`regent-js ${command.join('.')} does not exist.`);
-            print();
-            print('Regent Commands:');
-            print();
-            dumpCommands(commands);
-            return print();
-        }
+    if (commands.has(command)) {
+        commands.get(command).call(this, ...argv.slice(1 + firstMeaningful));
+    } else {
+        print();
+        print(`regent-js ${command.join('.')} does not exist.`);
+        print();
+        print('Regent Commands:');
+        print();
+        dumpCommands(commands);
+        print();
     }
-    return route(...argv.slice(1 + firstMeaningful));
+    return 0;
 }
 
 /**
