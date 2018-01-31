@@ -26,6 +26,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/stevethedev/regent.git"
   },
+  "bin": "bin/cli.js",
   "bugs": {
     "url": "https://github.com/stevethedev/regent/issues"
   },
@@ -37,6 +38,7 @@
     "deepmerge": "^2.0.1",
     "mime": "^2.2.0",
     "mysql": "^2.15.0",
+    "ncp": "^2.0.0",
     "nunjucks": "^3.0.1",
     "pg": "^7.4.1",
     "pg-cursor": "^1.3.0",
